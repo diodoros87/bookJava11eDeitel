@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- =====================================================================================
+ *       Filename:  Collage.fxml
+ *
+ *    Description:  learning Java from book
+                       P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
+                          Polish Edition (chapters from 1 to 28)
+                             Exercise GUI 3.1 - fxml file to display collage with
+                                4 photos
+                             
+                             
+ *
+ *        @Author:  diodoros87
+ *
+ *   =====================================================================================
+-->
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
