@@ -36,6 +36,25 @@ public class GettingDataFromStandardInput {
       return value;
    }
    
+   public static short getShortInteger(String prompt) {
+      System.out.print(prompt);
+      
+      short     value = 0;
+      boolean isCorrectInputData = input.hasNextShort();   // to check input data
+      
+      if (false == isCorrectInputData) {
+         System.err.println("Value entered by User is incorrect");
+         input.close();
+         System.exit(abnormalTerminationCode);
+      }
+      if (true == isCorrectInputData) {
+         value = input.nextShort();
+      }
+      
+      input.nextLine(); // clear input data
+      return value;
+   }
+   
    public static int getInteger(String prompt) {
       System.out.print(prompt);
       
@@ -52,6 +71,36 @@ public class GettingDataFromStandardInput {
       }
       
       input.nextLine(); // clear input data
+      return value;
+   }
+   
+   public static void clearNextLineOfInputData() {
+      input.nextLine(); // clear input data
+   }
+   
+   public static long getLongIntegerRejectOthersData(String prompt, boolean isInfoDisplaying) {
+      System.out.print(prompt);
+      
+      long value = 0;
+      
+      while (true == input.hasNext()) {    // return true if scanner has another token (word) in its input
+         if (true == input.hasNextLong()) {
+            value = input.nextLong();
+            if (isInfoDisplaying) {
+               System.out.printf("%nValue of %d entered by User was accepted. %n", value);
+            }
+            return value;
+         }
+         else if (true == input.hasNextDouble()) {
+            System.err.printf("%nValue of %f entered by User is type double. ", input.nextDouble());
+            System.err.printf("This is incorrect. Value must be integer type.%n");
+         }
+         else {
+            System.err.printf("%nValue of \'%s\' entered by User is not integer type. ", input.next());
+            System.err.printf("This is incorrect. Value must be integer type.%n");
+         }
+      }
+      
       return value;
    }
    

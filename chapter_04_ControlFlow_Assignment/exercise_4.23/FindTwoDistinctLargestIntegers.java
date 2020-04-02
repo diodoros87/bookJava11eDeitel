@@ -4,7 +4,7 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 4.23 - Finding two distinct largest integer of 
+                             Exercise 4.23 - Finding two distinct largest integers of 
                                  10 integers entered by User using
                                     counter-controlled iteration
                            
@@ -38,13 +38,16 @@ public class FindTwoDistinctLargestIntegers {
          integer = GettingDataFromStandardInput.getLongInteger(String.format("prompt %d%s", counter, prompt));
          
          if (largest < integer) {
+            nextAfterLargest    = largest;
+            largest             = integer;
             setNextAfterLargest = true;
-            nextAfterLargest = largest;
-            largest = integer;
          }
          else if (largest > integer) {
             if (nextAfterLargest < integer) {
-               nextAfterLargest = integer;
+               nextAfterLargest    = integer;
+               setNextAfterLargest = true;
+            }
+            else if (Long.MIN_VALUE == integer) {
                setNextAfterLargest = true;
             }
          }
