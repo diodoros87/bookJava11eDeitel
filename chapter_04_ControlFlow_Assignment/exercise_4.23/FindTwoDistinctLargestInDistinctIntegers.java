@@ -20,6 +20,8 @@ import standardInputDataPackage.GettingDataFromStandardInput;
 public class FindTwoDistinctLargestInDistinctIntegers {
 
    static final short numberOfIntegers = 10;
+   static short identicalValuesCounter = 0;
+   static final short identicalValuesLimit = 29;
 
    public static void main(String[] args) {
       System.out.printf("*** This program finds two distinct largest integers in %d distinct integers entered by User.%n", numberOfIntegers);
@@ -46,6 +48,10 @@ public class FindTwoDistinctLargestInDistinctIntegers {
          candidateToConcatenateString = String.join(integer.toString(), " ", " "); // spaces to separate numbers in string 
          if (true == enteredIntegersString.contains(candidateToConcatenateString)) {
             System.err.printf ("%n Integer %d is not distinct than previously entered and can not be accepted. %n", integer); 
+            identicalValuesCounter++;
+            if (identicalValuesCounter > identicalValuesLimit) {
+               System.exit(1);
+            }
          }
          else {
             System.out.printf("%nValue of %d entered by User was accepted. %n", integer);
