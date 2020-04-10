@@ -79,7 +79,7 @@ public class BinaryToDecimal {
    
    public static int exponentiation(short base, short exponent) {
       if (0 > exponent) {
-         System.err.println("The case is more complicated. Exponent must be integer greater than zero");
+         System.err.println("The case is more complicated. Exponent must be integer not less than zero");
          return 0;
       }
       else if (0 == base) {

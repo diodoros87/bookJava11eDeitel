@@ -1,8 +1,8 @@
 Command to compile in Linux's terminal:
-cd exercise_4.Number   (change directory to GUIexercise_4.Number)
+cd exercise_4.Number   (change directory to exercise_4.Number)
 javac -Xlint -Werror -cp .:.. *.java
 
 
 Command to execute in Linux's terminal:
-cd exercise_4.Number   (change directory to GUIexercise_4.Number)
+cd exercise_4.Number   (change directory to exercise_4.Number)
 java -cp .:.. NameOfClassWithStaticMainMethod
