@@ -24,8 +24,10 @@ public class FindMinimumInteger {
    static final String numberOfIntegersInfo = "Number of entered integers is set by User in first of entered by User integer.";
    static final String excludeFirstIntegersInfo = "But this integer is not subject to the process of finding minimum";
    
-   static final String prompt = String.format("To quit enter sequence other than integers in range from %d to %d%n Enter integer, only first entered integer will be accepted: ",
-                                             Integer.MAX_VALUE, Integer.MAX_VALUE);
+   static final String prompt = String.format("To quit enter sequence other than integers in range from %d to %d%n",
+                                                Integer.MIN_VALUE, Integer.MAX_VALUE) +
+                                             "Enter integer, only first entered integer will be accepted: ";
+                                             
 
    public static void main(String[] args) {
       System.out.println("****** This program find the smallest integer in integers entered by User.");
