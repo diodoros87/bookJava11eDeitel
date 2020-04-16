@@ -1,10 +1,10 @@
 /* =====================================================================================
- *       Filename:  GlobalWarmingQuiz.java
+ *       Filename:  GlobalWarmingQuizMultipleChoice.java
  *
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 5.31 - class of single choice global warming quiz
+                             Exercise 5.31 - class of multiple choice global warming quiz
                              
                              
  *
@@ -13,10 +13,12 @@
  * =====================================================================================
  */
 
-public class GlobalWarmingQuiz {
+public class GlobalWarmingQuizMultipleChoice {
 
-   public static final String welcome = "###   Welcome in global warming single choice quiz   ###";
+   public static final String welcome = "###   Welcome in global warming multiple choice quiz   ###";
    public static final String questionPointInfo = " For each correct answer to the question You will receive 1 point";
+   public static final String manyCorrectAnswersPointInfo = " In case of question with more than one correct answers " + 
+                                                   "You will receive 1 point only for all correct answers, otherwise no point";
    
    public static final short quitProgram = 9;
    
@@ -34,7 +36,16 @@ public class GlobalWarmingQuiz {
    public static final short numberOfQuestions = 5;
    public static final String questionsNumberInfo = String.format(" In this quiz are %d questions ", numberOfQuestions);
    
+   public static final String tabulator = "\t";
+   public static final String connector = " is ";
+   
    private short points = 0;
+   
+   private static String firstQuestionCorrectAnswers = "";
+   private static String secondQuestionCorrectAnswers = "";
+   private static String thirdQuestionCorrectAnswers = "";
+   private static String fourthQuestionCorrectAnswers = "";
+   private static String fifthQuestionCorrectAnswers = "";
    
    public short getPoints () {
       return points;
@@ -101,7 +112,7 @@ public class GlobalWarmingQuiz {
             System.out.println(secondAnswer + ". Engage yourself in the science behind climate change");
             System.out.println(thirdAnswer + ". Vote for political candidates who will advocate for climate-related legislation" + 
                                                 " and policy improvements");
-            System.out.println(fourthAnswer + ". All of the above ");
+            System.out.println(fourthAnswer + ". Nothing of the above ");
             break;
          case thirdQuestion:
             System.out.println(firstAnswer + ". The name of climate change legislation that passed by congress ");
@@ -112,8 +123,8 @@ public class GlobalWarmingQuiz {
          case fourthQuestion:
             System.out.println(firstAnswer + ". CO2 ");
             System.out.println(secondAnswer + ". CH4");
-            System.out.println(thirdAnswer + ".  Water vapor ");
-            System.out.println(fourthAnswer + ".  All of the above ");
+            System.out.println(thirdAnswer + ". Water vapor ");
+            System.out.println(fourthAnswer + ". Nothing of the above ");
             break;
          case fifthQuestion:
             System.out.println(firstAnswer + ". 1% ");
@@ -127,52 +138,115 @@ public class GlobalWarmingQuiz {
       
    }
    
-   public static void printAnswerRating (short questionNumber, short answerNumber) {
-      System.out.printf("Answer for the question is %B %n", isCorrectAnswer (questionNumber, answerNumber));
+   public void printAnswerRating (short questionNumber, boolean firstSelection, boolean secondSelection,
+                                                               boolean thirdSelection, boolean fourthSelection) {
+      System.out.printf("********* Selection for the question is %B %n",
+      areCorrectSelections (firstSelection, secondSelection, thirdSelection, fourthSelection, questionNumber, true));
    }
    
-   public static void printCorrectAnswer (short questionNumber) {
-      System.out.printf("Correct answer for the question is answer number %d %n", getCorrectAnswer (questionNumber));
-   }
-   
-   public static short getCorrectAnswer (short questionNumber) {
+   public static void printCorrectAnswers (short questionNumber) {
+      String answers = "";
       
       switch (questionNumber) {
          case firstQuestion:
-            return firstAnswer;
+            answers = firstQuestionCorrectAnswers;
+            break;
          case secondQuestion:
-            return fourthAnswer;
+            answers = secondQuestionCorrectAnswers;
+            break;
          case thirdQuestion:
-            return thirdAnswer;
+            answers = thirdQuestionCorrectAnswers;
+            break;
          case fourthQuestion:
-            return fourthAnswer;
+            answers = fourthQuestionCorrectAnswers;
+            break;
          case fifthQuestion:
-            return secondAnswer;
+            answers = fifthQuestionCorrectAnswers;
+            break;
          default:
             System.err.println("No question with number " + questionNumber);
-            return -1;
+      }
+      
+      System.out.printf("For the question %d correct ", questionNumber);
+      
+      if (answers.indexOf(tabulator) > 1) {
+         System.out.printf("answers are: %n\'%s\' ", answers);
+      }
+      else {
+         System.out.printf("answer is: %n\'%s\' ", answers);
       }
    }
-   
-   public static boolean isCorrectAnswer (short questionNumber, short answerNumber) {
+
+   public boolean areCorrectSelections (boolean firstSelection, boolean secondSelection, boolean thirdSelection,
+                                             boolean fourthSelection, short questionNumber, boolean isToString) {
+      boolean answer1st = false;
+      boolean answer2nd = false;
+      boolean answer3rd = false;
+      boolean answer4th = false;
+      
       switch (questionNumber) { 
          case firstQuestion:
+            answer1st = true;
+            if (true == isToString) {
+               firstQuestionCorrectAnswers = firstAnswer + connector + true;
+            }
+            break;
+      
          case secondQuestion:
+            answer1st = true;
+            answer2nd = true;
+            answer3rd = true;
+            
+            if (true == isToString) {
+               secondQuestionCorrectAnswers  = firstAnswer + connector + true;
+               secondQuestionCorrectAnswers += tabulator + secondAnswer + connector + true;
+               secondQuestionCorrectAnswers += tabulator + thirdAnswer + connector + true;
+            }
+            break;
+         
          case thirdQuestion:
+            answer3rd = true;
+            if (true == isToString) {
+               thirdQuestionCorrectAnswers = thirdAnswer + connector + true;
+            }
+            break;
+            
          case fourthQuestion:
+            answer1st = true;
+            answer2nd = true;
+            answer3rd = true;
+            
+            if (true == isToString) {
+               fourthQuestionCorrectAnswers  = firstAnswer + connector + true;
+               fourthQuestionCorrectAnswers += tabulator + secondAnswer + connector + true;
+               fourthQuestionCorrectAnswers += tabulator + thirdAnswer + connector + true;
+            }
+            break;
+            
          case fifthQuestion:
-            return answerNumber == getCorrectAnswer (questionNumber);
+            answer2nd = true;
+            if (true == isToString) {
+               fifthQuestionCorrectAnswers = secondAnswer + connector + true;
+            }
+            break;
 
          default:
             System.err.println("No question with number " + questionNumber);
             return false;
       }
-   }
-   
-   public void calculatePoints (short questionNumber, short answerNumber) {
-      if (true == isCorrectAnswer(questionNumber, answerNumber)) {
-         points++;
+      
+      if (answer1st == firstSelection) {
+         if (answer2nd == secondSelection) {
+            if (answer3rd == thirdSelection) {
+               if (answer4th == fourthSelection) {
+                  points++; //  number of points increase for correct selections
+                  return true;
+               }
+            }
+         }
       }
+         
+      return false;
    }
    
    public void printSummary () {

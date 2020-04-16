@@ -17,13 +17,6 @@
 import standardInputDataPackage.GettingDataFromStandardInput;
 
 public class GlobalWarmingQuizTest {
-
-   public static final String quitInfo = String.format(" Enter %d for quit", GlobalWarmingQuiz.quitProgram);
-   public static final String answerInfo = String.format(" Enter integer from %d to %d for answer, only first entered integer will be accepted: ",
-                                                GlobalWarmingQuiz.firstAnswer, GlobalWarmingQuiz.fourthAnswer);
-                                                
-   public static final String inputDataRangeQuit = String.format("To quit enter sequence other than integers in range from %d to %d",
-                                                Short.MIN_VALUE, Short.MAX_VALUE);
                                                 
    private static final int abnormalTerminationCode = 1; // status code indicates abnormal termination
 
@@ -32,6 +25,12 @@ public class GlobalWarmingQuizTest {
    } 
    
    public static short getAnswer() {
+      final String quitInfo = String.format(" Enter %d for quit", GlobalWarmingQuiz.quitProgram);
+      final String answerInfo = String.format(" Enter integer from %d to %d for answer, only first entered integer will be accepted: ",
+                                                GlobalWarmingQuiz.firstAnswer, GlobalWarmingQuiz.fourthAnswer);
+      final String inputDataRangeQuit = String.format("To quit enter sequence other than integers in range from %d to %d",
+                                                Short.MIN_VALUE, Short.MAX_VALUE);
+                                                
       System.out.printf ("  %s %n%n", inputDataRangeQuit);
       
       short answer;
