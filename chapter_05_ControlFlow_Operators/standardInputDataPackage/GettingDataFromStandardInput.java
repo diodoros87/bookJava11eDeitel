@@ -175,14 +175,13 @@ public class GettingDataFromStandardInput {
       System.out.print(prompt);
       
       double  value = 0;
-      boolean isCorrectInputData = input.hasNextDouble();   // to check input data
       
-      if (false == isCorrectInputData) {
+      if (false == input.hasNextDouble()) {
          System.err.println("Value entered by User is incorrect");
          input.close();
          System.exit(abnormalTerminationCode);
       }
-      if (true == isCorrectInputData) {
+      else {
          value = input.nextDouble();
       }
       
