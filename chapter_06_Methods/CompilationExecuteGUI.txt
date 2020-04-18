@@ -1,0 +1,8 @@
+Command to compile in Linux's terminal:
+cd GUIexercise_6.Number   (change directory to GUIexercise_6.Number)
+javac -Xlint -Werror -cp .:../fxmlDrawSmiley --module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml *.java
+
+
+Command to execute in Linux's terminal:
+cd GUIexercise_6.Number   (change directory to GUIexercise_6.Number)
+java -cp .:../fxmlDrawSmiley --module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml NameOfClassWithStaticMainMethod

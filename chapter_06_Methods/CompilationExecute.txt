@@ -1,0 +1,8 @@
+Command to compile in Linux's terminal:
+cd exercise_6.Number   (change directory to exercise_6.Number)
+javac -Xlint -Werror -cp .:.. *.java
+
+
+Command to execute in Linux's terminal:
+cd exercise_6.Number   (change directory to exercise_6.Number)
+java -cp .:.. NameOfClassWithStaticMainMethod
