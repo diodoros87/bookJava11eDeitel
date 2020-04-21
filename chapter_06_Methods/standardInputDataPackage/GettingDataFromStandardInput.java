@@ -21,8 +21,9 @@ import java.util.Scanner;
 
 public class GettingDataFromStandardInput {
 
-   public  static final short endOfDataValueOfShort   = Short.MIN_VALUE;
-   public  static final long  endOfDataValueOfLong    = Long.MIN_VALUE;
+   public  static final short endOfDataValueOfShort    = Short.MIN_VALUE;
+   public  static final long  endOfDataValueOfLong     = Long.MIN_VALUE;
+   public  static final double  endOfDataValueOfDouble = Double.NEGATIVE_INFINITY;
 
    private static final int abnormalTerminationCode = 1; // status code indicates abnormal termination
    private static final Scanner input               = new Scanner(System.in);
@@ -44,7 +45,7 @@ public class GettingDataFromStandardInput {
          return input.nextLine();
       }
       
-      return "";
+      return null;
    }
    
    public static short getShortInteger(String prompt) {
@@ -69,14 +70,13 @@ public class GettingDataFromStandardInput {
       System.out.print(prompt);
       
       int     value = 0;
-      boolean isCorrectInputData = input.hasNextInt();   // to check input data
       
-      if (false == isCorrectInputData) {
+      if (false == input.hasNextInt()) {
          System.err.println("Value entered by User is incorrect");
          input.close();
          System.exit(abnormalTerminationCode);
       }
-      if (true == isCorrectInputData) {
+      else {
          value = input.nextInt();
       }
       
@@ -187,6 +187,31 @@ public class GettingDataFromStandardInput {
       
       input.nextLine(); // clear input data
       return value;
+   }
+   
+   public static double getDoubleRejectOthersData(String prompt, boolean isTextDisplaying) {
+      if (isTextDisplaying) {
+         System.out.print(prompt);
+      }
+      
+      double value = endOfDataValueOfDouble;
+      
+      while (true == input.hasNext()) {    // return true if scanner has another token (word) in its input
+         if (true == input.hasNextDouble()) {
+            value = input.nextDouble();
+            if (isTextDisplaying) {
+               System.out.printf("%nValue of %f entered by User was accepted. %n", value);
+            }
+            
+            return value;
+         }
+         else {
+            System.err.printf("%nValue of \'%s\' entered by User is not double type. ", input.next());
+            System.err.printf("This is incorrect. Value must be double type.%n");
+         }
+      }
+      
+      return value;   // return if End-of-transmission character was detected
    }
    
 }
