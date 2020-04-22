@@ -156,14 +156,13 @@ public class GettingDataFromStandardInput {
       System.out.print(prompt);
       
       long     value = 0;
-      boolean isCorrectInputData = input.hasNextLong();   // to check input data
       
-      if (false == isCorrectInputData) {
+      if (false == input.hasNextLong()) {
          System.err.println("Value entered by User is incorrect");
          input.close();
          System.exit(abnormalTerminationCode);
       }
-      if (true == isCorrectInputData) {
+      else {
          value = input.nextLong();
       }
       
