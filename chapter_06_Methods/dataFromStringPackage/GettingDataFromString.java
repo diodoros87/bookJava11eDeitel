@@ -18,6 +18,7 @@ package dataFromStringPackage;
 import java.util.Scanner;
 
 import pairPackage.LongIntegersPair;
+import pairPackage.DoubleTypePair;
 
 public class GettingDataFromString {
 
@@ -81,6 +82,48 @@ public class GettingDataFromString {
       }
       
       return new LongIntegersPair(firstNumber, secondNumber);
+   }
+   
+   public DoubleTypePair getOnlyDoubleTypePair() {
+      
+      Double firstNumber  = null;
+      Double secondNumber = null;
+      
+      while (true == scanner.hasNext()) {    // return true if scanner has another token (word) in its scanner
+      
+         if (true == scanner.hasNextDouble()) {
+            if (null == firstNumber) {
+               firstNumber = scanner.nextDouble();
+            }
+            else if (null == secondNumber) {
+               secondNumber = scanner.nextDouble();
+            }
+            else {
+               System.err.printf("%nValue of %d entered by User is double type. ", scanner.nextLong());
+               System.err.printf("This is incorrect. Correct numbers of double type is 2 %n");
+               return null;
+            }
+         }
+         else {
+            System.err.printf("%nValue of \'%s\' entered by User is not double type. ", scanner.next());
+            System.err.printf("This is incorrect. Value must be double type.%n");
+            return null;
+         }
+         
+      }
+      
+      if (null == firstNumber) {
+         System.err.printf("%nValues entered by User are not double type. ");
+         System.err.printf("This is incorrect. Correct numbers of double type is 2 %n");
+         return null;
+      }
+      else if (null == secondNumber) {
+         System.err.printf("%nOnly 1 value entered by User is double type. ");
+         System.err.printf("This is incorrect. Correct numbers of double type is 2 %n");
+         return null;
+      }
+      
+      return new DoubleTypePair(firstNumber, secondNumber);
    }
    
 }
