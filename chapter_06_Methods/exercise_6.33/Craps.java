@@ -186,7 +186,6 @@ public class Craps {
       
       int value = 0;
       
-      // display won or lost message
       if (gameStatus == Status.WON) {
          value += 6;
       } 

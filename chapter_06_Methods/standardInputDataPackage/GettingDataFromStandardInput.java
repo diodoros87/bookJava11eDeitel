@@ -123,6 +123,33 @@ public class GettingDataFromStandardInput {
       return value;   // return if End-of-transmission character was detected
    }
    
+   public static Integer getIntegerRejectOthersData(String prompt, boolean isInfoDisplaying) {
+      System.out.print(prompt);
+      
+      Integer value = null;
+      
+      while (true == input.hasNext()) {    // return true if scanner has another token (word) in its input
+         if (true == input.hasNextInt()) {
+            value = input.nextInt();
+            
+            if (isInfoDisplaying) {
+               System.out.printf("%nValue of %d entered by User was accepted. %n", value);
+            }
+            return value;
+         }
+         else if (true == input.hasNextDouble()) {
+            System.err.printf("%nValue of %f entered by User is type double. ", input.nextDouble());
+            System.err.printf("This is incorrect. Value must be integer type.%n");
+         }
+         else {
+            System.err.printf("%nValue of \'%s\' entered by User is not integer type. ", input.next());
+            System.err.printf("This is incorrect. Value must be integer type.%n");
+         }
+      }
+      
+      return value;   // return if End-of-transmission character was detected
+   }
+   
    public static short getShortIntegerRejectOthersData(String prompt, boolean isInfoDisplaying) {
       if (true == isInfoDisplaying) {
          System.out.print(prompt);
