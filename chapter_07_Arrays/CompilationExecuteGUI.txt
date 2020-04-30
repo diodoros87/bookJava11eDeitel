@@ -1,0 +1,8 @@
+Command to compile in Linux's terminal:
+cd GUIexercise_7.Number   (change directory to GUIexercise_7.Number)
+javac -Xlint -Werror -cp .:../fxmlDrawSpiral --module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml *.java
+
+
+Command to execute in Linux's terminal:
+cd GUIexercise_7.Number   (change directory to GUIexercise_7.Number)
+java -cp .:../fxmlDrawSpiral --module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml NameOfClassWithStaticMainMethod
