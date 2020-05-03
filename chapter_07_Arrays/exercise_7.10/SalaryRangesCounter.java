@@ -55,7 +55,7 @@ public class SalaryRangesCounter {
       System.out.printf("%nFrequency of salaries according to %d ranges has been printed below: %n", NUMBER_OF_RANGES);
       System.out.printf("%20s %20s%n", "Range", "Frequency");
       for (int index = 0; index < NUMBER_OF_RANGES; index++) {
-         System.out.printf("%20s %20s %n", getFormattedRange(index), rangeFrequency[index]);
+         System.out.printf("%20s %20d %n", getFormattedRange(index), rangeFrequency[index]);
       }
          
    }
