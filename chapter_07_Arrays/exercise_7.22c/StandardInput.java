@@ -19,17 +19,11 @@ import java.util.Scanner;
 public class StandardInput {
    private static final Scanner input                  = new Scanner(System.in);
    
-   KnightsTourControl knightsTourControl = null;
-   
-   StandardInput() {
-      knightsTourControl = new KnightsTourControl();
-   }
-   
    static Scanner getScanner() {
       return input;
    }
    
-   boolean getKnightsTourControlCommand() {
+   static boolean getKnightsTourControlCommand(KnightsTourControl knightsTourControl) {
       if (false == input.hasNextLine()) {
          return false;   // return if End-of-transmission character was detected
       }

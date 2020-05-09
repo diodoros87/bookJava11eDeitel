@@ -27,17 +27,13 @@ public class KnightsTour {
    public static final byte [] vertical   = { -1, -2, -2, -1,  1,  2, 2, 1 };  // available change current row caused by knight's move on chessboard
    public static final byte [] horizontal = {  2,  1, -1, -2, -2, -1, 1, 2 };  // change current column caused by knight's move on chessboard 
    
-   public static final byte VISITED   = 1;  // value means that position on board table was visited by knight
-   public static final byte NO_TRACED = 0;  // value means that position on board table was not visited by knight
+   public static final byte VISITED   = 1;  // value means that position on board table was visited by knight 
+   public static final byte NO_TRACED = 0;  // value means that position on board table was not visited by knight 
    
    private byte currentRow    = 0;    // row number on the board table where knight is currently  
    private byte currentColumn = 0;    // column number on the board table where knight is currently  
    
    private byte visitedPositionsCounter = 1;   // starting position initialized counter
-
-   public static final char knightCharacter   = 'K';
-   public static final char visitedCharacter  = '#';
-   public static final char noTracedCharacter = '-';
    
    private String errorMessage = "";
    
@@ -55,13 +51,13 @@ public class KnightsTour {
       return board;
    }
    
-   void validateRow(byte row) {
+   static void validateRow(byte row) {
       if (row < 0 || row >= ROWS) {
          throw new IllegalArgumentException("row < 0 || row >= " + ROWS);
       }
    }
    
-   void validateColumn(byte column) {
+   static void validateColumn(byte column) {
       if (column < 0 || column >= COLUMNS) {
          throw new IllegalArgumentException("column < 0 || column >= " + COLUMNS);
       }
@@ -105,7 +101,7 @@ public class KnightsTour {
       }
       
       if (VISITED == board[nextRow][nextColumn]) {
-         errorMessage = String.format("move to previous visited position: %d, %d", row, column);
+         errorMessage = String.format("move to previous visited position: %d, %d", nextRow, nextColumn);
          return false;
       }
       
@@ -113,7 +109,7 @@ public class KnightsTour {
    }
    
    byte getNumberOfPerformedMove() {
-      byte result = -99;
+      byte result = -99;                        // incorrect data
       byte minAccessibility = Byte.MAX_VALUE;   // incorrect data
       int nextRow           = -1;               // incorrect data
       int nextColumn        = -1;               // incorrect data
