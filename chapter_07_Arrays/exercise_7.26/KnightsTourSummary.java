@@ -4,9 +4,10 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 7.22d - summary of finding knight's
+                             Exercise 7.26 - summary of finding knight's
                                 tour on virtual chessboard by
-                                   heuristic accessibility algorithm
+                                   heuristic accessibility algorithm and checking 
+                                      tour was closed
                                 
                            
  *
@@ -22,14 +23,16 @@ public class KnightsTourSummary {
    private final byte finalPositionRow;       // knight's tour final position in row
    private final byte finalPositionColumn;    // knight's tour final position in column
    private final byte visitedPositions;       // number of all visited positions in knight's tour
+   private final boolean tourClosed;
    
    KnightsTourSummary (byte startingPositionRow, byte startingPositionColumn,
-               byte finalPositionRow, byte finalPositionColumn, byte visitedPositions) {
+               byte finalPositionRow, byte finalPositionColumn, byte visitedPositions, boolean tourClosed) {
       this.startingPositionRow = startingPositionRow;
       this.startingPositionColumn = startingPositionColumn;
       this.finalPositionRow = finalPositionRow;
       this.finalPositionColumn = finalPositionColumn;
       this.visitedPositions = visitedPositions;
+      this.tourClosed = visitedPositions == KnightsTour.POSITIONS ? tourClosed : false;
    }
    
    byte getStartingPositionRow () {
@@ -51,12 +54,17 @@ public class KnightsTourSummary {
    byte getVisitedPositions () {
       return visitedPositions;
    }
+   
+   boolean isTourClosed () {
+      return tourClosed;
+   }
 
    String getKnightsTourSummary() {
       String summary = KnightsTourDescription.generateStartingPositionsString(startingPositionRow, startingPositionColumn);
       summary += "\n" + "Last position in row: " + finalPositionRow;
       summary += "\n" + "Last position in column: " + finalPositionColumn;
       summary += "\n" + "Number of visited positions: " + visitedPositions;
+      summary += "\n" + "Tour was closed?: " + String.format("%B", tourClosed);
       
       return summary;
    }

@@ -4,7 +4,7 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 7.22d - utility class using to get
+                             Exercise 7.26 - utility class using to get
                                 data from standard input
                                 
                              

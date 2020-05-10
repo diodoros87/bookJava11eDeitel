@@ -4,8 +4,9 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 7.22d - class of finding knight's tour on virtual
-                                chessboard by heuristic accessibility algorithm
+                             Exercise 7.26 - class of finding knight's tour on virtual
+                                chessboard by heuristic accessibility algorithm and
+                                   checking tour was closed
                            
                              
  *
@@ -222,6 +223,46 @@ public class KnightsTour {
             accessibility[row][column] = value;
          }
       }
+   }
+   
+   public static boolean isMovePossible(byte fromRow, byte fromColumn, byte toRow, byte toColumn) {
+      if (false == isRowPossible(fromRow) || false == isColumnPossible(fromColumn)) {
+         return false;
+      }
+      if (false == isRowPossible(toRow) || false == isColumnPossible(toColumn)) {
+         return false;
+      }
+      
+      int nextRow;
+      int nextColumn;
+      
+      for (byte moveNumber = 0; moveNumber < MAX_MOVES; moveNumber++) {
+         nextRow    = fromRow + vertical[moveNumber];
+         nextColumn = fromColumn + horizontal[moveNumber];
+         if (true == isRowPossible((byte)nextRow) && true == isColumnPossible((byte)nextColumn)) {
+            if (nextRow == toRow && nextColumn == toColumn) {
+               return true;
+            }
+         }
+      }
+      
+      return false;
+   }
+   
+   public static boolean isRowPossible(byte row) {
+      if (row >= 0 && row < ROWS) {
+         return true;
+      }
+      
+      return false;
+   }
+   
+   public static boolean isColumnPossible(byte column) {
+      if (column >= 0 && column < COLUMNS) {
+         return true;
+      }
+      
+      return false;
    }
    
 } 

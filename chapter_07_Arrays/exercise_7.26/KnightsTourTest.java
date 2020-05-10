@@ -4,9 +4,10 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 7.22d - control test of tracking while finding
+                             Exercise 7.26 - control test of tracking while finding
                                 knight's tour on virtual chessboard by
-                                   heuristic accessibility algorithm
+                                   heuristic accessibility algorithm and checking tour
+                                      was closed
                            
                              
  *

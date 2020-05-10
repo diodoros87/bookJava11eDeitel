@@ -4,9 +4,10 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 7.22d - utility class to description of finding
+                             Exercise 7.26 - utility class to description of finding
                                 knight's tour on virtual chessboard by
-                                   heuristic accessibility algorithm
+                                   heuristic accessibility algorithm and checking 
+                                      tour was closed
                                 
                            
  *
@@ -118,8 +119,8 @@ public class KnightsTourDescription {
    }
    
    static String generateKnightsToursSummaries(KnightsTourSummary[][] knightsTourSummaries) {
-      String summaries = String.format("%s %s %s %s %s %s %s %n", "Tour's number", "Start row", "Start column", "Final row", "Final column",
-                                                "Visited positions", "Tour was complete?");
+      String summaries = String.format("%s %s %s %s %s %s %s %s%n", "Tour's number", "Start row", "Start column", "Final row", "Final column",
+                                                "Visited positions", "Tour was complete?", "Tour was closed?");
       
       for (byte row = 0, counter = 1; row < knightsTourSummaries.length; row++) {
          for (byte column = 0; column < knightsTourSummaries[row].length; column++, counter++) {
@@ -130,9 +131,11 @@ public class KnightsTourDescription {
             byte finalRow = tourSummary.getFinalPositionRow();
             byte finalColumn = tourSummary.getFinalPositionColumn();
             byte visitedPositions = tourSummary.getVisitedPositions();
+            final boolean tourCompleted = visitedPositions == KnightsTour.POSITIONS;
+            final boolean tourClosed = tourCompleted ? tourSummary.isTourClosed() : false;
             
-            summaries += String.format("%-13d %9d %12d %9d %12d %17d %18B %n", counter, startingRow, startingColumn, 
-                                       finalRow, finalColumn, visitedPositions, visitedPositions == KnightsTour.POSITIONS);
+            summaries += String.format("%-13d %9d %12d %9d %12d %17d %18B %15B%n", counter, startingRow, startingColumn, 
+                                       finalRow, finalColumn, visitedPositions, tourCompleted, tourClosed);
          }
       }
       

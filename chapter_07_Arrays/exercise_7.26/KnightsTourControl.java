@@ -4,9 +4,10 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 7.22d - class of tracking while finding knight's
+                             Exercise 7.26 - class of tracking while finding knight's
                                 tour on virtual chessboard by
-                                   heuristic accessibility algorithm
+                                   heuristic accessibility algorithm and checking tour
+                                      was closed
                                 
                            
  *
@@ -144,6 +145,7 @@ public class KnightsTourControl {
       if (false == knightsTour.validateMoveNumber(moveNumber)) {
          if (true == printing) {
             System.err.printf("****ERROR:   Move is unavailable%n");
+            generateKnightsTourSummary(true, false);
          }
          
          return false;
@@ -158,12 +160,13 @@ public class KnightsTourControl {
    }
    
    private KnightsTourSummary generateKnightsTourSummary(boolean printingSummary, boolean printingFinalBoard) {
-      byte finalPositionRow = knightsTour.getCurrentRow();
-      byte finalPositionColumn = knightsTour.getCurrentColumn();
-      byte visitedPositions = knightsTour.getVisitedPositionsCounter();
+      final byte finalPositionRow = knightsTour.getCurrentRow();
+      final byte finalPositionColumn = knightsTour.getCurrentColumn();
+      final byte visitedPositions = knightsTour.getVisitedPositionsCounter();
+      final boolean tourClosed = KnightsTour.isMovePossible(finalPositionRow, finalPositionColumn, startingRow, startingColumn);
 
       KnightsTourSummary knightsTourSummary = new KnightsTourSummary (startingRow, startingColumn, 
-                                          finalPositionRow, finalPositionColumn, visitedPositions);
+                                          finalPositionRow, finalPositionColumn, visitedPositions, tourClosed);
       if (true == printingSummary) {                                    
          String summary = knightsTourSummary.getKnightsTourSummary();
          System.out.printf(" *** SUMMARY OF KNIGHT'S TOUR: %n %s %n", summary);
