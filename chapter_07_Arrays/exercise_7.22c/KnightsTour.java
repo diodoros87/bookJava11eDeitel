@@ -109,6 +109,8 @@ public class KnightsTour {
    }
    
    byte getNumberOfPerformedMove() {
+      updateAccessibility();
+      
       byte result = -99;                        // incorrect data
       byte minAccessibility = Byte.MAX_VALUE;   // incorrect data
       int nextRow           = -1;               // incorrect data
