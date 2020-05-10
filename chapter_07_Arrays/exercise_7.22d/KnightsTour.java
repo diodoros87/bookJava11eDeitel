@@ -109,6 +109,8 @@ public class KnightsTour {
    }
    
    byte getNumberOfPerformedMove() {
+      updateAccessibility();
+      
       byte result = -99;                        // incorrect data
       byte minAccessibility = Byte.MAX_VALUE;   // incorrect data
       byte nextRow           = -1;               // incorrect data
@@ -167,19 +169,6 @@ public class KnightsTour {
       currentColumn = column;
       board[currentRow][currentColumn] = VISITED;
       visitedPositionsCounter++;
-   }
-   
-   boolean move (byte moveNumber) {
-      if (false == isMoveAvailable(moveNumber, currentRow, currentColumn)) {
-         return false;
-      }
-      
-      currentRow += vertical[moveNumber];
-      currentColumn += horizontal[moveNumber];
-      board[currentRow][currentColumn] = VISITED;
-      visitedPositionsCounter++;
-      
-      return true;
    }
    
    public byte getCurrentRow() {

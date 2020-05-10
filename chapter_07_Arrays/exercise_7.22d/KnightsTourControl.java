@@ -176,10 +176,6 @@ public class KnightsTourControl {
       return knightsTourSummary;
    }
    
-   void updateData() {
-      knightsTour.updateAccessibility();
-   }
-   
    void printMenu() {
       System.out.printf("%n------------- STATUS OF MOVES: %n");
       

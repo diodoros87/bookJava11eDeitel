@@ -25,7 +25,6 @@ public class KnightsTourTest {
       KnightsTourControl knightsTourControl = new KnightsTourControl();
       
       do {
-         knightsTourControl.updateData();
          knightsTourControl.printMenu();
       } while (true == StandardInput.getKnightsTourControlCommand(knightsTourControl));
       
