@@ -144,7 +144,7 @@ public class KnightsTourDescription {
       String summaries = String.format("%s %s %s %s %s %s %s %s%n", "Tour's number", "Start row", "Start column", "Final row", "Final column",
                                                 "Visited positions", "Tour was complete?", "Tour was closed?");
       
-      byte counter = 1;
+      int counter = 1;
       for (KnightsTourSummary tourSummary : knightsTourSummaries) {
          
          byte startingRow = tourSummary.getStartingPositionRow();

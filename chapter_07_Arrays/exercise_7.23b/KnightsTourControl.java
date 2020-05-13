@@ -105,10 +105,10 @@ public class KnightsTourControl {
    }
    
    private void make1000Tours() {
-      KnightsTourSummary[] knightsTours1000Summaries = new KnightsTourSummary[100];
+      KnightsTourSummary[] knightsTours1000Summaries = new KnightsTourSummary[1000];
       KnightsTourSummary newSummary;
       
-      for (int counter = 0; counter < 100; counter++) {
+      for (int counter = 0; counter < 1000; counter++) {
          if (false == generateStartingPositions()) {
             restart();
          }
@@ -120,7 +120,7 @@ public class KnightsTourControl {
       
       System.out.println("Summaries of all tours was printed below:");
       System.out.println(KnightsTourDescription.generateKnightsToursSummaries(knightsTours1000Summaries));
-      byte maxVisitedPositions = knightsTours1000Summaries[100 - 1].getVisitedPositions();
+      byte maxVisitedPositions = knightsTours1000Summaries[1000 - 1].getVisitedPositions();
       System.out.printf("Maximum visited positions is %d %n", maxVisitedPositions);
       System.out.println("Summaries of all tours was printed above");
    }

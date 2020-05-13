@@ -80,7 +80,6 @@ public class KnightsTourSummary {
             indexSummaryPositions = array[index].getVisitedPositions();
             if (indexSummaryPositions > newSummaryPositions) {
                moveForwardIndexes(array, index, newSummary);
-               //array[index] = newSummary;
                break;
             }
          }
