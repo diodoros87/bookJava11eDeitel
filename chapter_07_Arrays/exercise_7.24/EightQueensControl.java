@@ -19,7 +19,7 @@
 public class EightQueensControl {
 
    public static final String START_INFO = String.format("%s %n %s%n", "Program was written in purpose of control test of tracking while ",
-                                "solving queens problem on virtual chessboard by eliminate positions by heuristic algorithm");
+                                "solving eight queens problem on virtual chessboard by eliminate positions by heuristic algorithm");
    
    public final static int PLACE_SINGLE_QUEEN_KEY = 1;
    public final static int PLACE_EIGHT_QUEENS_KEY = 4;
