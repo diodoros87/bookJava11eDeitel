@@ -103,7 +103,7 @@ public class GameResult {
       }
    }
    
-   private Score getScoreStraight() throws Exception {
+   private Score getScoreStraight() {
       int[] firstFacesIndexes = CardsConfiguration.getFacesIndexes(firstPlayerCards.getDealingCards());
       int[] secondFacesIndexes = CardsConfiguration.getFacesIndexes(secondPlayerCards.getDealingCards());
       
@@ -122,16 +122,12 @@ public class GameResult {
          if (firstFacesIndex > secondFacesIndex) {
             return Score.FIRST_PLAYER_WIN;
          }
-         if (firstFacesIndex == secondFacesIndex) {
-            return Score.DRAW;
-         }
-         if (firstFacesIndex > secondFacesIndex) {
+         if (firstFacesIndex < secondFacesIndex) {
             return Score.SECOND_PLAYER_WIN;
          }
       }
       
-      assert(false) : "Program is running in unexpected case";
-      throw new Exception("Program is running in unexpected case in getScoreStraight");
+      return Score.DRAW;
    }
    
    // in case of ace is low rank then this is minimum possible straight
@@ -145,8 +141,11 @@ public class GameResult {
       else if (true == firstAceLowRank) {
          return Score.SECOND_PLAYER_WIN;
       }
-      else { // (true == secondAceLowRank) {
+      else if (true == secondAceLowRank){ // (true == secondAceLowRank) {
          return Score.FIRST_PLAYER_WIN;
+      }
+      else {
+         return Score.DRAW;
       }
    }
    
@@ -193,9 +192,7 @@ public class GameResult {
                return Score.FIRST_PLAYER_WIN;
             }
             else {  // in case of firstFrequency == secondFrequency
-               firstFacesFrequency[faceIndex] = 0;   // reset frequencies
-               secondFacesFrequency[faceIndex] = 0;  // reset frequencies
-                                                     // is determined by implementation getScoreHighCard when frequencies are only 0 or 1
+
                return getScoreHighCard(firstFacesFrequency, secondFacesFrequency);
             }
          }
@@ -222,9 +219,7 @@ public class GameResult {
             }
             else { // in case of firstFrequency == secondFrequency
                if (true == findingFirstPair) {   // in case of 2 identical faces pairs
-                  firstFacesFrequency[faceIndex] = 0;   // reset frequencies
-                  secondFacesFrequency[faceIndex] = 0;  // reset frequencies
-                                                      // is determined by implementation getScoreHighCard when frequencies are only 0 or 1
+               
                   return getScoreHighCard(firstFacesFrequency, secondFacesFrequency);
                }
                

@@ -61,10 +61,10 @@ public class CardsConfiguration {
    public static boolean areCardsUnique(Card[] cards) {
       validateNumberOfCards(cards);
       
-      for (int iteration = 1; iteration < POKER_CARDS; iteration++) {
-         for (int index = iteration; index < POKER_CARDS; index++) {
-            Card first = cards[index - 1];
-            Card second = cards[index];
+      for (int startIndex = 0; startIndex < POKER_CARDS - 1; startIndex++) {
+         for (int nextIndex = startIndex + 1; nextIndex < POKER_CARDS; nextIndex++) {
+            Card first = cards[startIndex];
+            Card second = cards[nextIndex];
             
             if (first.getFace() == second.getFace() &&
                 first.getSuit() == second.getSuit()) {
@@ -157,13 +157,7 @@ public class CardsConfiguration {
       return true;
    }
    
-   private boolean isStraight() {
-//       int [] facesIndexes = new int[POKER_CARDS];
-//       String face;
-//       for (int index = 0; index < dealingCards.length; index++) {
-//          face = dealingCards[index].getFace();
-//          facesIndexes[index] = DeckOfCards.getFaceIndex(face);
-//       } 
+   private boolean isStraight() { 
       int[] facesIndexes = getFacesIndexes(dealingCards);
       
       return isStraight(facesIndexes);

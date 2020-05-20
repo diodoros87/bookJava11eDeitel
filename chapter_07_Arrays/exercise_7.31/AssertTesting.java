@@ -30,19 +30,4 @@ public class AssertTesting {
                                                 GameResult.getScoreDescription(expectedScore));
    }
    
-//    public static void expectedDay(Date date, int day) {
-//       assert(date.getDay() == day) : 
-//                      String.format("%d != %d%n", date.getDay(), day);
-//    } 
-//    
-//    public static void expectedMonth(Date date, int month) {
-//       assert(date.getMonth() == month) : 
-//                      String.format("%d != %d%n", date.getMonth(), month);
-//    } 
-//    
-//    public static void expectedYear(Date date, int year) {
-//       assert(date.getYear() == year) : 
-//                      String.format("%d != %d%n", date.getYear(), year);
-//    } 
-   
 } 
