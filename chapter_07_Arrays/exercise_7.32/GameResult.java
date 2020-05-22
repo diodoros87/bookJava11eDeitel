@@ -46,7 +46,7 @@ public class GameResult {
    
    public void setSecondPlayerCards (CardsConfiguration secondPlayerCards) {
       checkNullPointer(secondPlayerCards);
-      this.firstPlayerCards = firstPlayerCards;
+      this.secondPlayerCards = secondPlayerCards;
    }
    
    public void checkNullPointer(CardsConfiguration cards) {
@@ -73,6 +73,7 @@ public class GameResult {
       }
    }
    
+   // in case of two identical poker hands, further processing is needing
    private Score getScore(PokerHand pokerHand) throws Exception {
       int[] firstFacesFrequency = DeckOfCards.calculateFacesFrequency(firstPlayerCards.getDealingCards());
       int[] secondFacesFrequency = DeckOfCards.calculateFacesFrequency(secondPlayerCards.getDealingCards());

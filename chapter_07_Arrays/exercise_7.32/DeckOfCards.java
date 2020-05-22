@@ -63,6 +63,25 @@ public class DeckOfCards {
       } 
    } 
    
+   public void acceptCard(Card card) {
+      checkCardInDeck(card);
+   
+      if (--currentCard >= 0) {
+         deck[currentCard] = card;
+      } 
+      else {
+         throw new IllegalArgumentException("Too many cards!!!");
+      } 
+   } 
+   
+   public void checkCardInDeck(Card card) {
+      for (int index = currentCard; index < deck.length; index++) {
+         if (card.getFace() == deck[index].getFace() && card.getSuit() == deck[index].getSuit()) {
+            throw new IllegalArgumentException("Identical card is in deck and can not be accepted");
+         }
+      }
+   } 
+   
    static int getFaceIndex(String face) {
       for (int index = 0; index < FACES.length; index++) {
          if (face == FACES[index]) {

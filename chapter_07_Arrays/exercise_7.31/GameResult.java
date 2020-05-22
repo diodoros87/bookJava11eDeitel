@@ -48,7 +48,7 @@ public class GameResult {
    
    public void setSecondPlayerCards (CardsConfiguration secondPlayerCards) {
       checkNullPointer(secondPlayerCards);
-      this.firstPlayerCards = firstPlayerCards;
+      this.secondPlayerCards = secondPlayerCards;
    }
    
    public void checkNullPointer(CardsConfiguration cards) {

@@ -23,6 +23,10 @@ public class Dealer {
       cardsConfiguration = new CardsConfiguration(cards);
    }
    
+   public Dealer(CardsConfiguration cardsConfiguration) {
+      this.cardsConfiguration = cardsConfiguration;
+   }
+   
    public CardsConfiguration getCardsConfiguration() {
       return cardsConfiguration;
    }

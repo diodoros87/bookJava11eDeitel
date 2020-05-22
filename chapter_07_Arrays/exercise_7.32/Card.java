@@ -20,7 +20,7 @@ public class Card {
    // two-argument constructor initializes card's face and suit
    public Card(String cardFace, String cardSuit) {
       if (null == cardFace || null == cardSuit) {
-         throw new NullPointerException("Card can not be null field");
+         throw new NullPointerException("Card can not accept null field");
       }
       if (false == contains(DeckOfCards.FACES, cardFace)) {
          throw new IllegalArgumentException (String.format("Unrecognized face for %s", cardFace));

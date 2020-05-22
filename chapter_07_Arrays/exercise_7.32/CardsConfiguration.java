@@ -29,6 +29,8 @@ public class CardsConfiguration {
       assignCards(cards);
    }
    
+   public CardsConfiguration() { }
+   
    public Card[] getDealingCards() {
       return dealingCards;
    }
@@ -48,6 +50,10 @@ public class CardsConfiguration {
          throw new IllegalArgumentException("card can not be set on index" + index);
       }
       
+      if (false == areCardsUnique(card)) {
+         throw new IllegalArgumentException("Identical card has already existed and can not be accepted");
+      }
+      
       dealingCards[index] = card;
    }
    
@@ -63,8 +69,35 @@ public class CardsConfiguration {
       }
    }
    
+   public static void checkNullCard(Card card) {
+      if (null == card) {
+         throw new IllegalArgumentException("Card can not be null");
+      }
+   }
+   
+   public static void checkNullCard(Card[] cards) {
+      for (int index = 0; index < cards.length; index++) {
+         checkNullCard(cards[index]);
+      } 
+   }
+   
+   public boolean areCardsUnique(Card card) {
+      checkNullCard(card);
+      
+      for (int index = 0; index < POKER_CARDS; index++) {
+         if (card.getFace() == dealingCards[index].getFace() &&
+             card.getSuit() == dealingCards[index].getSuit()) {
+               
+            return false;
+         }
+      }
+      
+      return true;
+   }
+   
    public static boolean areCardsUnique(Card[] cards) {
       validateNumberOfCards(cards);
+      checkNullCard(cards);
       
       for (int startIndex = 0; startIndex < POKER_CARDS - 1; startIndex++) {
          for (int nextIndex = startIndex + 1; nextIndex < POKER_CARDS; nextIndex++) {
@@ -230,21 +263,6 @@ public class CardsConfiguration {
    
    private void insertCardsOnLastIndexes(String cardFace, int numberOfCards) {
       int changes = numberOfCards;  // number of changes
-//       int index = dealingCards.length - 1;
-//       // insert card with two frequency at 2 last indexes (to remain card with this face)
-//       while (index >= 0 && changes > 0) {
-//          if (true == isCardOnIndex(cardFace, index)) {
-//             changes--; // if card with cardFace is already on last indexes, then less changes will be performed
-//          }
-//          else if () {
-//             temp = dealingCards[index];
-//             dealingCards[index] = dealingCards[dealingCards.length - changes];  // insert faces with two frequency at 2 last indexes (to remain card with this face)
-//             dealingCards[dealingCards.length - changes] = temp;
-//             changes--;
-//          }
-//          
-//          index--;
-//       }
 
       // insert card with face with at last indexes
       for (int index = 0; changes > 0 && index < dealingCards.length - numberOfCards; index++) {

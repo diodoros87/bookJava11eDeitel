@@ -18,6 +18,11 @@
 public class DealerPlayTest {
 
    public static void main(String[] args) throws Exception {
+      randomTest();
+      testUntilPokerHand();
+   }
+   
+   public static void randomTest() throws Exception {
       Card[] dealerCards = new Card[CardsConfiguration.POKER_CARDS];
       Card[] secondPlayerCards = new Card[CardsConfiguration.POKER_CARDS];
       DeckOfCards deckOfCards = new DeckOfCards();
@@ -25,6 +30,7 @@ public class DealerPlayTest {
       deckOfCards.shuffle(); // place Cards in random order
       
       dealCards(dealerCards, deckOfCards);
+      
       Dealer dealer = new Dealer(dealerCards);
       CardsConfiguration dealerConfiguration = dealer.getCardsConfiguration();
       displayPockerHands(dealerConfiguration, "*******  Dealer cards before replace:");
@@ -37,6 +43,26 @@ public class DealerPlayTest {
       displayPockerHands(dealerConfiguration, "*******  Dealer cards after replace:");
       displayPockerHands(secondConfiguration, "*******  Second player cards:");
       displayGameResult(dealerConfiguration, secondConfiguration);
+   }
+   
+   public static void testUntilPokerHand() throws Exception {
+      DeckOfCards deckOfCards = new DeckOfCards();
+      CardsConfiguration dealerConfiguration = getConfigurationUntilPockerHand(deckOfCards, PokerHand.THREE_OF_KIND);
+      Dealer dealer = new Dealer(dealerConfiguration);
+      
+      displayPockerHands(dealerConfiguration, "*******  Dealer cards before replace:");
+      
+      Card[] secondPlayerCards = new Card[CardsConfiguration.POKER_CARDS];
+      dealCards(secondPlayerCards, deckOfCards);
+      CardsConfiguration secondConfiguration = new CardsConfiguration(secondPlayerCards);
+      
+      replaceCards(dealer, deckOfCards);
+      
+      displayPockerHands(dealerConfiguration, "*******  Dealer cards after replace:");
+      displayPockerHands(secondConfiguration, "*******  Second player cards:");
+      displayGameResult(dealerConfiguration, secondConfiguration);
+      
+      displayRemainedCards(deckOfCards, "---------- Remained cards in deck:", dealerConfiguration, secondConfiguration);
    }
    
    public static void replaceCards(Dealer dealer, DeckOfCards deckOfCards) throws Exception {
@@ -56,13 +82,32 @@ public class DealerPlayTest {
       } 
    }
    
+   public static void displayRemainedCards(DeckOfCards deckOfCards, String title,
+                             CardsConfiguration configuration, CardsConfiguration secondConfiguration) {
+      System.out.printf("%n%s%n", title);
+      Card[] cards = configuration.getDealingCards();
+      Card[] secondCards = secondConfiguration.getDealingCards();
+      
+      Card card = deckOfCards.dealCard();
+      for (int counter = 0; card != null; counter++) {
+      
+         for (int index = 0; index < CardsConfiguration.POKER_CARDS; index++) {
+            deckOfCards.checkCardInDeck(cards[index]);
+            deckOfCards.checkCardInDeck(secondCards[index]);
+         }
+         
+         System.out.printf("%2d. %s %n", counter, card);
+         card = deckOfCards.dealCard();
+      } 
+   }
+   
    public static void displayPockerHands(CardsConfiguration configuration, String title) throws Exception {
       displayCards(configuration.getDealingCards(), title);
       PokerHand pokerHand = configuration.classifyPokerHand();
       System.out.printf("%s %s %n", " --- Poker hand of dealing cards:", pokerHand);
    }
    
-   public static void displayGameResult(CardsConfiguration firstConfiguration, CardsConfiguration secondConfiguration) throws Exception  {
+   public static void displayGameResult(CardsConfiguration firstConfiguration, CardsConfiguration secondConfiguration) throws Exception {
       GameResult gameResult = new GameResult(firstConfiguration, secondConfiguration);
       
       Score score  = gameResult.getScore();
@@ -74,5 +119,33 @@ public class DealerPlayTest {
          // deal and display a Card
          cards[index] = deckOfCards.dealCard();
       } 
+   }
+   
+   public static CardsConfiguration getConfigurationUntilPockerHand(DeckOfCards deckOfCards,
+                                                PokerHand expectedPokerHand) throws Exception { 
+      Card dealedCard;
+      PokerHand pokerHand;
+      CardsConfiguration configuration = new CardsConfiguration();
+      Card[] cards = new Card[CardsConfiguration.POKER_CARDS];
+      
+      do {
+         deckOfCards.shuffle(); // place Cards in random order
+         dealCards(cards, deckOfCards); 
+         
+         configuration.setDealingCards(cards);
+         pokerHand = configuration.classifyPokerHand();
+         
+         if (pokerHand != expectedPokerHand) {
+            returnCardsToDeck(cards, deckOfCards);
+         }
+      } while (pokerHand != expectedPokerHand);
+      
+      return configuration;
+   }
+   
+   public static void returnCardsToDeck(Card[] cards, DeckOfCards deckOfCards) {
+      for (int index = 0; index < CardsConfiguration.POKER_CARDS; index++) {
+         deckOfCards.acceptCard(cards[index]);
+      }
    }
 }
