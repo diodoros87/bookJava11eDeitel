@@ -66,8 +66,8 @@ public class DeckOfCards {
    public void acceptCard(Card card) {
       checkCardInDeck(card);
    
-      if (--currentCard >= 0) {
-         deck[currentCard] = card;
+      if (currentCard > 0) {
+         deck[--currentCard] = card;
       } 
       else {
          throw new IllegalArgumentException("Too many cards!!!");

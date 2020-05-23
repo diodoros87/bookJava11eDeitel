@@ -28,8 +28,8 @@ public class GameResult {
       PokerHand.STRAIGHT_FLUSH
    };
    
-   CardsConfiguration firstPlayerCards;
-   CardsConfiguration secondPlayerCards;
+   private CardsConfiguration firstPlayerCards;
+   private CardsConfiguration secondPlayerCards;
    
    public GameResult (CardsConfiguration firstPlayerCards, CardsConfiguration secondPlayerCards) {
       checkNullPointer(firstPlayerCards);

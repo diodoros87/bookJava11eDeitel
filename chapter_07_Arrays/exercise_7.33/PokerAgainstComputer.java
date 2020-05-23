@@ -4,9 +4,7 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 7.33 - Card shuffling, dealing for 2 players (one 
-                             of them is computerPlayer with option replace some cards) and
-                                deciding about game's result 
+                             Exercise 7.33 - class of poker game human vs computer 
                            
                              
  *
@@ -20,17 +18,19 @@ import java.io.PrintStream;
 import standardInputDataPackage.GettingDataFromStandardInput;
 
 public class PokerAgainstComputer {
-   public static final String START_INFO = "This program is poker game's simulation for 2 players: human and computer.";
+   private static final String START_INFO = "This program is poker game's simulation for 2 players: human and computer.";
    
-   Card[] computerPlayerCards;
-   Card[] playerCards;
+   private Card[] computerPlayerCards;
+   private Card[] playerCards;
    
-   DeckOfCards deckOfCards;
+   private DeckOfCards deckOfCards;
    
-   Player computerPlayer;
-   Player player;
+   private Player computerPlayer;
+   private Player player;
    
-   PrintStream printStream;
+   private PrintStream printStream = System.out;
+   private Score gameScore;
+   private boolean computerPlayerCardsPrintingBeforeEndGame = false;
    
    private PokerAgainstComputer() {
       deckOfCards = new DeckOfCards();
@@ -40,9 +40,14 @@ public class PokerAgainstComputer {
       player = new Player();
    }
    
-   public PokerAgainstComputer(PrintStream printStream) {
+   public PokerAgainstComputer(PrintStream printStream, boolean computerPlayerCardsPrintingBeforeEndGame) {
       this();
       this.printStream = printStream;
+      this.computerPlayerCardsPrintingBeforeEndGame = computerPlayerCardsPrintingBeforeEndGame;
+   }
+   
+   public Score getGameScore() {
+      return gameScore;
    }
    
    private void firstHandOfCards() throws Exception {
@@ -50,7 +55,9 @@ public class PokerAgainstComputer {
       
       dealCards(computerPlayerCards);
       computerPlayer.setCardsToConfiguration(computerPlayerCards);
-      printPockerHands(computerPlayer, "*******  Computer player cards before replace:");
+      if (true == computerPlayerCardsPrintingBeforeEndGame) {
+         printPockerHands(computerPlayer, "*******  Computer player cards before replace:");
+      }
       
       dealCards(playerCards);
       player.setCardsToConfiguration(playerCards);
@@ -66,8 +73,8 @@ public class PokerAgainstComputer {
       
       printPockerHands(computerPlayer, "*******  Computer player cards after replace:");
       printPockerHands(player, "*******  Player cards after replace:");
-      printGameResult();
-      printRemainedCards("---------- Remained cards in deck:");
+      printScore();
+      //printRemainedCards("---------- Remained cards in deck:");
    }
    
    private void replaceCardsForComputerPlayer() throws Exception {
@@ -80,11 +87,12 @@ public class PokerAgainstComputer {
       } 
    }
    
-   private int getCardsIndexesFromUser(int[] cardsIndexes) {
-      final String PROMPT = String.format("Enter integer as index of card to replace: ");
-      final String QUIT_INFO = "To quit enter sequence other than integer";
-      final String END_INFO = "To end of enter indexes enter number less than zero";
-      final String QUIT_END_PROMPT = String.format(" %s%n %s%n %s", QUIT_INFO, END_INFO, PROMPT);
+   private int getCardsIndexesFromUser(int[] cardsIndexes, final int MAX_CARDS_TO_REPLACE) {
+      final String PROMPT = String.format("C. Max %d cards can be replaced. Enter integer as index of card to replace: ",
+                                                            MAX_CARDS_TO_REPLACE);
+      final String QUIT_INFO = "A. To quit - enter sequence other than integer";
+      final String END_INFO = "B. To end of enter indexes - enter number less than zero";
+      final String QUIT_END_PROMPT = String.format(" %s %n %s%n %s", QUIT_INFO, END_INFO, PROMPT);
       
       int indexCounter = 0;
       do {
@@ -100,15 +108,17 @@ public class PokerAgainstComputer {
          
          indexCounter++;
          
-      } while (indexCounter < CardsConfiguration.POKER_CARDS);
+      } while (indexCounter < MAX_CARDS_TO_REPLACE);
       
       return indexCounter;
    }
    
    private void replaceCardsForPlayer() throws Exception {
-      int[] cardsIndexes = new int[CardsConfiguration.POKER_CARDS];
+      final int MAX_CARDS_TO_REPLACE = 3;
+      int[] cardsIndexes = new int[MAX_CARDS_TO_REPLACE];
       assignValue(cardsIndexes, CardsConfiguration.POKER_CARDS);
-      int indexCounter = getCardsIndexesFromUser(cardsIndexes);
+      
+      int indexCounter = getCardsIndexesFromUser(cardsIndexes, MAX_CARDS_TO_REPLACE);
       Card[] newCards = new Card[indexCounter];
       
       dealCards(newCards, indexCounter);
@@ -189,13 +199,27 @@ public class PokerAgainstComputer {
       printStream.printf("%s %s %n", " --- Poker hand of dealing cards:", pokerHand);
    }
    
-   private void printGameResult() throws Exception {
+   private void printScore() throws Exception {
+      this.gameScore  = getScore();
+      
+      switch (gameScore) {
+         case FIRST_PLAYER_WIN:
+            printStream.println("   --- Score: Computer player wins");
+            break;
+         case SECOND_PLAYER_WIN:
+            printStream.println("   --- Score: Human player wins");
+            break;
+         case DRAW:
+            printStream.println("   --- Score: draw");
+      }
+   }
+   
+   private Score getScore() throws Exception {
       CardsConfiguration computerPlayerConfiguration = computerPlayer.getCardsConfiguration();
       CardsConfiguration playerConfiguration = player.getCardsConfiguration();
       GameResult gameResult = new GameResult(computerPlayerConfiguration, playerConfiguration);
       
-      Score score  = gameResult.getScore();
-      printStream.printf("   --- Score: %s %n", score);
+      return gameResult.getScore();
    }
    
    private void dealCards(Card[] cards) {

@@ -15,9 +15,9 @@
  */
 
 public class Dealer {
-   CardsConfiguration cardsConfiguration;
-   PokerHand pokerHand;
-   int numberOfCardsToReplace;
+   private CardsConfiguration cardsConfiguration;
+   private PokerHand pokerHand;
+   private int numberOfCardsToReplace;
    
    public Dealer(Card[] cards) {
       cardsConfiguration = new CardsConfiguration(cards);
@@ -58,7 +58,7 @@ public class Dealer {
    
    public void receiveCard(Card receivedCard) throws Exception {
       if (--numberOfCardsToReplace < 0) {
-         throw new IllegalArgumentException("number of cards to replace more than number of received cards");
+         throw new IllegalArgumentException("number of cards to replace less than number of received cards");
       }
       
       cardsConfiguration.setDealingCard(receivedCard, numberOfCardsToReplace);

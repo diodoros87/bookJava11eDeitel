@@ -15,9 +15,9 @@
  */
 
 public class Player {
-   CardsConfiguration cardsConfiguration = new CardsConfiguration();
-   PokerHand pokerHand;
-   int numberOfCardsToReplace;
+   private CardsConfiguration cardsConfiguration = new CardsConfiguration();
+   private PokerHand pokerHand;
+   private int numberOfCardsToReplace;
    
    public Player() { }
    
@@ -65,7 +65,7 @@ public class Player {
    
    public void receiveCard(Card receivedCard) throws Exception {
       if (--numberOfCardsToReplace < 0) {
-         throw new IllegalArgumentException("number of cards to replace more than number of received cards");
+         throw new IllegalArgumentException("number of cards to replace less than number of received cards");
       }
       
       cardsConfiguration.setDealingCard(receivedCard, numberOfCardsToReplace);
@@ -79,7 +79,7 @@ public class Player {
          throw new IllegalArgumentException("maximum number of cards less than number of received cards");
       }
       if (receivedCards.length > indexes.length) {
-         throw new IllegalArgumentException("number of cards to replace more than number of cards indexes");
+         throw new IllegalArgumentException("number of received cards more than number of cards indexes");
       }
       
       for(int counter = 0; receivedCards.length > counter; counter++) {

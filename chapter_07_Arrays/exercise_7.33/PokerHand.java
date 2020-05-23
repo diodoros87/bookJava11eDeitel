@@ -5,7 +5,7 @@
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
                              Exercise 7.33 - enum represents a poker hand of
-                                 playing card
+                                 playing cards
                            
                              
  *
