@@ -23,6 +23,9 @@ public class PokerAgainstComputer {
    private Card[] computerPlayerCards;
    private Card[] playerCards;
    
+   private Card[] computerPlayerReturnedCards = null;
+   private Card[] playerReturnedCards = null;
+   
    private DeckOfCards deckOfCards;
    
    private Player computerPlayer;
@@ -65,7 +68,10 @@ public class PokerAgainstComputer {
    }
    
    public void run() throws Exception {
+      initializeReturnedCards();
+      
       printStream.println(START_INFO);
+      //printRemainedCards("---------- Remained cards in deck:");
       
       firstHandOfCards();
       replaceCardsForComputerPlayer();
@@ -74,7 +80,15 @@ public class PokerAgainstComputer {
       printPockerHands(computerPlayer, "*******  Computer player cards after replace:");
       printPockerHands(player, "*******  Player cards after replace:");
       printScore();
+      
+      checkCardsInDeck();
+      returnCardsToDeck();
       //printRemainedCards("---------- Remained cards in deck:");
+   }
+   
+   private void initializeReturnedCards() {
+      computerPlayerReturnedCards = null;
+      playerReturnedCards = null;
    }
    
    private void replaceCardsForComputerPlayer() throws Exception {
@@ -85,18 +99,26 @@ public class PokerAgainstComputer {
          computerPlayer.receiveCard(card);
          counter--;
       } 
+      
+      if (true == computerPlayer.areCardsToReturn()) {
+         computerPlayerReturnedCards = computerPlayer.getReturnedCards();
+         
+         if (true == computerPlayerCardsPrintingBeforeEndGame) {
+            printCards(computerPlayerReturnedCards, "---------- Computer player's cards to return:");
+         }
+      }
    }
    
-   private int getCardsIndexesFromUser(int[] cardsIndexes, final int MAX_CARDS_TO_REPLACE) {
+   private int getCardsIndexesFromUser(int[] cardsIndexes) {
       final String PROMPT = String.format("C. Max %d cards can be replaced. Enter integer as index of card to replace: ",
-                                                            MAX_CARDS_TO_REPLACE);
+                                                            Player.MAX_OF_REPLACED_CARDS);
       final String QUIT_INFO = "A. To quit - enter sequence other than integer";
       final String END_INFO = "B. To end of enter indexes - enter number less than zero";
       final String QUIT_END_PROMPT = String.format(" %s %n %s%n %s", QUIT_INFO, END_INFO, PROMPT);
       
       int indexCounter = 0;
       do {
-         printIndexedCards(playerCards, "Current player's cards:", cardsIndexes);
+         printIndexedCards(playerCards, "#######  Current player's cards:", cardsIndexes);
          cardsIndexes[indexCounter] = GettingDataFromStandardInput.getInteger(QUIT_END_PROMPT);
          
          if (cardsIndexes[indexCounter] < 0) {
@@ -108,21 +130,25 @@ public class PokerAgainstComputer {
          
          indexCounter++;
          
-      } while (indexCounter < MAX_CARDS_TO_REPLACE);
+      } while (indexCounter < Player.MAX_OF_REPLACED_CARDS);
       
       return indexCounter;
    }
    
    private void replaceCardsForPlayer() throws Exception {
-      final int MAX_CARDS_TO_REPLACE = 3;
-      int[] cardsIndexes = new int[MAX_CARDS_TO_REPLACE];
-      assignValue(cardsIndexes, CardsConfiguration.POKER_CARDS);
+      int[] cardsIndexes = new int[Player.MAX_OF_REPLACED_CARDS];
+      assignValue(cardsIndexes, CardsConfiguration.POKER_CARDS);  // set initial incorrect values
       
-      int indexCounter = getCardsIndexesFromUser(cardsIndexes, MAX_CARDS_TO_REPLACE);
+      int indexCounter = getCardsIndexesFromUser(cardsIndexes);
       Card[] newCards = new Card[indexCounter];
       
       dealCards(newCards, indexCounter);
       player.receiveCards(newCards, cardsIndexes);
+      
+      if (true == player.areCardsToReturn()) {
+         playerReturnedCards = player.getReturnedCards();
+         printCards(playerReturnedCards, "---------- Player's cards to return:");
+      }
    }
    
    private void printCards(Card[] cards, String title) {
@@ -176,20 +202,45 @@ public class PokerAgainstComputer {
       }
    }
    
+   private void checkCardsInDeck() throws Exception {
+      checkCardsInDeck(player);
+      if (null != playerReturnedCards) {
+         checkCardsInDeck(playerReturnedCards);
+      }
+      
+      checkCardsInDeck(computerPlayer);
+      if (null != computerPlayerReturnedCards) {
+         checkCardsInDeck(computerPlayerReturnedCards);
+      }
+   }
+   
+   private void checkCardsInDeck(Player anyPlayer) throws Exception {
+      CardsConfiguration configuration = anyPlayer.getCardsConfiguration();
+      
+      checkCardsInDeck(configuration.getDealingCards());
+   }
+   
+   private void checkCardsInDeck(Card[] cards) {
+      for (int index = 0; index < cards.length; index++) {
+         deckOfCards.checkCardInDeck(cards[index]);
+      }
+   }
+   
    private void printRemainedCards(String title) {
       printStream.printf("%n%s%n", title);
       
+      int remainedCardsInDeck = deckOfCards.getCurrentNumberOfCards();
+      Card[] dealingCards = new Card[remainedCardsInDeck];
+      
       Card card = deckOfCards.dealCard();
       for (int counter = 0; card != null; counter++) {
-      
-         for (int index = 0; index < CardsConfiguration.POKER_CARDS; index++) {
-            deckOfCards.checkCardInDeck(computerPlayerCards[index]);
-            deckOfCards.checkCardInDeck(playerCards[index]);
-         }
+         dealingCards[counter] = card;
          
-         printStream.printf("%2d. %s %n", counter, card);
+         printStream.printf("%2d. %s %n", counter, dealingCards[counter]);
          card = deckOfCards.dealCard();
       } 
+      
+      returnCardsToDeck(dealingCards);
    }
    
    private void printPockerHands(Player player, String title) {
@@ -232,8 +283,26 @@ public class PokerAgainstComputer {
       } 
    }
    
+   private void returnCardsToDeck() throws Exception {
+      returnCardsToDeck(player);
+      if (null != playerReturnedCards) {
+         returnCardsToDeck(playerReturnedCards);
+      }
+      
+      returnCardsToDeck(computerPlayer);
+      if (null != computerPlayerReturnedCards) {
+         returnCardsToDeck(computerPlayerReturnedCards);
+      }
+   }
+   
+   private void returnCardsToDeck(Player anyPlayer) throws Exception {
+      CardsConfiguration configuration = anyPlayer.getCardsConfiguration();
+      
+      returnCardsToDeck(configuration.getDealingCards());
+   }
+   
    private void returnCardsToDeck(Card[] cards) {
-      for (int index = 0; index < CardsConfiguration.POKER_CARDS; index++) {
+      for (int index = 0; index < cards.length; index++) {
          deckOfCards.acceptCard(cards[index]);
       }
    }

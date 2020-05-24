@@ -14,7 +14,14 @@
  * =====================================================================================
  */
 
+//package poker;
+
 public class Player {
+   public static final int MAX_OF_REPLACED_CARDS = 3;
+   
+   private Card[] returnedCards = null;
+   private boolean cardsToReturn = false;
+   
    private CardsConfiguration cardsConfiguration = new CardsConfiguration();
    private PokerHand pokerHand;
    private int numberOfCardsToReplace;
@@ -47,6 +54,8 @@ public class Player {
       
       if (numberOfCardsToReplace > 0) {
          changeCardsOrder();
+         returnedCards = new Card[numberOfCardsToReplace];
+         cardsToReturn = true;
       }
       
       return numberOfCardsToReplace;
@@ -68,21 +77,51 @@ public class Player {
          throw new IllegalArgumentException("number of cards to replace less than number of received cards");
       }
       
+      Card cardToReturn = cardsConfiguration.returnDealingCard(numberOfCardsToReplace);
+      returnedCards[numberOfCardsToReplace] = cardToReturn;
+      
       cardsConfiguration.setDealingCard(receivedCard, numberOfCardsToReplace);
       if (numberOfCardsToReplace == 0) {
          pokerHand = cardsConfiguration.classifyPokerHand();  // after replace all cards, classify new poker hand
       }
    }
    
+   public boolean areCardsToReturn() {
+      return cardsToReturn;
+   }
+   
+   public Card[] getReturnedCards() throws Exception {
+      if (false == cardsToReturn) {
+         return null;
+      }
+      if (null == returnedCards) {
+         throw new Exception("no cards to return");
+      }
+      
+      cardsToReturn = false;
+      
+      return returnedCards;
+   }
+   
    public void receiveCards(Card[] receivedCards, int[] indexes) throws Exception {
+      if (null == receivedCards) {
+         throw new NullPointerException("received cards can not be null");
+      }
       if (CardsConfiguration.POKER_CARDS < receivedCards.length) {
          throw new IllegalArgumentException("maximum number of cards less than number of received cards");
       }
       if (receivedCards.length > indexes.length) {
          throw new IllegalArgumentException("number of received cards more than number of cards indexes");
       }
+      if (receivedCards.length > 0) {
+         returnedCards = new Card[receivedCards.length];
+         cardsToReturn = true;
+      }
       
       for(int counter = 0; receivedCards.length > counter; counter++) {
+         Card cardToReturn = cardsConfiguration.returnDealingCard(indexes[counter]);
+         returnedCards[counter] = cardToReturn;
+      
          cardsConfiguration.setDealingCard(receivedCards[counter], indexes[counter]);
       }
       
@@ -94,7 +133,7 @@ public class Player {
       switch (pokerHand) {
          case HIGH_CARD:
          case ONE_PAIR:
-            return 3;
+            return MAX_OF_REPLACED_CARDS;
          case TWO_PAIRS:
             return 1;
          case THREE_OF_KIND:

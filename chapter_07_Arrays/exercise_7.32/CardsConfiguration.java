@@ -37,7 +37,7 @@ public class CardsConfiguration {
    
    public Card returnDealingCard(int index) {
       if (index < 0 || index >= POKER_CARDS) {
-         throw new IllegalArgumentException("card can not be get on index" + index);
+         throw new IllegalArgumentException("card can not be get on index " + index);
       }
       
       Card temp = dealingCards[index];
@@ -58,7 +58,7 @@ public class CardsConfiguration {
    
    public void setDealingCard(Card card, int index) {
       if (index < 0 || index >= POKER_CARDS) {
-         throw new IllegalArgumentException("card can not be set on index" + index);
+         throw new IllegalArgumentException("card can not be set on index " + index);
       }
       
       if (false == areCardsUnique(card)) {

@@ -24,8 +24,10 @@ public class PokerAgainstComputerTest {
       int humanPlayerWins = 0;
       int computerPlayerWins = 0;
       
+      PokerAgainstComputer pokerAgainstComputer = new PokerAgainstComputer(printStream, false);
+      
       for (int gamesCounter = 0; gamesCounter < 10; gamesCounter++) {
-         PokerAgainstComputer pokerAgainstComputer = new PokerAgainstComputer(printStream, false);
+         //PokerAgainstComputer pokerAgainstComputer = new PokerAgainstComputer(printStream, false);
          pokerAgainstComputer.run();
          gameScore = pokerAgainstComputer.getGameScore();
          

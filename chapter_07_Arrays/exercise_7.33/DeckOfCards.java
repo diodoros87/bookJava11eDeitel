@@ -63,6 +63,10 @@ public class DeckOfCards {
       } 
    } 
    
+   public int getCurrentNumberOfCards() {
+      return NUMBER_OF_CARDS - currentCard;
+   }
+   
    public void acceptCard(Card card) {
       checkCardInDeck(card);
    
