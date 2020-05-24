@@ -25,14 +25,15 @@ public class DealerPlayTest {
       exampleCards[2] = new Card("Ace", "Clubs");
       displayCards(exampleCards, "Example of cards: ");
       
-      randomTest();
-      testUntilPokerHand();
+      DeckOfCards deckOfCards = new DeckOfCards();
+      randomTest(deckOfCards);
+      testUntilPokerHand(deckOfCards);
    }
    
-   public static void randomTest() throws Exception {
+   public static void randomTest(DeckOfCards deckOfCards) throws Exception {
       Card[] dealerCards = new Card[CardsConfiguration.POKER_CARDS];
       Card[] secondPlayerCards = new Card[CardsConfiguration.POKER_CARDS];
-      DeckOfCards deckOfCards = new DeckOfCards();
+      //DeckOfCards deckOfCards = new DeckOfCards();
       
       deckOfCards.shuffle(); // place Cards in random order
       
@@ -54,10 +55,14 @@ public class DealerPlayTest {
       
       returnCardsToDeck(dealer.getReturnedCards(), deckOfCards);
       displayRemainedCards(deckOfCards, "---------- Remained cards in deck:", dealerConfiguration, secondConfiguration);
+      returnCardsToDeck(dealerConfiguration.getDealingCards(), deckOfCards);
+      returnCardsToDeck(secondPlayerCards, deckOfCards);
+      displayRemainedCards(deckOfCards, "---------- Remained cards in deck:");
    }
    
-   public static void testUntilPokerHand(/*DeckOfCards deckOfCards*/) throws Exception {
-      DeckOfCards deckOfCards = new DeckOfCards();
+   public static void testUntilPokerHand(DeckOfCards deckOfCards) throws Exception {
+      //DeckOfCards deckOfCards = new DeckOfCards();
+      displayRemainedCards(deckOfCards, "---------- test until poker hand = THREE_OF_KIND   Remained cards in deck:");
       CardsConfiguration dealerConfiguration = getConfigurationUntilPockerHand(deckOfCards, PokerHand.THREE_OF_KIND);
       Dealer dealer = new Dealer(dealerConfiguration);
       
@@ -96,13 +101,6 @@ public class DealerPlayTest {
       } 
    }
    
-   public static void displayReturnedCards(Card[] cards, String title) {
-      System.out.printf("%n%s%n", title);
-      for (int counter = 0; counter < cards.length; counter++) {
-         System.out.printf("%s %n", cards[counter]);
-      } 
-   }
-   
    public static void displayCards(Card[] cards, String title) {
       System.out.printf("%n%s%n", title);
       for (int counter = 0; counter < cards.length; counter++) {
@@ -129,12 +127,17 @@ public class DealerPlayTest {
    public static void displayRemainedCards(DeckOfCards deckOfCards, String title,
                              CardsConfiguration configuration, CardsConfiguration secondConfiguration) {
       System.out.printf("%n%s%n", title);
+      
+      int remainedCardsInDeck = deckOfCards.getCurrentNumberOfCards();
+      Card[] dealingCards = new Card[remainedCardsInDeck];
+      
       Card[] cards = configuration.getDealingCards();
       Card[] secondCards = secondConfiguration.getDealingCards();
       
       Card card = deckOfCards.dealCard();
       for (int counter = 0; card != null; counter++) {
-      
+         dealingCards[counter] = card;
+         
          for (int index = 0; index < CardsConfiguration.POKER_CARDS; index++) {
             deckOfCards.checkCardInDeck(cards[index]);
             deckOfCards.checkCardInDeck(secondCards[index]);
@@ -143,6 +146,8 @@ public class DealerPlayTest {
          System.out.printf("%2d. %s %n", counter, card);
          card = deckOfCards.dealCard();
       } 
+      
+      returnCardsToDeck(dealingCards, deckOfCards);
    }
    
    public static void displayPockerHands(CardsConfiguration configuration, String title) throws Exception {
