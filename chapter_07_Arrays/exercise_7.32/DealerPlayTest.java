@@ -18,6 +18,13 @@
 public class DealerPlayTest {
 
    public static void main(String[] args) throws Exception {
+      Card[] exampleCards = null;
+      exampleCards = new Card[3];
+      exampleCards[0] = new Card("Ace", "Hearts");
+      exampleCards[1] = new Card("King", "Diamonds");
+      exampleCards[2] = new Card("Ace", "Clubs");
+      displayCards(exampleCards, "Example of cards: ");
+      
       randomTest();
       testUntilPokerHand();
    }
@@ -39,13 +46,17 @@ public class DealerPlayTest {
       CardsConfiguration secondConfiguration = new CardsConfiguration(secondPlayerCards);
       
       replaceCards(dealer, deckOfCards);
+      displayCards(dealer.getReturnedCards(), "---------- Dealer's cards to return:");
       
       displayPockerHands(dealerConfiguration, "*******  Dealer cards after replace:");
       displayPockerHands(secondConfiguration, "*******  Second player cards:");
       displayGameResult(dealerConfiguration, secondConfiguration);
+      
+      returnCardsToDeck(dealer.getReturnedCards(), deckOfCards);
+      displayRemainedCards(deckOfCards, "---------- Remained cards in deck:", dealerConfiguration, secondConfiguration);
    }
    
-   public static void testUntilPokerHand() throws Exception {
+   public static void testUntilPokerHand(/*DeckOfCards deckOfCards*/) throws Exception {
       DeckOfCards deckOfCards = new DeckOfCards();
       CardsConfiguration dealerConfiguration = getConfigurationUntilPockerHand(deckOfCards, PokerHand.THREE_OF_KIND);
       Dealer dealer = new Dealer(dealerConfiguration);
@@ -57,12 +68,22 @@ public class DealerPlayTest {
       CardsConfiguration secondConfiguration = new CardsConfiguration(secondPlayerCards);
       
       replaceCards(dealer, deckOfCards);
+      displayCards(dealer.getReturnedCards(), "---------- Dealer's cards to return:");
       
       displayPockerHands(dealerConfiguration, "*******  Dealer cards after replace:");
       displayPockerHands(secondConfiguration, "*******  Second player cards:");
       displayGameResult(dealerConfiguration, secondConfiguration);
       
-      displayRemainedCards(deckOfCards, "---------- Remained cards in deck:", dealerConfiguration, secondConfiguration);
+      returnCardsToDeck(dealer.getReturnedCards(), deckOfCards);
+      returnCardsToDeck(dealerConfiguration.getDealingCards(), deckOfCards);
+      returnCardsToDeck(secondPlayerCards, deckOfCards);
+      displayRemainedCards(deckOfCards, "---------- Remained cards in deck:");
+      
+      Card[] otherCards = new Card[CardsConfiguration.POKER_CARDS];
+      dealCards(otherCards, deckOfCards);
+      displayCards(otherCards, "*******  Other cards dealing from deck:");
+      displayRemainedCards(deckOfCards, "---------- Remained cards in deck:");
+      //displayRemainedCards(deckOfCards, "---------- Remained cards in deck:", dealerConfiguration, secondConfiguration);
    }
    
    public static void replaceCards(Dealer dealer, DeckOfCards deckOfCards) throws Exception {
@@ -75,11 +96,34 @@ public class DealerPlayTest {
       } 
    }
    
+   public static void displayReturnedCards(Card[] cards, String title) {
+      System.out.printf("%n%s%n", title);
+      for (int counter = 0; counter < cards.length; counter++) {
+         System.out.printf("%s %n", cards[counter]);
+      } 
+   }
+   
    public static void displayCards(Card[] cards, String title) {
       System.out.printf("%n%s%n", title);
       for (int counter = 0; counter < cards.length; counter++) {
          System.out.printf("%s %n", cards[counter]);
       } 
+   }
+   
+   public static void displayRemainedCards(DeckOfCards deckOfCards, String title) {
+      System.out.printf("%n%s%n", title);
+      
+      int remainedCardsInDeck = deckOfCards.getCurrentNumberOfCards();
+      Card[] dealingCards = new Card[remainedCardsInDeck];
+      
+      Card card = deckOfCards.dealCard();
+      for (int counter = 0; card != null; counter++) {
+         dealingCards[counter] = card;
+         System.out.printf("%2d. %s %n", counter, dealingCards[counter]);
+         card = deckOfCards.dealCard();
+      } 
+      
+      returnCardsToDeck(dealingCards, deckOfCards);
    }
    
    public static void displayRemainedCards(DeckOfCards deckOfCards, String title,
@@ -144,7 +188,7 @@ public class DealerPlayTest {
    }
    
    public static void returnCardsToDeck(Card[] cards, DeckOfCards deckOfCards) {
-      for (int index = 0; index < CardsConfiguration.POKER_CARDS; index++) {
+      for (int index = 0; index < cards.length; index++) {
          deckOfCards.acceptCard(cards[index]);
       }
    }

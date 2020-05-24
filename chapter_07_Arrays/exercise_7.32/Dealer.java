@@ -15,6 +15,11 @@
  */
 
 public class Dealer {
+   public static final int MAX_OF_REPLACED_CARDS = 3;
+   
+   private Card[] returnedCards = null;
+   private boolean cardsToReturn = false;
+   
    private CardsConfiguration cardsConfiguration;
    private PokerHand pokerHand;
    private int numberOfCardsToReplace;
@@ -40,6 +45,8 @@ public class Dealer {
       
       if (numberOfCardsToReplace > 0) {
          changeCardsOrder();
+         returnedCards = new Card[numberOfCardsToReplace];
+         cardsToReturn = true;
       }
       
       return numberOfCardsToReplace;
@@ -61,10 +68,25 @@ public class Dealer {
          throw new IllegalArgumentException("number of cards to replace less than number of received cards");
       }
       
+      Card cardToReturn = cardsConfiguration.returnDealingCard(numberOfCardsToReplace);
+      returnedCards[numberOfCardsToReplace] = cardToReturn;
+      
       cardsConfiguration.setDealingCard(receivedCard, numberOfCardsToReplace);
       if (numberOfCardsToReplace == 0) {
          pokerHand = cardsConfiguration.classifyPokerHand();  // after replace all cards, classify new poker hand
       }
+   }
+   
+   public boolean areCardsToReturn() {
+      return cardsToReturn;
+   }
+   
+   public Card[] getReturnedCards() throws Exception {
+      if (null == returnedCards) {
+         throw new Exception("no cards to return");
+      }
+      
+      return returnedCards;
    }
    
    private int calculateNumberOfCardsToReplace() throws Exception {
@@ -72,7 +94,7 @@ public class Dealer {
       switch (pokerHand) {
          case HIGH_CARD:
          case ONE_PAIR:
-            return 3;
+            return MAX_OF_REPLACED_CARDS;
          case TWO_PAIRS:
             return 1;
          case THREE_OF_KIND:

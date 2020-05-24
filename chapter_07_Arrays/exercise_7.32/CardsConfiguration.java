@@ -35,6 +35,17 @@ public class CardsConfiguration {
       return dealingCards;
    }
    
+   public Card returnDealingCard(int index) {
+      if (index < 0 || index >= POKER_CARDS) {
+         throw new IllegalArgumentException("card can not be get on index" + index);
+      }
+      
+      Card temp = dealingCards[index];
+      dealingCards[index] = null;
+      
+      return temp;
+   }
+   
    public void setDealingCards(Card[] cards) {
       validateNumberOfCards(cards);
       
@@ -85,6 +96,10 @@ public class CardsConfiguration {
       checkNullCard(card);
       
       for (int index = 0; index < POKER_CARDS; index++) {
+         if (null == dealingCards[index]) {
+            continue;
+         }
+         
          if (card.getFace() == dealingCards[index].getFace() &&
              card.getSuit() == dealingCards[index].getSuit()) {
                
