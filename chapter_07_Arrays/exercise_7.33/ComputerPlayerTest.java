@@ -24,30 +24,7 @@ public class ComputerPlayerTest {
       testUntilPokerHand(deckOfCards);
    }
    
-//    public static void randomTest(DeckOfCards deckOfCards) throws Exception {
-//       Card[] firstPlayerCards = new Card[CardsConfiguration.POKER_CARDS];
-//       Card[] secondPlayerCards = new Card[CardsConfiguration.POKER_CARDS];
-//       //DeckOfCards deckOfCards = new DeckOfCards();
-//       
-//       deckOfCards.shuffle(); // place Cards in random order
-//       
-//       dealCards(firstPlayerCards, deckOfCards);
-//       
-//       Player firstPlayer = new Player(firstPlayerCards);
-//       CardsConfiguration firstPlayerConfiguration = firstPlayer.getCardsConfiguration();
-//       displayPockerHands(firstPlayerConfiguration, "*******  First player cards before replace:");
-//       
-//       dealCards(secondPlayerCards, deckOfCards);
-//       CardsConfiguration secondConfiguration = new CardsConfiguration(secondPlayerCards);
-//       
-//       replaceCards(firstPlayer, deckOfCards);
-//       
-//       displayPockerHands(firstPlayerConfiguration, "*******  First player cards after replace:");
-//       displayPockerHands(secondConfiguration, "*******  Second player cards:");
-//       displayGameResult(firstPlayerConfiguration, secondConfiguration);
-//    }
-   
-      public static void randomTest(DeckOfCards deckOfCards) throws Exception {
+   public static void randomTest(DeckOfCards deckOfCards) throws Exception {
       Card[] firstPlayerCards = new Card[CardsConfiguration.POKER_CARDS];
       Card[] firstPlayerReturnedCards = null;
       Card[] secondPlayerCards = new Card[CardsConfiguration.POKER_CARDS];
@@ -82,26 +59,6 @@ public class ComputerPlayerTest {
       returnCardsToDeck(secondPlayerCards, deckOfCards);
       displayRemainedCards(deckOfCards, "---------- Remained cards in deck:");
    }
-   
-//    public static void testUntilPokerHand(DeckOfCards deckOfCards) throws Exception {
-//       //DeckOfCards deckOfCards = new DeckOfCards();
-//       CardsConfiguration firstPlayerConfiguration = getConfigurationUntilPockerHand(deckOfCards, PokerHand.THREE_OF_KIND);
-//       Player firstPlayer = new Player(firstPlayerConfiguration);
-//       
-//       displayPockerHands(firstPlayerConfiguration, "*******  First player cards before replace:");
-//       
-//       Card[] secondPlayerCards = new Card[CardsConfiguration.POKER_CARDS];
-//       dealCards(secondPlayerCards, deckOfCards);
-//       CardsConfiguration secondConfiguration = new CardsConfiguration(secondPlayerCards);
-//       
-//       replaceCards(firstPlayer, deckOfCards);
-//       
-//       displayPockerHands(firstPlayerConfiguration, "*******  First player cards after replace:");
-//       displayPockerHands(secondConfiguration, "*******  Second player cards:");
-//       displayGameResult(firstPlayerConfiguration, secondConfiguration);
-//       
-//       displayRemainedCards(deckOfCards, "---------- Remained cards in deck:", firstPlayerConfiguration, secondConfiguration);
-//    }
    
    public static void testUntilPokerHand(DeckOfCards deckOfCards) throws Exception {
       //DeckOfCards deckOfCards = new DeckOfCards();

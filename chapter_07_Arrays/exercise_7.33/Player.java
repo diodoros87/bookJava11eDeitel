@@ -61,17 +61,6 @@ public class Player {
       return numberOfCardsToReplace;
    }
    
-//    public Card[] getCardsToReplace() {
-//       numberOfCardsToReplace = calculateNumberOfCardsToReplace();
-//       
-//       if (numberOfCardsToReplace == 0) {
-//          return null;
-//       }
-//       else {
-//          return new Card[numberOfCardsToReplace];
-//       }
-//    }
-   
    public void receiveCard(Card receivedCard) throws Exception {
       if (--numberOfCardsToReplace < 0) {
          throw new IllegalArgumentException("number of cards to replace less than number of received cards");
