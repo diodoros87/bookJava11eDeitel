@@ -4,9 +4,8 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 7.37 - calculate number at index (entered by
-                              User) in Fibonacci sequence 
-                                 
+                             Exercise 7.37 - simulation of machine language programming
+                                 - stage program execution
                            
                              
  *
@@ -68,6 +67,8 @@ public class ProgramExecution {
    }
    
    public void run(int[] memory) {
+      reset();
+      
       try {
          executeProgramInstructions(memory);
       }
@@ -284,9 +285,11 @@ public class ProgramExecution {
          
          printStream.println();
       }
+      
+      printStream.println();
    }
    
-   public void reset() {
+   private void reset() {
       this.accumulator          = 0;
       this.instructionCounter   = 0;
       this.operationCode        = 0;

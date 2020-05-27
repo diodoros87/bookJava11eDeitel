@@ -4,11 +4,9 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 7.37 - calculate number at index (entered by
-                              User) in Fibonacci sequence 
+                             Exercise 7.37 - simulation of machine language programming
                                  
                            
-                             
  *
  *        @Author:  diodoros87
  *
@@ -61,34 +59,32 @@ public class ComputerSimulator {
    }
    
    public void run() {
-      loadFirstProgram(-4, -2);
-      programExecution.run(this.memory);
-      
-      programExecution.reset();
-      loadSecondProgram(999, 12);
-      programExecution.run(this.memory);
-      
-      programExecution.reset();
-      loadSecondProgram(9, 12);
-      programExecution.run(this.memory);
-      
-      programExecution.reset();
-      loadThirdProgram(-1, 10);
-      programExecution.run(this.memory);
-      
-      programExecution.reset();
-      loadFourthProgram(7);
-      programExecution.run(this.memory);
-      
-      programExecution.reset();
-      loadFifthProgram();
-      programExecution.run(this.memory);
-      
-      programExecution.reset();
+      //loadExamplePrograms();
+
       setStartValue();
       programLoading.run(this.memory);
       programExecution.run(this.memory);
       
+   }
+   
+   private void loadExamplePrograms() {
+      loadFirstProgram(-4, -2);
+      programExecution.run(this.memory);
+      
+      loadSecondProgram(999, 12);
+      programExecution.run(this.memory);
+      
+      loadSecondProgram(9, 12);
+      programExecution.run(this.memory);
+      
+      loadThirdProgram(-1, 10);
+      programExecution.run(this.memory);
+      
+      loadFourthProgram(7);
+      programExecution.run(this.memory);
+      
+      loadFifthProgram();
+      programExecution.run(this.memory);
    }
    
    private void loadFirstProgram(int firstNumber, int secondNumber) {

@@ -4,7 +4,8 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 7.37 - test of computer's simulator
+                             Exercise 7.37 - test of machine language programming
+                                simulation
                            
                              
  *

@@ -4,11 +4,10 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 7.37 - calculate number at index (entered by
-                              User) in Fibonacci sequence 
+                             Exercise 7.37 - simulation of machine language programming
+                                 - stage program loading
                                  
                            
-                             
  *
  *        @Author:  diodoros87
  *
@@ -27,8 +26,7 @@ public class ProgramLoading {
    private final PrintStream errorPrintStream;
    private final Scanner scanner;
    
-   private static final int MAX_DATA_TO_LOAD_MARK    = MAX_DATA;
-   private static final int END_OF_DATA_TO_LOAD_MARK = MIN_DATA;
+   private static final int END_OF_DATA_TO_LOAD_MARK = -12345;
    
    private static final String INITIAL_MESSAGE = String.format("*** Welcome to Simpletron! ***%n") +
                                                  String.format("*** Please enter your program one instruction ***%n") +
@@ -93,35 +91,34 @@ public class ProgramLoading {
       printStream.println(AVAILABLE_INSTRUCTIONS);
       
       int enteredInstructionsCounter = FIRST_INSTRUCTION_LOCATION;
-      boolean correctInstruction = false;
       
       printStream.printf("%02d ? ", enteredInstructionsCounter);
-      while (enteredInstructionsCounter < MEMORY_ELEMENTS &&
-            true == scanner.hasNextLine()) {
-         correctInstruction = isCorrectProgramInstruction(memory, enteredInstructionsCounter);
+      while (enteredInstructionsCounter < MEMORY_ELEMENTS && 
+             true == scanner.hasNextLine()) {
          
-         if (true == correctInstruction) {
+         if (true == isIntegerEntered()) {
+         
+            int enteredInteger = scanner.nextInt();
+            scanner.nextLine();   // to clear input data - nextInt() leaves whitespaces in input
             
-            if (END_OF_DATA_TO_LOAD_MARK == memory[enteredInstructionsCounter]) {
-               printStream.printf("%n %s %n", AFTER_ENTERING_PROGRAM_MESSAGE);
-               
+            if (enteredInteger == END_OF_DATA_TO_LOAD_MARK) {
                break;
             }
-         
-            enteredInstructionsCounter++;
+            else if (true == isCorrectDataWord(enteredInteger)) {
+               memory[enteredInstructionsCounter] = enteredInteger;
+               enteredInstructionsCounter++;
+            }
          }
          
          printStream.printf("%02d ? ", enteredInstructionsCounter);
       } 
+      
+      printStream.printf("%n %s %n", AFTER_ENTERING_PROGRAM_MESSAGE);
    }
    
-   private boolean isCorrectProgramInstruction(int[] memory, int enteredInstructionsCounter) {
+   private boolean isIntegerEntered() {
       if (true == scanner.hasNextInt()) {
-      
-         int dataWord = scanner.nextInt();
-         scanner.nextLine();   // to clear input data - nextInt() leaves whitespaces in input
-         
-         return isCorrectDataWord(dataWord, memory, enteredInstructionsCounter);
+         return true;
       }
       else if (true == scanner.hasNextDouble()) {
          errorPrintStream.printf("%n???????? ERROR: Value of %f is type double. ", scanner.nextDouble());
@@ -136,15 +133,13 @@ public class ProgramLoading {
       return false;
    }
    
-   private boolean isCorrectDataWord(int dataWord, int[] memory, int enteredInstructionsCounter) {
-      if (END_OF_DATA_TO_LOAD_MARK <= dataWord && dataWord <= MAX_DATA_TO_LOAD_MARK) {
-         memory[enteredInstructionsCounter] = dataWord;
-         
+   private boolean isCorrectDataWord(int integer) {
+      if (MIN_DATA <= integer && integer <= MAX_DATA) {
          return true;
       }
       
       errorPrintStream.printf("%n???????? ERROR: data word must be in range from %d to %d%n",
-                                       END_OF_DATA_TO_LOAD_MARK, MAX_DATA_TO_LOAD_MARK);
+                                       MIN_DATA, MAX_DATA);
       return false;
    }
     
