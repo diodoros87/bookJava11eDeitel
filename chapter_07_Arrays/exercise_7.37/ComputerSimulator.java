@@ -87,6 +87,7 @@ public class ComputerSimulator {
       programExecution.run(this.memory);
    }
    
+   // printing sum of firstNumber + secondNumber
    private void loadFirstProgram(int firstNumber, int secondNumber) {
       setStartValue();
       
@@ -102,6 +103,7 @@ public class ComputerSimulator {
       memory[8] = secondNumber;
    }
    
+   // printing maximum of (firstNumber, secondNumber)
    private void loadSecondProgram(int firstNumber, int secondNumber) {
       setStartValue();
       
@@ -119,6 +121,8 @@ public class ComputerSimulator {
       memory[10] = secondNumber;
    }
       
+   // printing sum of positive (more than zero)
+   //(up to maxIngredients, otherwise until endOfDataMarker entered - excluding endOfDataMarker in sum) elements
    private void loadThirdProgram(int endOfDataMarker, int maxIngredients) {
       setStartValue();
       
@@ -149,7 +153,8 @@ public class ComputerSimulator {
       memory[44] = 1;
    }
    
-   private void loadFourthProgram(int maxIngredients) {
+   // printing integer average of nonzero ingredients
+   private void loadFourthProgram(int ingredients) {
       setStartValue();
       
       memory[0]  = 2040;
@@ -170,13 +175,14 @@ public class ComputerSimulator {
       memory[15] = 1142;
       memory[16] = 4300;
       
-      memory[40] = maxIngredients;
+      memory[40] = ingredients;
       memory[41] = 0;
       memory[42] = 0;
       //memory[43];
       memory[44] = 1;
    }
    
+   // printing max of n-elements (n is entered as first number, n include to elemets if n is greater than zero)
    private void loadFifthProgram() {
       setStartValue();
       

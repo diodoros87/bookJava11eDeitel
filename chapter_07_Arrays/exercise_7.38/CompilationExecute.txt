@@ -1,0 +1,8 @@
+Command to compile in Linux's terminal:
+in current folder enter:
+javac -d . -Xlint *.java
+
+
+Command to execute in Linux's terminal:
+in current folder enter:
+java simpletron.ComputerSimulatorTest
