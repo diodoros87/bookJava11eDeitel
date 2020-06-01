@@ -37,6 +37,8 @@ public class ProgramExecution {
    private int operand              = 0;
    private int instructionRegister  = 0;
    
+   FloatingPoint floatingPoint;
+   
    public ProgramExecution(PrintStream printStream, Scanner scanner, PrintStream errorPrintStream) {
       if (null == printStream) {
          throw new NullPointerException("print stream can not be null.");
@@ -51,6 +53,8 @@ public class ProgramExecution {
       this.printStream = printStream;
       this.scanner = scanner;
       this.errorPrintStream = errorPrintStream;
+      
+      this.floatingPoint = new FloatingPoint(printStream, scanner, errorPrintStream);
    }
    
    public void run(int[] memory) {
@@ -73,8 +77,8 @@ public class ProgramExecution {
       
       while (instructionCounter < memory.length) {
          instructionRegister = memory[instructionCounter];
-         operationCode = instructionRegister / ORDER_OF_MAGNITUDE;
-         operand = instructionRegister % ORDER_OF_MAGNITUDE;
+         operationCode = instructionRegister / OPERATION_CODE_ORDER_OF_MAGNITUDE;
+         operand = instructionRegister % OPERATION_CODE_ORDER_OF_MAGNITUDE;
          
          execute(memory);
       }
@@ -87,13 +91,13 @@ public class ProgramExecution {
             enterInteger(memory);
             return ++instructionCounter;
          case WRITE_INT:
-            printStream.printf(" in memory's location %03x is %+05d %n", operand, memory[operand]);
+            printStream.printf(" in memory's location %03x is %+07d %n", operand, memory[operand]);
             return ++instructionCounter;
          case READ_FLOAT:
-            //enterFloat(memory);
+            floatingPoint.enterFloat(memory, operand);
             return ++instructionCounter;
          case WRITE_FLOAT:
-            //printStream.printf(" in memory's location %03x is %+05e %n", operand, memory[operand]);
+            floatingPoint.printFloat(memory, operand);
             return ++instructionCounter;
          case READ_STRING:
             enterString(memory);
@@ -104,30 +108,48 @@ public class ProgramExecution {
          case WRITE_LINE:
             printStream.println();
             return ++instructionCounter;
+         case ADD_INT:
+            add(memory);
+            return ++instructionCounter;
+         case SUBTRACT_INT:
+            subtract(memory);
+            return ++instructionCounter;
+         case DIVIDE_INT:
+            divide(memory);
+            return ++instructionCounter;
+         case MODULO_INT:
+            modulo(memory);
+            return ++instructionCounter;
+         case MULTIPLY_INT:
+            multiply(memory[operand]);
+            return ++instructionCounter;
+         case EXPONENTIATION_INT:
+            exponentiation(memory[operand]);
+            return ++instructionCounter;
          case LOAD:
             accumulator = memory[operand];
             return ++instructionCounter;
          case STORE:
             memory[operand] = accumulator;
             return ++instructionCounter;
-         case ADD:
-            add(memory);
+         case ADD_FLOAT:
+            accumulator = floatingPoint.addSubtract(accumulator, memory[operand], false);
             return ++instructionCounter;
-         case SUBTRACT:
-            subtract(memory);
+         case SUBTRACT_FLOAT:
+            accumulator = floatingPoint.addSubtract(accumulator, memory[operand], true);
             return ++instructionCounter;
-         case DIVIDE:
-            divide(memory);
+         case DIVIDE_FLOAT:
+            accumulator = floatingPoint.divide(accumulator, memory[operand]);
             return ++instructionCounter;
-         case MODULO:
-            modulo(memory);
+         case MODULO_FLOAT:
+            accumulator = floatingPoint.modulo(accumulator, memory[operand]);
             return ++instructionCounter;
-         case MULTIPLY:
-            multiply(memory, memory[operand]);
+         case MULTIPLY_FLOAT:
+            accumulator = floatingPoint.multiply(accumulator, memory[operand]);
             return ++instructionCounter;
-         case EXPONENTIATION:
-            exponentiation(memory, memory[operand]);
-            return ++instructionCounter;
+//          case EXPONENTIATION_FLOAT:
+//             accumulator = floatingPoint.exponentiation(accumulator, memory[operand]);
+//             return ++instructionCounter;
          case BRANCH:
             instructionCounter = operand;
             
@@ -212,7 +234,7 @@ public class ProgramExecution {
          final int stringLength = string.length();
          
          if (stringLength > 0) {
-            memory[operand] = stringLength * ORDER_OF_MAGNITUDE;
+            memory[operand] = stringLength * OPERATION_CODE_ORDER_OF_MAGNITUDE;
          }
          
          for (int index = 0; index < stringLength; index++) {
@@ -220,7 +242,7 @@ public class ProgramExecution {
                memory[operand] += string.charAt(index);
             }
             else {
-               memory[++operand] = string.charAt(index) * ORDER_OF_MAGNITUDE;
+               memory[++operand] = string.charAt(index) * OPERATION_CODE_ORDER_OF_MAGNITUDE;
             }
          }
       }
@@ -230,13 +252,13 @@ public class ProgramExecution {
       printStream.printf(" in memory's location %03x is: \'", operand);
       
       char character;
-      final int stringLength = memory[operand] / ORDER_OF_MAGNITUDE;
+      final int stringLength = memory[operand] / OPERATION_CODE_ORDER_OF_MAGNITUDE;
       for (int counter = 0; counter < stringLength; counter++) {
          if (counter % 2 == 0) {
-            character = (char)(memory[operand] % ORDER_OF_MAGNITUDE);
+            character = (char)(memory[operand] % OPERATION_CODE_ORDER_OF_MAGNITUDE);
          }
          else {
-            character = (char)(memory[++operand] / ORDER_OF_MAGNITUDE);
+            character = (char)(memory[++operand] / OPERATION_CODE_ORDER_OF_MAGNITUDE);
          }
          
          printStream.printf("%c", character);
@@ -271,7 +293,7 @@ public class ProgramExecution {
       accumulator -= memory[operand];
    }
    
-   private void multiply(int[] memory, int factor) {
+   private void multiply(int factor) {
 
       if (accumulator > 1) 
          if (factor > 1) 
@@ -300,7 +322,7 @@ public class ProgramExecution {
       accumulator *= factor;
    }
    
-   private void exponentiation(int[] memory, int exponent) {
+   private void exponentiation(int exponent) {
       if (0 > exponent) {
          throw new IllegalArgumentException(" Exponent must be integer not less than zero");
       }
@@ -317,7 +339,7 @@ public class ProgramExecution {
       
       int value = accumulator;
       for (int counter = 2; counter <= exponent; counter++) {
-         multiply(memory, value);
+         multiply(value);
       }
    }
    

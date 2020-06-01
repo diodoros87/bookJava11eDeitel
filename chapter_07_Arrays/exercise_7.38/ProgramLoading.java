@@ -48,15 +48,22 @@ public class ProgramLoading {
                                                         String.format(" %03x - WRITE STRING %n", WRITE_STRING) +
                                                         String.format(" %03x - WRITE LINE %n", WRITE_LINE) +
                                                         
-                                                        String.format(" %03x - ADD %n", ADD) +
-                                                        String.format(" %03x - SUBTRACT %n", SUBTRACT) +
-                                                        String.format(" %03x - DIVIDE %n", DIVIDE) +
-                                                        String.format(" %03x - MODULO %n", MODULO) +
-                                                        String.format(" %03x - MULTIPLY %n", MULTIPLY) +
-                                                        String.format(" %03x - EXPONENTIATION %n", EXPONENTIATION) +
+                                                        String.format(" %03x - ADD INT %n", ADD_INT) +
+                                                        String.format(" %03x - SUBTRACT INT %n", SUBTRACT_INT) +
+                                                        String.format(" %03x - DIVIDE INT %n", DIVIDE_INT) +
+                                                        String.format(" %03x - MODULO INT %n", MODULO_INT) +
+                                                        String.format(" %03x - MULTIPLY INT %n", MULTIPLY_INT) +
+                                                        String.format(" %03x - EXPONENTIATION INT %n", EXPONENTIATION_INT) +
                                                         
                                                         String.format(" %03x - LOAD %n", LOAD) +
                                                         String.format(" %03x - STORE %n", STORE) +
+                                                        
+                                                        String.format(" %03x - ADD FLOAT %n", ADD_FLOAT) +
+                                                        String.format(" %03x - SUBTRACT FLOAT %n", SUBTRACT_FLOAT) +
+                                                        String.format(" %03x - DIVIDE FLOAT %n", DIVIDE_FLOAT) +
+                                                        String.format(" %03x - MODULO FLOAT %n", MODULO_FLOAT) +
+                                                        String.format(" %03x - MULTIPLY FLOAT %n", MULTIPLY_FLOAT) +
+                                                        String.format(" %03x - EXPONENTIATION FLOAT %n", EXPONENTIATION_FLOAT) +
                                                         
                                                         String.format(" %03x - BRANCH %n", BRANCH) +
                                                         String.format(" %03x - BRANCHNEG %n", BRANCHNEG) +
@@ -166,7 +173,7 @@ public class ProgramLoading {
    }
    
    private boolean validateOperationCode(int operationCode) {
-      final int MAX_OPERATION_CODE = MAX_DATA / ORDER_OF_MAGNITUDE;
+      final int MAX_OPERATION_CODE = MAX_DATA / OPERATION_CODE_ORDER_OF_MAGNITUDE;
       
       if (1 > operationCode || operationCode > MAX_OPERATION_CODE) {
          errorPrintStream.printf("%n ERROR: Operation code must be in range from %03x to %03x %n", 1, MAX_OPERATION_CODE);
@@ -188,14 +195,24 @@ public class ProgramLoading {
          case READ_STRING:
          case WRITE_STRING:
          case WRITE_LINE:
+         
+         case ADD_INT:
+         case SUBTRACT_INT:
+         case DIVIDE_INT:
+         case MODULO_INT:
+         case MULTIPLY_INT:
+         case EXPONENTIATION_INT:
+         
          case LOAD:
          case STORE:
-         case ADD:
-         case SUBTRACT:
-         case DIVIDE:
-         case MODULO:
-         case MULTIPLY:
-         case EXPONENTIATION:
+         
+         case ADD_FLOAT:
+         case SUBTRACT_FLOAT:
+         case DIVIDE_FLOAT:
+         case MODULO_FLOAT:
+         case MULTIPLY_FLOAT:
+         case EXPONENTIATION_FLOAT:
+         
          case BRANCH:
          case BRANCHNEG:
          case BRANCHZERO:

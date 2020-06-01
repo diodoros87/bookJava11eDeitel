@@ -91,6 +91,9 @@ public class FloatingPoint {
    private static final int MAX_EXPONENT_AFTER_BIAS = 2 * EXPONENT_BIAS - 1;
    private static final int MIN_EXPONENT_AFTER_BIAS = 0;
    
+   private static final int MAX_EXPONENT = MAX_EXPONENT_AFTER_BIAS - EXPONENT_BIAS;
+   private static final int MIN_EXPONENT = MIN_EXPONENT_AFTER_BIAS - EXPONENT_BIAS;
+   
    private int calculateFloatToMemory(int exponent, double absoluteMantissa) {
       int mantissaToMemoryStorage = calculateAbsMantissaToMemory(absoluteMantissa);
       
@@ -174,19 +177,30 @@ public class FloatingPoint {
       return exponent;
    }
    
-   int add(int accumulator, int element) {
+   int addSubtract(int accumulator, int element, boolean subtraction) {
+      if (0 == accumulator) {
+         return subtraction == true ? -element : element;
+      }
+      if (0 == element) {
+         return accumulator;
+      }
+      
       double accumulatorMantissa = getMantissaFromMemory(accumulator);
       int accumulatorExponent = getExponentFromMemory(accumulator);
       
       double elementMantissa = getMantissaFromMemory(element);
       int elementExponent = getExponentFromMemory(element);
       
-      int valueToMemory = add(accumulatorMantissa, accumulatorExponent, elementMantissa, elementExponent);
+      if (true == subtraction) {
+         elementMantissa = -elementMantissa;
+      }
+      
+      int valueToMemory = add(accumulatorMantissa, accumulatorExponent, elementMantissa, elementExponent/*, addition*/);
       
       return valueToMemory;
    }
    
-   private int add(double firstMantissa, int firstExponent, double secondMantissa, int secondExponent) {
+   private int add(double firstMantissa, int firstExponent, double secondMantissa, int secondExponent/*, boolean addition*/) {
       int exponent;
       double mantissa;
       double denormalizedMantissa;
@@ -194,21 +208,27 @@ public class FloatingPoint {
       if (firstExponent > secondExponent) {
          exponent = firstExponent;
          denormalizedMantissa = secondMantissa;
-         mantissa = firstMantissa;
+         mantissa             = firstMantissa;
       }
+//       else if (firstExponent == secondExponent) {
+//          exponent = firstExponent;
+//          denormalizedMantissa = firstMantissa > secondMantissa ? secondMantissa : firstMantissa;
+//          mantissa             = firstMantissa > secondMantissa ? firstMantissa  : secondMantissa;
+//       }
       else {
          exponent = secondExponent;
          denormalizedMantissa = firstMantissa;
-         mantissa = secondMantissa;
+         mantissa             = secondMantissa;
       }
       
       denormalizedMantissa = getDenormalizedMantissa(denormalizedMantissa, firstExponent - secondExponent);
       mantissa += denormalizedMantissa;
+      //mantissa += (addition == true) ? denormalizedMantissa : -denormalizedMantissa;
       
-      double absoluteMantissa = Math.abs(mantissa);
-      if (absoluteMantissa >= 10) {
+      if (Math.abs(mantissa) >= 10) {
          mantissa = getDenormalizedMantissa(mantissa, 1);
-         exponent = mantissa > 0 ? ++exponent : --exponent;
+         exponent = Math.min(exponent + 1, MAX_EXPONENT);
+         exponent = Math.max(exponent, MIN_EXPONENT);
       }
       
       return calculateSignedFloatToMemory(exponent, mantissa);
@@ -221,20 +241,16 @@ public class FloatingPoint {
          return 0;
       }
       
-      int roundingPositionAfterDot = MANTISSA_DIGITS;
+      int roundingPositionAfterDot = MANTISSA_DIGITS - 1;
       
       while (absExponentDifference > 0) {
          mantissa /= 10;
-         roundingPositionAfterDot++;
          absExponentDifference--;
       }
+
+      double mantissaAfterRounding = round(mantissa, roundingPositionAfterDot);
       
-      if (roundingPositionAfterDot <= 0) {
-         return mantissa;
-      }
-      else {
-         return round(mantissa, roundingPositionAfterDot);
-      }
+      return mantissaAfterRounding;
    }
    
    private int calculateSignedFloatToMemory(int exponent, double mantissa) {
@@ -257,21 +273,98 @@ public class FloatingPoint {
       return Math.floor(orderOfMagnitude * number + 0.5) / orderOfMagnitude;
    }
    
-//    private int calculateExponentDifference(int firstFromMemory, int secondFromMemory) {
-//       int firstExponent = getExponentFromMemory(firstFromMemory);
-//       int secondExponent = getExponentFromMemory(secondFromMemory);
-//       
-//       return firstExponent - secondExponent;
-//       
-//       if (firstExponent > secondExponent) {
-//          return 1;
-//       }
-//       if (secondExponent > firstExponent) {
-//          return 2;
-//       }
-//       else {
-//          return 0;
+   private enum Arithmetic {MULTIPLY, DIVIDE, MODULO};
+   
+   int divide(int accumulator, int element) {
+      return multiplyDivideModulo(accumulator, element, Arithmetic.DIVIDE);
+   }
+   
+   int modulo(int accumulator, int element) {
+      return multiplyDivideModulo(accumulator, element, Arithmetic.MODULO);
+   }
+   
+   int multiply(int accumulator, int element) {
+      return multiplyDivideModulo(accumulator, element, Arithmetic.MULTIPLY);
+   }
+   
+   private int multiplyDivideModulo(int accumulator, int element, Arithmetic operation) {
+      if (0 == element && (Arithmetic.DIVIDE == operation || Arithmetic.MODULO == operation)) {
+         throw new ArithmeticException("Divisor (quotient) can not be zero");
+      }
+      if (0 == accumulator || 0 == element) {
+         return 0;
+      }
+      
+      double accumulatorMantissa = getMantissaFromMemory(accumulator);
+      int accumulatorExponent = getExponentFromMemory(accumulator);
+      
+      double elementMantissa = getMantissaFromMemory(element);
+      int elementExponent = getExponentFromMemory(element);
+      
+      double mantissa = getMantissaMultiplyDivideModulo(accumulatorMantissa, elementMantissa, operation);
+      int exponent = getExponentMultiplyDivideModulo(accumulatorExponent, elementExponent, operation);
+      
+      int valueToMemory = calculateNormalizedFloat(exponent, mantissa);
+      //int valueToMemory = calculateSignedFloatToMemory(exponent, mantissa);
+      
+      return valueToMemory;
+   }
+   
+   @SuppressWarnings("fallthrough")
+   private int getExponentMultiplyDivideModulo(int firstExponent, int secondExponent, Arithmetic operation) {
+      switch (operation) {
+         case MODULO:
+            return Math.min(firstExponent, secondExponent);
+            
+         case DIVIDE:
+            secondExponent = -secondExponent;
+         case MULTIPLY:
+            int exponent = Math.min(firstExponent + secondExponent, MAX_EXPONENT);
+            exponent     = Math.max(exponent, MIN_EXPONENT);
+            return exponent;
+            
+//          case MODULO:
+//             throw new IllegalArgumentException("Modulo operation need mantissa to calculate exponent");
+         default:
+            throw new IllegalArgumentException("Unrecognized arithmetic operation");
+      }
+   }
+   
+//    private int getExponentModulo(double mantissa, Arithmetic operation) {
+//       switch (operation) {
+//          case MODULO:
+//             return (int)Math.log10(mantissa);
+//          case MULTIPLY:
+//          case DIVIDE:
+//             throw new IllegalArgumentException("Calculation of exponent requires more operations");
+//          default:
+//             throw new IllegalArgumentException("Unrecognized arithmetic operation");
 //       }
 //    }
+   
+   private double getMantissaMultiplyDivideModulo(double firstMantissa, double secondMantissa, Arithmetic operation) {
+      switch (operation) {
+         case DIVIDE:
+            return firstMantissa / secondMantissa;
+         case MODULO:
+            return firstMantissa % secondMantissa;
+         case MULTIPLY:
+            return firstMantissa * secondMantissa;
+         default:
+            throw new IllegalArgumentException("Unrecognized arithmetic operation");
+      }
+   }
+   
+   private int calculateNormalizedFloat(int exponent, double mantissa) {
+      double absoluteMantissa = Math.abs(mantissa);
+      if (absoluteMantissa >= 10) {
+         int exponentDifference = (int)Math.log10(absoluteMantissa);
+         mantissa = getDenormalizedMantissa(mantissa, exponentDifference);
+         exponent = Math.min(exponent + exponentDifference, MAX_EXPONENT);
+         exponent = Math.max(exponent, MIN_EXPONENT);
+      }
+      
+      return calculateSignedFloatToMemory(exponent, mantissa);
+   }
    
 }
