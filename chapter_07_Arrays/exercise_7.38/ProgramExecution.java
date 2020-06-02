@@ -133,23 +133,23 @@ public class ProgramExecution {
             memory[operand] = accumulator;
             return ++instructionCounter;
          case ADD_FLOAT:
-            accumulator = floatingPoint.addSubtract(accumulator, memory[operand], false);
+            accumulator = floatingPoint.addSubtract(accumulator, memory[operand], FloatingPoint.Arithmetic.ADD);
             return ++instructionCounter;
          case SUBTRACT_FLOAT:
-            accumulator = floatingPoint.addSubtract(accumulator, memory[operand], true);
+            accumulator = floatingPoint.addSubtract(accumulator, memory[operand], FloatingPoint.Arithmetic.SUBTRACT);
             return ++instructionCounter;
          case DIVIDE_FLOAT:
-            accumulator = floatingPoint.divide(accumulator, memory[operand]);
+            accumulator = floatingPoint.multiplyDivide(accumulator, memory[operand], FloatingPoint.Arithmetic.DIVIDE);
             return ++instructionCounter;
          case MODULO_FLOAT:
             accumulator = floatingPoint.modulo(accumulator, memory[operand]);
             return ++instructionCounter;
          case MULTIPLY_FLOAT:
-            accumulator = floatingPoint.multiply(accumulator, memory[operand]);
+            accumulator = floatingPoint.multiplyDivide(accumulator, memory[operand], FloatingPoint.Arithmetic.MULTIPLY);
             return ++instructionCounter;
-//          case EXPONENTIATION_FLOAT:
-//             accumulator = floatingPoint.exponentiation(accumulator, memory[operand]);
-//             return ++instructionCounter;
+         case EXPONENTIATION_FLOAT:
+            accumulator = floatingPoint.exponentiation(accumulator, memory[operand]);
+            return ++instructionCounter;
          case BRANCH:
             instructionCounter = operand;
             
@@ -202,11 +202,11 @@ public class ProgramExecution {
       }
       else if (true == scanner.hasNextDouble()) {
          errorPrintStream.printf("%n???????? ERROR: Value of %f entered by User is type double. ", scanner.nextDouble());
-         errorPrintStream.printf("This is incorrect. Double values are not using in this version of Simpletron%n");
+         errorPrintStream.printf("This is incorrect. Double values are not using in this mode%n");
          scanner.nextLine();   // to clear input data - NextDouble() leaves whitespaces in input
       }
       else {
-         errorPrintStream.printf("%n???????? ERROR: Value of \'%s\' is not using in this version of Simpletron%n",
+         errorPrintStream.printf("%n???????? ERROR: Value of \'%s\' is not using in this mode%n",
                                              scanner.nextLine());
       }
       

@@ -26,6 +26,8 @@ public class ComputerSimulatorTest {
       
       ComputerSimulator computerSimulator = new ComputerSimulator(printStream, scannerToLoadProgram, errorPrintStream,
                                                                   printStream, scannerToExecuteProgram, errorPrintStream);
+      computerSimulator.loadExamplePrograms();
+      
       computerSimulator.run();
    } 
    

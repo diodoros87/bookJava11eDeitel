@@ -1,5 +1,5 @@
 /* =====================================================================================
- *       Filename:  IntegerNumbers.java
+ *       Filename:  Numbers.java
  *
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
@@ -15,7 +15,7 @@
  
 package simpletron;
 
-public class IntegerNumbers {
+public class Numbers {
    
    public static int integerPower(int base, short exponent) {
       parametersValidation(base, exponent);
@@ -41,6 +41,12 @@ public class IntegerNumbers {
       else if (0 == base && 0 == exponent) {
          throw new IllegalArgumentException("****** ERROR: The case is more complicated");
       }
+   }
+   
+   public static double round(double number, int positionAfterDot) {
+      int orderOfMagnitude = integerPower(10, (short)(positionAfterDot));
+      
+      return Math.floor(orderOfMagnitude * number + 0.5) / orderOfMagnitude;
    }
    
 } 

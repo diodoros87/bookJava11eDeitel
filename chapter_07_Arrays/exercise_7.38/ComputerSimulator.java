@@ -81,7 +81,7 @@ public class ComputerSimulator {
    }
    
    public void run() {
-      loadExamplePrograms();
+      //loadExamplePrograms();
 
       setStartValue();
       programLoading.run(this.memory);
@@ -89,35 +89,37 @@ public class ComputerSimulator {
       
    }
    
-   public static final int OPERATION_CODE_ORDER_OF_MAGNITUDE = IntegerNumbers.integerPower(10, (short)(MEMORY_LOCATION_LENGTH));
+   public static final int OPERATION_CODE_ORDER_OF_MAGNITUDE = Numbers.integerPower(10, (short)(MEMORY_LOCATION_LENGTH));
    
    public static int calculateInstruction(int operationCode, int memoryLocation) {
       return memoryLocation + operationCode * OPERATION_CODE_ORDER_OF_MAGNITUDE;
    }
    
-   private void loadExamplePrograms() {
-//       loadFirstProgram(-4, -2);
-//       programExecution.run(this.memory);
-//       
-//       loadSecondProgram(999, 12);
-//       programExecution.run(this.memory);
-//       
-//       loadSecondProgram(9, 12);
-//       programExecution.run(this.memory);
-//       
-//       loadThirdProgram(-1, 10);
-//       programExecution.run(this.memory);
-//       
-//       loadFourthProgram(7);
-//       programExecution.run(this.memory);
-//       
-//       loadFifthProgram();
-//       programExecution.run(this.memory);
+   public void loadExamplePrograms() {
+      loadFirstProgram(-4, -2);
+      programExecution.run(this.memory);
       
-//       loadSixthProgram();
-//       programExecution.run(this.memory);
+      loadSecondProgram(999, 12);
+      programExecution.run(this.memory);
       
-      //loadSeventhProgram();
+      loadSecondProgram(9, 12);
+      programExecution.run(this.memory);
+      
+      loadThirdProgram(-1, 10);
+      programExecution.run(this.memory);
+      
+      loadFourthProgram(7);
+      programExecution.run(this.memory);
+      
+      loadFifthProgram();
+      programExecution.run(this.memory);
+      
+      loadSixthProgram();
+      programExecution.run(this.memory);
+      
+      loadSeventhProgram();
+      programExecution.run(this.memory);
+      
       loadEighthProgram();
       programExecution.run(this.memory);
    }
@@ -298,45 +300,44 @@ public class ComputerSimulator {
    private void loadEighthProgram() {
       setStartValue();
       
-//       memory[0]     = calculateInstruction(READ_FLOAT, 0x111);
-//       memory[1]     = calculateInstruction(READ_FLOAT, 0x112);
-//       memory[2]     = calculateInstruction(LOAD, 0x111);
-//       memory[3]     = calculateInstruction(MULTIPLY_FLOAT, 0x112);
-//       memory[4]     = calculateInstruction(STORE, 0x113);
-//       memory[5]     = calculateInstruction(WRITE_FLOAT, 0x113);
-//       
-//       memory[6]     = calculateInstruction(LOAD, 0x111);
-//       memory[7]     = calculateInstruction(DIVIDE_FLOAT, 0x112);
-//       memory[8]     = calculateInstruction(STORE, 0x113);
-//       memory[9]     = calculateInstruction(WRITE_FLOAT, 0x113);
-//       
-//       memory[0x00a] = calculateInstruction(LOAD, 0x112);
-//       memory[0x00b] = calculateInstruction(DIVIDE_FLOAT, 0x111);
-//       memory[0x00c] = calculateInstruction(STORE, 0x113);
-//       memory[0x00d] = calculateInstruction(WRITE_FLOAT, 0x113);
-//       
-//       memory[0x00e]     = calculateInstruction(LOAD, 0x111);
-//       memory[0x00f]     = calculateInstruction(MODULO_FLOAT, 0x112);
-//       memory[0x010]     = calculateInstruction(STORE, 0x113);
-//       memory[0x011]     = calculateInstruction(WRITE_FLOAT, 0x113);
-//       
-//       memory[0x012] = calculateInstruction(LOAD, 0x112);
-//       memory[0x013] = calculateInstruction(MODULO_FLOAT, 0x111);
-//       memory[0x014] = calculateInstruction(STORE, 0x113);
-//       memory[0x015] = calculateInstruction(WRITE_FLOAT, 0x113);
-//       
-//       memory[0x016] = calculateInstruction(HALT, 0x029);
+      memory[0]     = calculateInstruction(READ_FLOAT, 0x111);
+      memory[1]     = calculateInstruction(READ_FLOAT, 0x112);
+      memory[2]     = calculateInstruction(LOAD, 0x111);
+      memory[3]     = calculateInstruction(MULTIPLY_FLOAT, 0x112);
+      memory[4]     = calculateInstruction(STORE, 0x113);
+      memory[5]     = calculateInstruction(WRITE_FLOAT, 0x113);
       
+      memory[6]     = calculateInstruction(LOAD, 0x111);
+      memory[7]     = calculateInstruction(DIVIDE_FLOAT, 0x112);
+      memory[8]     = calculateInstruction(STORE, 0x113);
+      memory[9]     = calculateInstruction(WRITE_FLOAT, 0x113);
       
+      memory[0x00a] = calculateInstruction(LOAD, 0x112);
+      memory[0x00b] = calculateInstruction(DIVIDE_FLOAT, 0x111);
+      memory[0x00c] = calculateInstruction(STORE, 0x113);
+      memory[0x00d] = calculateInstruction(WRITE_FLOAT, 0x113);
       
-      memory[0]     = calculateInstruction(LOAD, 0x111);
-      memory[1]     = calculateInstruction(MODULO_FLOAT, 0x112);
-      memory[2]     = calculateInstruction(STORE, 0x113);
-      memory[3]     = calculateInstruction(WRITE_FLOAT, 0x113);
-      memory[4]     = calculateInstruction(HALT, 0x029);
+      memory[0x00e]     = calculateInstruction(LOAD, 0x111);
+      memory[0x00f]     = calculateInstruction(MODULO_FLOAT, 0x112);
+      memory[0x010]     = calculateInstruction(STORE, 0x113);
+      memory[0x011]     = calculateInstruction(WRITE_FLOAT, 0x113);
       
-      memory[0x111] = +524568;
-      memory[0x112] = +513450;
+      memory[0x012] = calculateInstruction(LOAD, 0x112);
+      memory[0x013] = calculateInstruction(MODULO_FLOAT, 0x111);
+      memory[0x014] = calculateInstruction(STORE, 0x113);
+      memory[0x015] = calculateInstruction(WRITE_FLOAT, 0x113);
+      
+      memory[0x016] = calculateInstruction(LOAD, 0x111);
+      memory[0x017] = calculateInstruction(EXPONENTIATION_FLOAT, 0x112);
+      memory[0x018] = calculateInstruction(STORE, 0x113);
+      memory[0x019] = calculateInstruction(WRITE_FLOAT, 0x113);
+      
+      memory[0x01a] = calculateInstruction(LOAD, 0x112);
+      memory[0x01b] = calculateInstruction(EXPONENTIATION_FLOAT, 0x111);
+      memory[0x01c] = calculateInstruction(STORE, 0x113);
+      memory[0x01d] = calculateInstruction(WRITE_FLOAT, 0x113);
+      
+      memory[0x01e] = calculateInstruction(HALT, 0x029);
       
    }
    
