@@ -18,19 +18,20 @@ import java.math.RoundingMode;
 import java.text.NumberFormat;
 
 public class SavingAccount {
-   public static final BigDecimal    MONTHS_PER_YEAR  = BigDecimal.valueOf(12);
+   public  static final BigDecimal   MONTHS_PER_YEAR  = BigDecimal.valueOf(12);
    private static final int          SCALE            = 2;
    
    private static final BigDecimal   MAX_INTEREST_RATE = BigDecimal.valueOf(0.1);
    private static final BigDecimal   MIN_INTEREST_RATE = BigDecimal.valueOf(0.01);
+   
+   public  static final NumberFormat CURRENCY_INSTANCE = NumberFormat.getCurrencyInstance();
+   
+   public  static final String       INVALID_INTEREST_RATE = String.format("Interest rate must be from %.2f%% to %.2f%%", 
+                                 MIN_INTEREST_RATE.multiply(BigDecimal.valueOf(100)), MAX_INTEREST_RATE.multiply(BigDecimal.valueOf(100)));
+                                 
    private static BigDecimal         annualInterestRate;
    
-   public static final NumberFormat  CURRENCY_INSTANCE = NumberFormat.getCurrencyInstance();
-   
-   public static final String INVALID_INTEREST_RATE = String.format("Interest rate must be from %25s to %25s", 
-                                 CURRENCY_INSTANCE.format(MIN_INTEREST_RATE), CURRENCY_INSTANCE.format(MAX_INTEREST_RATE));
-   
-   private BigDecimal savingsBalance; 
+   private BigDecimal                savingsBalance; 
    
    public static void modifyInterestRate(BigDecimal rate) {
    
@@ -38,7 +39,7 @@ public class SavingAccount {
          throw new IllegalArgumentException(INVALID_INTEREST_RATE);
       }
       
-      annualInterestRate = rate;
+      annualInterestRate = rate.setScale(SCALE, RoundingMode.HALF_EVEN);
    }
    
    public static void modifyInterestRate(double rate) {
@@ -95,7 +96,7 @@ public class SavingAccount {
    }
    
    public BigDecimal getSavingsBalance() {
-      return savingsBalance.setScale(SCALE, RoundingMode.HALF_EVEN);
+      return this.savingsBalance.setScale(SCALE, RoundingMode.HALF_EVEN);
    }
    
    public void setSavingsBalance(BigDecimal savingsBalance) {
@@ -104,6 +105,10 @@ public class SavingAccount {
       }
       
       this.savingsBalance = savingsBalance;
+   }
+   
+   public void setSavingsBalance(double savingsBalance) {
+      setSavingsBalance(BigDecimal.valueOf(savingsBalance));
    }
    
    public String toString() {

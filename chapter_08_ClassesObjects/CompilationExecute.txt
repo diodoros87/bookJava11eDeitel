@@ -5,4 +5,4 @@ javac -Xlint -Werror -cp .:.. *.java
 
 Command to execute in Linux's terminal:
 cd exercise_8.Number   (change directory to exercise_8.Number)
-java -cp .:.. NameOfClassWithStaticMainMethod
+java -ea -cp .:.. NameOfClassWithStaticMainMethod
