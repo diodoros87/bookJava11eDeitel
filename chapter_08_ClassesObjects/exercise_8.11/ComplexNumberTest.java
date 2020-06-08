@@ -45,9 +45,10 @@ public class ComplexNumberTest {
       ComplexNumber    defaultComplexNumber  = new ComplexNumber();
       System.out.printf("complex number after construct by default constructor: %15s%n", defaultComplexNumber);
       
-      BigDecimal real      = new BigDecimal(2.5); 
-      BigDecimal imaginary = new BigDecimal(-4.5); 
+      BigDecimal real                 = new BigDecimal(2.5); 
+      BigDecimal imaginary            = new BigDecimal(-4.5); 
       ComplexNumber    complexNumber  = new ComplexNumber(real, imaginary);
+      
       System.out.printf("complex number after construct by constructor with 2 parameters: %15s%n", complexNumber);
    }
    

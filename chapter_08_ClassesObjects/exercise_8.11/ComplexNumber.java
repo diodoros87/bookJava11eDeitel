@@ -92,10 +92,10 @@ public class ComplexNumber {
       BigDecimal secondImaginary    = second.getImaginary();
       
       BigDecimal realResult         = firstReal.multiply(secondReal);
-      realResult         = realResult.subtract(firstImaginary.multiply(secondImaginary));
+      realResult                    = realResult.subtract(firstImaginary.multiply(secondImaginary));
       
       BigDecimal imaginaryResult    = firstImaginary.multiply(secondReal);
-      imaginaryResult    = imaginaryResult.add(firstReal.multiply(secondImaginary));
+      imaginaryResult               = imaginaryResult.add(firstReal.multiply(secondImaginary));
       
       return new ComplexNumber(realResult, imaginaryResult);
    }
@@ -105,16 +105,6 @@ public class ComplexNumber {
    }
    
    public static ComplexNumber divide(ComplexNumber dividend, ComplexNumber divisor) {
-//       BigDecimal dividendReal        = dividend.getReal();
-//       BigDecimal dividendImaginary   = dividend.getImaginary();
-//       BigDecimal divisorReal         = divisor.getReal();
-//       BigDecimal divisorImaginary    = divisor.getImaginary();
-//       
-//       BigDecimal realResultNumerator = (dividendReal * divisorReal + dividendImaginary * divisorImaginary);
-//       BigDecimal resultDenominator   = divisorReal * divisorReal + divisorImaginary * divisorImaginary;
-//       BigDecimal imaginaryResultNumerator = firstImaginary * secondReal - firstReal * secondImaginary;
-//       
-//       return new ComplexNumber(realResult, imaginaryResult);
       ComplexNumber conjugateDivisor = ComplexNumber.conjugate(divisor);
       
       ComplexNumber resultDividend   = ComplexNumber.multiply(dividend, conjugateDivisor);
@@ -158,6 +148,6 @@ public class ComplexNumber {
    
    
    public String toString() {
-      return String.format("(%+f, %+f * i)", getReal(), getImaginary());
+      return String.format("(%+e, %+e * i)", getReal(), getImaginary());
    } 
 } 
