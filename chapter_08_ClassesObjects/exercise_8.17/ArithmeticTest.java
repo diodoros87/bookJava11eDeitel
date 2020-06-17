@@ -31,6 +31,8 @@ public class ArithmeticTest {
       System.out.printf("%nTESTS OF SUBTRACTING INTEGERS : %n");
       adding = false;
       AddingSubtractingTest.parseAssertOfAddingSubtracting(adding);
+      
+      AddingSubtractingTest.testArithmeticOverflow();
    }
 }
 
@@ -91,10 +93,23 @@ class AddingSubtractingTest {
    }
    
    public static void parseAssertOfAddingSubtracting(boolean adding) {
+      ParsingTest.parseString("firstStatic", firstStatic, "+4");
+      ParsingTest.parseString("secondStatic", secondStatic, "0");
+      String result = adding == true ? "+4" : "+4";
+      assertOfAddingSubtracting(firstStatic, secondStatic, result, adding);
+      result = adding == true ? "+4" : "-4";
+      assertOfAddingSubtracting(secondStatic, firstStatic, result, adding);
+      
+      ParsingTest.parseString("firstStatic", firstStatic, "0");
+      ParsingTest.parseString("secondStatic", secondStatic, "-123");
+      result = adding == true ? "-123" : "+123";
+      assertOfAddingSubtracting(firstStatic, secondStatic, result, adding);
+      result = adding == true ? "-123" : "-123";
+      assertOfAddingSubtracting(secondStatic, firstStatic, result, adding);
       
       ParsingTest.parseString("firstStatic", firstStatic, "+4");
       ParsingTest.parseString("secondStatic", secondStatic, "-2");
-      String result = adding == true ? "+2" : "+6";
+      result = adding == true ? "+2" : "+6";
       assertOfAddingSubtracting(firstStatic, secondStatic, result, adding);
       result = adding == true ? "+2" : "-6";
       assertOfAddingSubtracting(secondStatic, firstStatic, result, adding);
@@ -147,6 +162,47 @@ class AddingSubtractingTest {
       assertOfAddingSubtracting(firstStatic, secondStatic, result, adding);
       result = adding == true ? "-30032109" : "-39167643";
       assertOfAddingSubtracting(secondStatic, firstStatic, result, adding);
+   }
+   
+   public static void testArithmeticOverflow() {
+      String largeNumberString = getLargeNumberString('5');
+      ParsingTest.parseString("firstStatic", firstStatic, largeNumberString);
+      
+      largeNumberString = getLargeNumberString('8');
+      ParsingTest.parseString("secondStatic", secondStatic, largeNumberString);
+      
+      try {
+         addAndPrint(firstStatic, secondStatic);
+         assert(false);
+      } catch (ArithmeticException exception) {
+         System.out.printf("%nException while adding: %s%n", exception.getMessage());
+         exception.printStackTrace();
+      }
+      
+      byte signum = -1;
+      secondStatic.setSignum(signum);
+      
+      try {
+         subtractAndPrint(firstStatic, secondStatic);
+         assert(false);
+      } catch (ArithmeticException exception) {
+         System.out.printf("%nException while subtracting: %s%n", exception.getMessage());
+         exception.printStackTrace();
+      }
+   }
+   
+   private static String getLargeNumberString(char character) {
+      if (character < '1' || character > '9') {
+         throw new IllegalArgumentException("Only digit from 1 to 9 is allowed");
+      }
+      
+      String digitString = String.valueOf(character);
+      String largeNumberString = "";
+      for (int counter = 1; counter <= HugeInteger.MAX_ARRAY_LENGTH; counter++) {
+         largeNumberString += digitString;
+      }
+      
+      return largeNumberString;
    }
    
    public static void assertOfAddingSubtracting(HugeInteger first, HugeInteger second, String expectedResult, boolean adding) {

@@ -416,10 +416,10 @@ public class HugeInteger {
       HugeInteger result;
       byte comparingSignumResult = HugeInteger.compareSignum(first, second);
       
-      if (0 == comparingSignumResult) {    // integers with identical sigmums
+      if (0 == comparingSignumResult) {    // integers with identical signums
          result = addAbsoluteValues(first, second);
       }
-      else {  // integers with different sigmums
+      else {  // integers with different signums
          result = HugeInteger.subtractAbsoluteValues(first, second);
       }
       
@@ -482,8 +482,30 @@ public class HugeInteger {
          }
       }
       else {  // integers with different signums
-         result.setSignum(first.signum);
+         if (0 == first.signum) {   // if minuend is zero (with signum zero), then signum's result is negate of subtrahend's signum
+            result.setSignum((byte)(-second.signum));
+         }
+         else {
+            result.setSignum(first.signum);
+         }
       }
+   }
+   
+   public static HugeInteger multiply(HugeInteger first, HugeInteger second) {
+      HugeInteger result = multiplyAbsoluteValues(first, second);
+      if (result.signum == 0) {   // skip setSignum() for zero, zero has correct signum = 0 in private HugeInteger(byte[]) constructor
+         return result;
+      }
+      
+      byte comparingSignumResult = HugeInteger.compareSignum(first, second);
+      if (0 == comparingSignumResult) {        // integers with identical signums
+         result.setSignum((byte)(+1));
+      }
+      else {  // integers with different signums
+         result.setSignum((byte)(-1));
+      }
+      
+      return result;
    }
    
    public static HugeInteger addAbsoluteValues(HugeInteger first, HugeInteger second) {
@@ -511,7 +533,7 @@ public class HugeInteger {
    }
    
    public static HugeInteger subtractAbsoluteValues(HugeInteger first, HugeInteger second) {
-      HugeInteger minuend    = getMinuend(first, second);
+      HugeInteger minuend    = getMaxOfAbsoluteValues(first, second);
       HugeInteger subtrahend = (first == minuend) ? second : first;
    
       byte[] resultArray = new byte[MAX_ARRAY_LENGTH];
@@ -538,7 +560,42 @@ public class HugeInteger {
       return result;
    }
    
-   private static HugeInteger getMinuend(HugeInteger first, HugeInteger second) {
+   public static HugeInteger multiplyAbsoluteValues(HugeInteger first, HugeInteger second) {
+      byte[][] resultArray = new byte[MAX_ARRAY_LENGTH][MAX_ARRAY_LENGTH];
+      HugeInteger[] HugeIntegersArray = new HugeInteger[MAX_ARRAY_LENGTH];
+      int firstIntegerDigit;
+      int secondIntegerDigit;
+      int productOfDigits = 0;
+      int carrying = 0;
+      
+      for (int firstIndex = first.integerArray.length - 1; firstIndex >= 0; firstIndex--) {
+         carrying = 0;
+         for (int secondIndex = second.integerArray.length - 1; secondIndex >= 0; secondIndex--) {
+            firstIntegerDigit  = first.integerArray[firstIndex];
+            secondIntegerDigit = second.integerArray[secondIndex];
+            productOfDigits = firstIntegerDigit * secondIntegerDigit;
+            
+            resultArray[firstIndex][secondIndex] = (byte)((productOfDigits + carrying) % 10);
+            carrying = productOfDigits / 10 ;
+         }
+         
+         HugeIntegersArray[firstIndex] = new HugeInteger(resultArray[firstIndex]);
+      }
+      
+      if (carrying > 0) {
+         throw new ArithmeticException
+                  (String.format("Arithmetic overflow while adding absolute value of %s and %s", first , second));
+      }
+      
+      HugeInteger result = new HugeInteger();
+      for (int index = MAX_ARRAY_LENGTH - 1; index >= 0; index--) {
+         result = addAbsoluteValues(result, HugeIntegersArray[index]);
+      }
+      
+      return result;
+   }
+   
+   private static HugeInteger getMaxOfAbsoluteValues(HugeInteger first, HugeInteger second) {
       boolean firstGreaterThanSecond = isAbsoluteValueGreaterThan(first, second);
       if (true == firstGreaterThanSecond) {
          return first;
