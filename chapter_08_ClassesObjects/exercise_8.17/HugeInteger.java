@@ -520,7 +520,7 @@ public class HugeInteger {
          sumOfDigits = firstIntegerDigit + secondIntegerDigit;
          
          resultArray[index] = (byte)((sumOfDigits + carrying) % 10);
-         carrying = sumOfDigits / 10 ;
+         carrying = (sumOfDigits + carrying) / 10 ;
       }
       
       if (carrying > 0) {
@@ -567,24 +567,34 @@ public class HugeInteger {
       int secondIntegerDigit;
       int productOfDigits = 0;
       int carrying = 0;
+      int orderOfMagnitude = 0;
       
       for (int firstIndex = first.integerArray.length - 1; firstIndex >= 0; firstIndex--) {
          carrying = 0;
+         firstIntegerDigit  = first.integerArray[firstIndex];
+         
          for (int secondIndex = second.integerArray.length - 1; secondIndex >= 0; secondIndex--) {
-            firstIntegerDigit  = first.integerArray[firstIndex];
+            int columnInResultArray = secondIndex - orderOfMagnitude;
+            if (columnInResultArray < 0) {
+               break;
+//                throw new ArithmeticException
+//                      (String.format("Arithmetic overflow while multiplying absolute value of %s and %s", first , second));
+            }
+            
             secondIntegerDigit = second.integerArray[secondIndex];
             productOfDigits = firstIntegerDigit * secondIntegerDigit;
             
-            resultArray[firstIndex][secondIndex] = (byte)((productOfDigits + carrying) % 10);
-            carrying = productOfDigits / 10 ;
+            resultArray[firstIndex][columnInResultArray] = (byte)((productOfDigits + carrying) % 10);
+            carrying = (productOfDigits + carrying) / 10;
+         }
+         
+         if (carrying > 0) {
+            throw new ArithmeticException
+                  (String.format("Arithmetic overflow while multiplying absolute value of %s and %s", first , second));
          }
          
          HugeIntegersArray[firstIndex] = new HugeInteger(resultArray[firstIndex]);
-      }
-      
-      if (carrying > 0) {
-         throw new ArithmeticException
-                  (String.format("Arithmetic overflow while adding absolute value of %s and %s", first , second));
+         orderOfMagnitude++;
       }
       
       HugeInteger result = new HugeInteger();
