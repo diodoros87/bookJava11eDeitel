@@ -21,14 +21,17 @@ public class ArithmeticTest {
       
    }
    
-   public static String getLargeNumberString(char character) {
+   public static String getNumberString(char character, int length) {
       if (character < '1' || character > '9') {
          throw new IllegalArgumentException("Only digit from 1 to 9 is allowed");
+      }
+      if (length < 0) {
+         throw new IllegalArgumentException("requirement: length >= 1");
       }
       
       String digitString = String.valueOf(character);
       String largeNumberString = "";
-      for (int counter = 1; counter <= HugeInteger.MAX_ARRAY_LENGTH; counter++) {
+      for (int counter = 1; counter <= length; counter++) {
          largeNumberString += digitString;
       }
       
@@ -193,6 +196,20 @@ class AddingSubtractingTest {
       result = adding == true ? "+45" : "+423";
       assertOfAddingSubtracting(secondStatic, firstStatic, result, adding);
       
+      ParsingTest.parseString("firstStatic", firstStatic, "-18900");
+      ParsingTest.parseString("secondStatic", secondStatic, "+234000");
+      result = adding == true ? "+215100" : "-252900";
+      assertOfAddingSubtracting(firstStatic, secondStatic, result, adding);
+      result = adding == true ? "+215100" : "+252900";
+      assertOfAddingSubtracting(secondStatic, firstStatic, result, adding);
+      
+      ParsingTest.parseString("firstStatic", firstStatic, "-1894567323");
+      ParsingTest.parseString("secondStatic", secondStatic, "+234123455");
+      result = adding == true ? "-1660443868" : "-2128690778";
+      assertOfAddingSubtracting(firstStatic, secondStatic, result, adding);
+      result = adding == true ? "-1660443868" : "+2128690778";
+      assertOfAddingSubtracting(secondStatic, firstStatic, result, adding);
+      
       ParsingTest.parseString("firstStatic", firstStatic, "+4567767");
       ParsingTest.parseString("secondStatic", secondStatic, "-34599876");
       result = adding == true ? "-30032109" : "+39167643";
@@ -222,10 +239,10 @@ class AddingSubtractingTest {
    }
    
    public static void testArithmeticOverflow() {
-      String largeNumberString = ArithmeticTest.getLargeNumberString('5');
+      String largeNumberString = ArithmeticTest.getNumberString('5', HugeInteger.MAX_ARRAY_LENGTH);
       ParsingTest.parseString("firstStatic", firstStatic, largeNumberString);
       
-      largeNumberString = ArithmeticTest.getLargeNumberString('8');
+      largeNumberString = ArithmeticTest.getNumberString('8', HugeInteger.MAX_ARRAY_LENGTH);
       ParsingTest.parseString("secondStatic", secondStatic, largeNumberString);
       
       try {
@@ -417,7 +434,7 @@ class MultiplyingTest {
    }
    
    public static void testArithmeticOverflow() {
-      String largeNumberString = ArithmeticTest.getLargeNumberString('8');
+      String largeNumberString = ArithmeticTest.getNumberString('8', HugeInteger.MAX_ARRAY_LENGTH);
       ParsingTest.parseString("firstStatic", firstStatic, largeNumberString);
    
       ParsingTest.parseString("secondStatic", secondStatic, "1234");
@@ -435,6 +452,34 @@ class MultiplyingTest {
       
       try {
          multiplyAndPrint(secondStatic, firstStatic);
+         assert(false);
+      } catch (ArithmeticException exception) {
+         System.out.printf("%nException while multiplying: %s%n", exception.getMessage());
+         exception.printStackTrace();
+      }
+      
+      largeNumberString = ArithmeticTest.getNumberString('1', HugeInteger.MAX_ARRAY_LENGTH / 2);
+      ParsingTest.parseString("firstStatic", firstStatic, largeNumberString);
+      
+      String otherNumberString = ArithmeticTest.getNumberString('1', HugeInteger.MAX_ARRAY_LENGTH / 2);
+      ParsingTest.parseString("secondStatic", secondStatic, otherNumberString);
+      signum = -1;
+      secondStatic.setSignum(signum);
+      
+      assertOfMultiplying(firstStatic, secondStatic, "-123456790123456790120987654320987654321");
+      assertOfMultiplying(secondStatic, firstStatic, "-123456790123456790120987654320987654321");
+      
+      otherNumberString = ArithmeticTest.getNumberString('1', HugeInteger.MAX_ARRAY_LENGTH / 2 + 1);
+      ParsingTest.parseString("secondStatic", secondStatic, otherNumberString);
+      
+      assertOfMultiplying(firstStatic, secondStatic, "+1234567901234567901220987654320987654321");
+      assertOfMultiplying(secondStatic, firstStatic, "+1234567901234567901220987654320987654321");
+      
+      largeNumberString = ArithmeticTest.getNumberString('1', HugeInteger.MAX_ARRAY_LENGTH / 2 + 1);
+      ParsingTest.parseString("firstStatic", firstStatic, largeNumberString);
+      
+      try {
+         multiplyAndPrint(firstStatic, secondStatic);
          assert(false);
       } catch (ArithmeticException exception) {
          System.out.printf("%nException while multiplying: %s%n", exception.getMessage());

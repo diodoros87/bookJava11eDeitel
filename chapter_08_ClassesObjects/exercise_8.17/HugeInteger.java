@@ -508,6 +508,27 @@ public class HugeInteger {
       return result;
    }
    
+   public static HugeInteger divide(HugeInteger first, HugeInteger second) {
+      if (true == second.isZero()) {
+         throw new ArithmeticException("Divisor can not be zero");
+      }
+      
+      HugeInteger result = divideAbsoluteValues(first, second);
+      if (result.signum == 0) {   // skip setSignum() for zero, zero has correct signum = 0 in private HugeInteger(byte[]) constructor
+         return result;
+      }
+      
+      byte comparingSignumResult = HugeInteger.compareSignum(first, second);
+      if (0 == comparingSignumResult) {        // integers with identical signums
+         result.setSignum((byte)(+1));
+      }
+      else {  // integers with different signums
+         result.setSignum((byte)(-1));
+      }
+      
+      return result;
+   }
+   
    public static HugeInteger addAbsoluteValues(HugeInteger first, HugeInteger second) {
       byte[] resultArray = new byte[MAX_ARRAY_LENGTH];
       int firstIntegerDigit;
@@ -561,6 +582,8 @@ public class HugeInteger {
    }
    
    public static HugeInteger multiplyAbsoluteValues(HugeInteger first, HugeInteger second) {
+      detectMultiplicationArithmeticOverflow(first, second);
+      
       byte[][] resultArray = new byte[MAX_ARRAY_LENGTH][MAX_ARRAY_LENGTH];
       HugeInteger[] hugeIntegersArray = new HugeInteger[MAX_ARRAY_LENGTH];
       int firstIntegerDigit;
@@ -577,7 +600,7 @@ public class HugeInteger {
          for (int secondIndex = second.integerArray.length - 1; secondIndex >= 0; secondIndex--) {
             columnInResultArray = secondIndex - orderOfMagnitude;
             if (columnInResultArray < 0) {
-               detectMultiplicationArithmeticOverflow(second.integerArray, secondIndex, carrying, first, second);
+               detectMultiplicationArithmeticOverflow(carrying, first, second);
                break;
             }
             
@@ -626,16 +649,29 @@ public class HugeInteger {
       }
    }
    
-   private static void detectMultiplicationArithmeticOverflow(byte[] integerArray, int index, int carrying, HugeInteger first, HugeInteger second) {
-      detectMultiplicationArithmeticOverflow(carrying, first, second);
+   public static void detectMultiplicationArithmeticOverflow(HugeInteger first, HugeInteger second) {
+      int firstIntegerDigit;
+      int secondIntegerDigit;
       
-      while (index >= 0) {
-         if (integerArray[index] > 0) {
-            throw new ArithmeticException
-                  (String.format("Arithmetic overflow while multiplying absolute value of %s and %s", first , second));
-         }
+      for (int firstIndex = 0; firstIndex < first.integerArray.length; firstIndex++) {
+         firstIntegerDigit = first.integerArray[firstIndex];
+         if (firstIntegerDigit > 0) {
          
-         index--;
+            for (int secondIndex = 0; secondIndex < second.integerArray.length; secondIndex++) {
+               secondIntegerDigit = second.integerArray[secondIndex];
+               
+               if (secondIntegerDigit > 0) {
+                  int firstOrderOfMagnitude  = first.integerArray.length - 1 - firstIndex;
+                  int secondOrderOfMagnitude = second.integerArray.length - 1 - secondIndex;
+                  
+                  if (firstOrderOfMagnitude + secondOrderOfMagnitude >= MAX_ARRAY_LENGTH) {
+                     throw new ArithmeticException
+                        (String.format("Arithmetic overflow while multiplying absolute value of %s and %s", first , second));
+                  }
+               }
+            }
+            
+         }
       }
    }
    
