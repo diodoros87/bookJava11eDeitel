@@ -37,7 +37,7 @@ public class HugeIntegerParsing {
          }
       }
       else {
-         String remainedString = validatedString.substring(1);  // 
+         String remainedString = validatedString.substring(1); 
          
          if (false == isIntegerCharacter(firstCharacter) || false == isStringContainsOnlyDigits(remainedString)) {
             

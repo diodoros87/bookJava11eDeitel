@@ -68,7 +68,8 @@ public class HugeInteger {
 
       this.signum = signum;
    }
-
+   
+   // private constructor with automatically signum's inserting, using in absolute values calculation
    private HugeInteger(byte[] integerArray) {
       this();
 
@@ -88,7 +89,8 @@ public class HugeInteger {
             numberOfZeros++;
          }
          else if (number < 0 || number > 9) {
-            throw new IllegalArgumentException("Requirement: in array must be only integers from 0 to 9");
+            throw new IllegalArgumentException("Requirement: in array must be only integers from 0 to 9, number is: "
+                                                  + number);
          }
 
          this.integerArray[destIndex] = number;
@@ -550,55 +552,6 @@ public class HugeInteger {
 
       return result;
    }
-   /*
-      public static HugeInteger divideAbsoluteValues(final HugeInteger DIVIDEND, final HugeInteger DIVISOR) throws Exception {
-      if (true == DIVISOR.isZero()) {
-         throw new ArithmeticException("Divisor can not be zero");
-      }
-
-      final byte[] DIVIDEND_INTEGER_ARRAY = DIVIDEND.getIntegerArray();
-      int startSearchingIndex = ArraysOperations.getMismatchValueIndex(DIVIDEND_INTEGER_ARRAY, 0, (byte)0);
-
-      final byte[] DIVISOR_INTEGER_ARRAY  = DIVISOR.getIntegerArray();
-      final int DIVISOR_OTHER_THAN_ZERO_VALUE_INDEX = ArraysOperations.getMismatchValueIndex(DIVISOR_INTEGER_ARRAY, 0, (byte)0);
-      final int DIVISOR_DIGITS_LENGTH = DIVISOR_INTEGER_ARRAY.length - DIVISOR_OTHER_THAN_ZERO_VALUE_INDEX;
-      
-      byte[] temporaryDividendArray = new byte[MAX_ARRAY_LENGTH];
-      byte[] resultArray            = new byte[MAX_ARRAY_LENGTH];
-      
-      int endSearchingIndex   = startSearchingIndex + DIVISOR_DIGITS_LENGTH;
-      int temporaryDividendDigitsLength = endSearchingIndex - startSearchingIndex;
-      int temporaryDividendStartIndex = MAX_ARRAY_LENGTH - temporaryDividendDigitsLength;
-      System.arraycopy(DIVIDEND_INTEGER_ARRAY, startSearchingIndex, temporaryDividendArray, temporaryDividendStartIndex, temporaryDividendDigitsLength);
-      
-      while (0 <= startSearchingIndex &&
-            startSearchingIndex <= DIVISOR_OTHER_THAN_ZERO_VALUE_INDEX) {
-               
-         if (-1 == ArraysOperations.compare(temporaryDividendArray, DIVISOR_INTEGER_ARRAY)) {
-            endSearchingIndex++;
-            if (MAX_ARRAY_LENGTH < endSearchingIndex) {
-               break;
-            }
-         }
-         
-         temporaryDividendDigitsLength = endSearchingIndex - startSearchingIndex;
-         temporaryDividendStartIndex = MAX_ARRAY_LENGTH - temporaryDividendDigitsLength;
-         System.arraycopy(DIVIDEND_INTEGER_ARRAY, startSearchingIndex, temporaryDividendArray, 
-                        temporaryDividendStartIndex, temporaryDividendDigitsLength);
-                        
-         resultArray[endSearchingIndex - 1] = multiplyDivisor(temporaryDividendArray, DIVISOR);
-         
-         Arrays.fill(temporaryDividendArray, temporaryDividendStartIndex, MAX_ARRAY_LENGTH, (byte)0);
-         
-         startSearchingIndex = endSearchingIndex;
-         endSearchingIndex   = startSearchingIndex + DIVISOR_DIGITS_LENGTH;
-      }
-
-      HugeInteger result = new HugeInteger(resultArray);
-
-      return result;
-   }
-   */
 
    public static HugeInteger divideAbsoluteValues(final HugeInteger DIVIDEND, final HugeInteger DIVISOR) throws Exception {
       if (true == DIVISOR.isZero()) {
@@ -614,75 +567,24 @@ public class HugeInteger {
          return new HugeInteger();   // default constructor initialized by zero
       }
       else {
-         byte[] resultArray = calculateDividing(DIVIDEND, DIVIDEND_ARRAY, currentDividendIndex, DIVISOR, DIVISOR_ARRAY, 
+         byte[] resultArray = calculateDividing(DIVIDEND_ARRAY, currentDividendIndex, DIVISOR, DIVISOR_ARRAY, 
                                                    DIVISOR_OTHER_THAN_ZERO_VALUE_INDEX);
          return new HugeInteger(resultArray);
       }
-      /*
-      final byte[] DIVISOR_ARRAY  = DIVISOR.getIntegerArray();
-      final int DIVISOR_OTHER_THAN_ZERO_VALUE_INDEX = ArraysOperations.getMismatchValueIndex(DIVISOR_ARRAY, 0, (byte)0);
-      final int DIVISOR_DIGITS_LENGTH = DIVISOR_ARRAY.length - DIVISOR_OTHER_THAN_ZERO_VALUE_INDEX;
-      
-      byte[] shortTemporaryDividendArray  = new byte[DIVISOR_DIGITS_LENGTH];
-      byte[] longTemporaryDividendArray = new byte[DIVISOR_DIGITS_LENGTH + 1];
-      byte[] resultArray            = new byte[MAX_ARRAY_LENGTH];
-      
-      int endSearchingIndex   = startSearchingIndex + DIVISOR_DIGITS_LENGTH;
-      int temporaryDividendDigitsLength = endSearchingIndex - startSearchingIndex;
-      int temporaryDividendStartIndex = MAX_ARRAY_LENGTH - temporaryDividendDigitsLength;
-      System.arraycopy(DIVIDEND_ARRAY, startSearchingIndex, shortTemporaryDividendArray, 
-                        temporaryDividendStartIndex, temporaryDividendDigitsLength);
-                        
-      byte[] temporaryDividendArray = new byte[DIVISOR_DIGITS_LENGTH + 1];
-      
-      while (0 <= startSearchingIndex &&
-            currentDividendIndex < MAX_ARRAY_LENGTH) {
-         
-         temporaryDividendArray = shortTemporaryDividendArray;      
-         if (-1 == ArraysOperations.compare(shortTemporaryDividendArray, DIVISOR_ARRAY)) {
-            endSearchingIndex++;
-            if (MAX_ARRAY_LENGTH < endSearchingIndex) {
-               break;
-            }    // shift indexes in temporaryDividendArray
-            System.arraycopy(shortTemporaryDividendArray, startSearchingIndex, temporaryDividendArray, 
-                        temporaryDividendStartIndex, temporaryDividendDigitsLength);
-            longTemporaryDividendArray[DIVISOR_DIGITS_LENGTH - 1] = DIVIDEND_ARRAY[endSearchingIndex - 1];
-            temporaryDividendArray = longTemporaryDividendArray;
-         }
-         
-         temporaryDividendDigitsLength = endSearchingIndex - startSearchingIndex;
-         temporaryDividendStartIndex = MAX_ARRAY_LENGTH - temporaryDividendDigitsLength;
-         System.arraycopy(DIVIDEND_ARRAY, startSearchingIndex, temporaryDividendArray, 
-                        temporaryDividendStartIndex, temporaryDividendDigitsLength);
-                        
-         resultArray[endSearchingIndex - 1] = multiplyDivisor(temporaryDividendArray, DIVISOR);
-         
-         Arrays.fill(temporaryDividendArray, temporaryDividendStartIndex, MAX_ARRAY_LENGTH, (byte)0);
-         
-         startSearchingIndex = endSearchingIndex;
-         //endSearchingIndex   = startSearchingIndex + DIVISOR_DIGITS_LENGTH;
-         endSearchingIndex++;
-      } 
-
-      HugeInteger result = new HugeInteger(resultArray);
-
-      return result; */
    }
    
-   private static byte[] calculateDividing(final HugeInteger DIVIDEND, final byte[] DIVIDEND_ARRAY, int currentDividendIndex, 
-                                           final HugeInteger DIVISOR, final byte[] DIVISOR_ARRAY, final int DIVISOR_OTHER_THAN_ZERO_VALUE_INDEX)
+   private static byte[] calculateDividing(final byte[] DIVIDEND_ARRAY, int currentDividendIndex, 
+                  final HugeInteger DIVISOR, final byte[] DIVISOR_ARRAY, final int DIVISOR_OTHER_THAN_ZERO_VALUE_INDEX)
                                                          throws Exception {
       byte[] resultArray            = new byte[MAX_ARRAY_LENGTH];
       
       final int DIVISOR_DIGITS_LENGTH = DIVISOR_ARRAY.length - DIVISOR_OTHER_THAN_ZERO_VALUE_INDEX;
       
-      byte[] temporaryDividendArray = {}; //new byte[0];
-      //System.arraycopy(DIVIDEND_ARRAY, currentDividendIndex, temporaryDividendArray, 0, DIVISOR_DIGITS_LENGTH);   
+      byte[] temporaryDividendArray = {};
       HugeInteger temporaryDividend = new HugeInteger();
       byte nextDividendDigit;
                         
       while (currentDividendIndex < MAX_ARRAY_LENGTH) {
-         //temporaryDividend.setIntegerArray(temporaryDividendArray);
          nextDividendDigit = DIVIDEND_ARRAY[currentDividendIndex];
          temporaryDividendArray = modifyDividendArray(temporaryDividendArray, nextDividendDigit);
          temporaryDividend.setIntegerArray(temporaryDividendArray);
@@ -709,35 +611,6 @@ public class HugeInteger {
       
       return temporaryDividendArray;
    }
-   /*
-   private static byte getNewTemporaryDividendArray(final byte[] REMAINDER_ARRAY, 
-                                 final byte[] DIVIDEND_ARRAY, int startSearchingIndex,
-                                 final byte[] DIVISOR_ARRAY, final int DIVISOR_DIGITS_LENGTH) throws Exception {
-      byte[] result;
-      if (null != REMAINDER_ARRAY) {
-         result = ArraysOperations.copyArray(REMAINDER_ARRAY);
-      }
-      else {
-         length = REMAINDER_ARRAY.length;
-      }
-      
-      byte[] result = new byte[length];  
-      
-      int length = DIVISOR_DIGITS_LENGTH;
-            
-      if (-1 == ArraysOperations.compare(shortTemporaryDividendArray, DIVISOR_ARRAY)) {
-         endSearchingIndex++;
-         if (MAX_ARRAY_LENGTH < endSearchingIndex) {
-            break;
-         }    // shift indexes in temporaryDividendArray
-         System.arraycopy(shortTemporaryDividendArray, startSearchingIndex, temporaryDividendArray, 
-                     temporaryDividendStartIndex, temporaryDividendDigitsLength);
-         longTemporaryDividendArray[DIVISOR_DIGITS_LENGTH - 1] = DIVIDEND_ARRAY[endSearchingIndex - 1];
-         temporaryDividendArray = longTemporaryDividendArray;
-      }
-      
-      byte[] result;                                       
-   }*/
    
    private static byte[] multiplyDivisor(byte[] resultArray, int currentDividendIndex,
                                           final HugeInteger DIVIDEND, byte[] dividendArray,
@@ -751,10 +624,6 @@ public class HugeInteger {
          multiple++;
       }
       
-      if (multiple > 9) {
-         throw new ArithmeticException("Unexpected multiple greater than 9");
-      }
-      
       if (true == HugeInteger.isAbsoluteValueGreaterThan(multipleOfDivisor, DIVIDEND)) {  // if true, remainder != 0
          multipleOfDivisor = subtractAbsoluteValues(multipleOfDivisor, DIVISOR);
          multiple--;
@@ -762,8 +631,11 @@ public class HugeInteger {
       }
       else {    // if HugeInteger.isEqualTo(multipleOfDivisor, DIVIDEND)
          final byte[] EMPTY_ARRAY = new byte[0];
-         //System.arraycopy(EMPTY_ARRAY, 0, dividendArray, 0, 1);
          dividendArray = Arrays.copyOf(EMPTY_ARRAY, 0);
+      }
+      
+      if (multiple > 9) {
+         throw new ArithmeticException("Unexpected multiple greater than 9");
       }
       
       resultArray[currentDividendIndex] = (byte)multiple;
@@ -784,41 +656,6 @@ public class HugeInteger {
                         
       return dividendArray;
    }
-   
-   /*
-   private static byte multiplyDivisor(byte[] dividendArray, final HugeInteger DIVISOR,
-                                          int temporaryDividendStartIndex) throws Exception {
-      final HugeInteger DIVIDEND = new HugeInteger(dividendArray);
-      HugeInteger multipleOfDivisor = new HugeInteger(DIVISOR.getIntegerArray());
-      
-      int multiple = 1;
-      
-      while (true == HugeInteger.isAbsoluteValueLessThan(multipleOfDivisor, DIVIDEND)) {
-         multipleOfDivisor = addAbsoluteValues(multipleOfDivisor, DIVISOR);
-         multiple++;
-      }
-      
-      if (multiple > 9) {
-         throw new ArithmeticException("Unexpected multiple greater than 9");
-      }
-      
-      if (true == HugeInteger.isAbsoluteValueGreaterThan(multipleOfDivisor, DIVIDEND)) {  // if true, remainder != 0
-         multiple--;
-         
-         final HugeInteger REMAINDER = HugeInteger.subtractAbsoluteValues(multipleOfDivisor, DIVIDEND);
-         final byte[] REMAINDER_ARRAY  = REMAINDER.getIntegerArray();
-         final int REMAINDER_OTHER_THAN_ZERO_VALUE_INDEX = ArraysOperations.getMismatchValueIndex(REMAINDER_ARRAY, 0, (byte)0);
-         final int REMAINDER_DIGITS_LENGTH = REMAINDER_ARRAY.length - REMAINDER_OTHER_THAN_ZERO_VALUE_INDEX;
-         
-         System.arraycopy(REMAINDER_ARRAY, REMAINDER_OTHER_THAN_ZERO_VALUE_INDEX, 
-                           dividendArray, dividendArray.length - 1 - REMAINDER_DIGITS_LENGTH, 
-                           REMAINDER_DIGITS_LENGTH);
-      }
-      
-      
-      
-      return (byte)multiple;
-   } */
 
    public static HugeInteger addAbsoluteValues(HugeInteger first, HugeInteger second) {
       byte[] resultArray = new byte[MAX_ARRAY_LENGTH];
@@ -857,17 +694,18 @@ public class HugeInteger {
       for (int index = first.integerArray.length - 1; index >= 0; index--) {
          minuendDigit    = minuend.integerArray[index];
          subtrahendDigit = subtrahend.integerArray[index];
-         differenceOfDigits = minuendDigit - subtrahendDigit;
+         differenceOfDigits  = minuendDigit - subtrahendDigit;
          differenceOfDigits -= carrying;
          
-         resultArray[index] = (byte)(differenceOfDigits % 10);
          if (differenceOfDigits < 0) {
-            resultArray[index] += 10;
+            differenceOfDigits += 10;
             carrying = 1;
          }
          else {
             carrying = 0;
          }
+         
+         resultArray[index] = (byte)(differenceOfDigits % 10);
       }
 
       HugeInteger result = new HugeInteger(resultArray);
