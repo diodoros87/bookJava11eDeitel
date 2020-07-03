@@ -54,12 +54,12 @@ public class TestByBigInteger {
       mode = InsertDigitMode.RANDOM;
       testIntegersByStringLength(HugeInteger.MAX_ARRAY_LENGTH / 2 + 10, HugeInteger.MAX_ARRAY_LENGTH / 2 - 10, mode);
       testIntegersByStringLength(HugeInteger.MAX_ARRAY_LENGTH - 15, 14, mode);
-      testIntegersByStringLength(HugeInteger.MAX_ARRAY_LENGTH / 2 + 2, HugeInteger.MAX_ARRAY_LENGTH / 2 - 5, mode);
+      testIntegersByStringLength(HugeInteger.MAX_ARRAY_LENGTH / 2 + 2, HugeInteger.MAX_ARRAY_LENGTH / 2 - 4, mode);
       testIntegersByStringLength(HugeInteger.MAX_ARRAY_LENGTH / 2, 19, mode);
-      testIntegersByStringLength(7, 7, mode);
-      testIntegersByStringLength(12, 6, mode);
-      testIntegersByStringLength(27, 7, mode);
-      testIntegersByStringLength(10, 26, mode);
+      testIntegersByStringLength(8, 8, mode);
+      testIntegersByStringLength(14, 6, mode);
+      testIntegersByStringLength(28, 9, mode);
+      testIntegersByStringLength(11, 24, mode);
    }
    
    public static void testIntegersByStringLength(int firstIntegerLength, int secondIntegerLength,

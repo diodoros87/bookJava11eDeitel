@@ -35,7 +35,7 @@ public class HugeIntegerTest {
          System.out.printf("First integer after set minusNumberArray: %s%n", first);
          assert(false);
       } catch (IllegalArgumentException exception) {
-         System.out.printf("%nException while construct integer: %s%n", exception.getMessage());
+         System.out.printf("%nException while set minusNumberArray: %s%n", exception.getMessage());
          exception.printStackTrace();
          System.out.printf("First integer after exception catch: %s%n", first);
       }

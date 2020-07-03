@@ -86,8 +86,11 @@ public class GettingDataFromStandardInput {
       }
    }
    
-   public static Long getLongIntegerRejectOthersData(String prompt, boolean isInfoDisplaying) {
-      printStream.print(prompt);
+   public static Long getLongIntegerRejectOthersData(String prompt, boolean isPromptDisplaying,
+                                                               boolean isAcceptInfoDisplaying) {
+      if (isPromptDisplaying) {
+         printStream.print(prompt);
+      }
       
       Long value = null;
       
@@ -96,7 +99,7 @@ public class GettingDataFromStandardInput {
          if (true == input.hasNextLong()) {
             value = input.nextLong();
             
-            if (isInfoDisplaying) {
+            if (isAcceptInfoDisplaying) {
                printStream.printf("%nValue of %d entered by User was accepted. %n", value);
             }
             
@@ -115,8 +118,11 @@ public class GettingDataFromStandardInput {
       return value;   // return if End-of-transmission character was detected
    }
    
-   public static Integer getIntegerRejectOthersData(String prompt, boolean isInfoDisplaying) {
-      printStream.print(prompt);
+   public static Integer getIntegerRejectOthersData(String prompt, boolean isPromptDisplaying,
+                                                               boolean isAcceptInfoDisplaying) {
+      if (isPromptDisplaying) {
+         printStream.print(prompt);
+      }
       
       Integer value = null;
       
@@ -125,7 +131,7 @@ public class GettingDataFromStandardInput {
          if (true == input.hasNextInt()) {
             value = input.nextInt();
             
-            if (isInfoDisplaying) {
+            if (isAcceptInfoDisplaying) {
                printStream.printf("%nValue of %d entered by User was accepted. %n", value);
             }
             
@@ -144,8 +150,54 @@ public class GettingDataFromStandardInput {
       return value;   // return if End-of-transmission character was detected
    }
    
-   public static Short getShortIntegerRejectOthersData(String prompt, boolean isInfoDisplaying) {
-      if (true == isInfoDisplaying) {
+   public static Byte getByteRejectOthersData(String prompt, boolean isPromptDisplaying,
+                                                               boolean isAcceptInfoDisplaying) {
+      if (isPromptDisplaying) {
+         printStream.print(prompt);
+      }
+      
+      Byte value = null;
+      String RANGE = String.format("Value must be byte type from %d to %d ", Byte.MIN_VALUE, Byte.MAX_VALUE);
+      
+      while (true == input.hasNext()) {    // return true if scanner has another token (word) in its input
+      
+         if (true == input.hasNextByte()) {
+            value = input.nextByte();
+            
+            if (isAcceptInfoDisplaying) {
+               printStream.printf("%nValue of %d entered by User was accepted. %n", value);
+            }
+            
+            return value;
+         }
+         else if (true == input.hasNextShort()) {
+            errorPrintStream.printf("%nValue of %d entered by User is type double. ", input.nextShort());
+            errorPrintStream.printf("This is incorrect. %s%n", RANGE);
+         }
+         else if (true == input.hasNextInt()) {
+            errorPrintStream.printf("%nValue of %d entered by User is type int. ", input.nextInt());
+            errorPrintStream.printf("This is incorrect. %s%n", RANGE);
+         }
+         else if (true == input.hasNextLong()) {
+            errorPrintStream.printf("%nValue of %d entered by User is type long. ", input.nextLong());
+            errorPrintStream.printf("This is incorrect. %s%n", RANGE);
+         }
+         else if (true == input.hasNextDouble()) {
+            errorPrintStream.printf("%nValue of %f entered by User is type double. ", input.nextDouble());
+            errorPrintStream.printf("This is incorrect. %s%n", RANGE);
+         }
+         else {
+            errorPrintStream.printf("%nValue of \'%s\' entered by User is not integer type. ", input.next());
+            errorPrintStream.printf("This is incorrect. %s%n", RANGE);
+         }
+      }
+      
+      return value;   // return if End-of-transmission character was detected
+   }
+   
+   public static Short getShortIntegerRejectOthersData(String prompt, boolean isPromptDisplaying,
+                                                               boolean isAcceptInfoDisplaying) {
+      if (isPromptDisplaying) {
          printStream.print(prompt);
       }
       
@@ -156,7 +208,7 @@ public class GettingDataFromStandardInput {
          if (true == input.hasNextShort()) {
             value = input.nextShort();
             
-            if (true == isInfoDisplaying) {
+            if (true == isAcceptInfoDisplaying) {
                printStream.printf("%nValue of %d entered by User was accepted. %n", value);
             }
             
@@ -207,8 +259,9 @@ public class GettingDataFromStandardInput {
       return value;
    }
    
-   public static Double getDoubleRejectOthersData(String prompt, boolean isTextDisplaying) {
-      if (isTextDisplaying) {
+   public static Double getDoubleRejectOthersData(String prompt, boolean isPromptDisplaying,
+                                                               boolean isAcceptInfoDisplaying) {
+      if (isPromptDisplaying) {
          printStream.print(prompt);
       }
       
@@ -218,7 +271,7 @@ public class GettingDataFromStandardInput {
       
          if (true == input.hasNextDouble()) {
             value = input.nextDouble();
-            if (isTextDisplaying) {
+            if (isAcceptInfoDisplaying) {
                printStream.printf("%nValue of %f entered by User was accepted. %n", value);
             }
             
