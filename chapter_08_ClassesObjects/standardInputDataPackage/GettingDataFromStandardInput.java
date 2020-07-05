@@ -60,7 +60,7 @@ public class GettingDataFromStandardInput {
          value = input.nextShort();
       }
       
-      input.nextLine(); // clear input data
+      clearNextLine(); // clear input data
       return value;
    }
    
@@ -76,11 +76,11 @@ public class GettingDataFromStandardInput {
          value = input.nextInt();
       }
       
-      input.nextLine(); // clear input data
+      clearNextLine(); // clear input data
       return value;
    }
    
-   public void clearNextLine() {
+   public static void clearNextLine() {
       if (true == input.hasNextLine()) {    // return true if scanner has another line in its input
          input.nextLine();
       }
@@ -239,7 +239,7 @@ public class GettingDataFromStandardInput {
          value = input.nextLong();
       }
       
-      input.nextLine(); // clear input data
+      clearNextLine(); // clear input data
       return value;
    }
    
@@ -255,7 +255,7 @@ public class GettingDataFromStandardInput {
          value = input.nextDouble();
       }
       
-      input.nextLine(); // clear input data
+      clearNextLine(); // clear input data
       return value;
    }
    
@@ -298,7 +298,7 @@ public class GettingDataFromStandardInput {
          value = input.nextFloat();
       }
       
-      input.nextLine(); // clear input data
+      clearNextLine(); // clear input data
       return value;
    }
    

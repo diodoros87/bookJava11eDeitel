@@ -18,6 +18,7 @@ import java.io.PrintStream;
 public class TicTacToeTest {
    private static final String  QUIT = "q";
    private static final PrintStream PRINT_STREAM = System.out;
+   private static final byte SQUARE_SIZE = TicTacToeController.getSQUARE_SIZE();
 
    public static void main(String[] args) {
       TicTacToe     model = new TicTacToe();
@@ -32,6 +33,7 @@ public class TicTacToeTest {
    }   
    
    private static boolean isProcessContinue(TicTacToeController controller) {
+      GettingDataFromStandardInput.clearNextLine();
       String processContinue = GettingDataFromStandardInput.getString(String.format
                               ("%n %s %s to quit %n", "***** To restart game press ENTER or only", QUIT));
 
@@ -45,11 +47,15 @@ public class TicTacToeTest {
    
    private static void runGame(TicTacToeController controller) {
       controller.printStartInfo(); 
+      
       int turn = 1;
+      String prompt;
+      
       do {
          controller.printBoard();
          controller.printGameStatus();
-         markPositionOnBoard(controller, turn);
+         prompt = getPrompt(turn);
+         markPositionOnBoard(controller, prompt);
          turn++;  
       } while (false == controller.isGameOver());
       
@@ -57,18 +63,13 @@ public class TicTacToeTest {
       controller.printGameStatus();   
    }
    
-   private static void markPositionOnBoard(TicTacToeController controller, int turn) {
+   private static void markPositionOnBoard(TicTacToeController controller, final String PROMT) {
       Byte row;
       Byte column;
       boolean correctMove = false;
-      final byte SQUARE_SIZE = TicTacToeController.getSQUARE_SIZE();
-      final String TURN_INFO = getTurnInfo(turn);
-      final String PROMT = "Enter number of row then after whitespace number of column";
-      final String RANGE = String.format("Row and column must be from %d to %d", 1, SQUARE_SIZE);
-      final String TURN_INFO_PROMT_RANGE = String.format("%s %n %s. %s %n", TURN_INFO, PROMT, RANGE);
       
       do {
-         row    = getRow(TURN_INFO_PROMT_RANGE);
+         row    = getRow(PROMT);
          if (null == row) { 
             abnormalTermination("End-of-transmission character was detected");
          }
@@ -87,12 +88,22 @@ public class TicTacToeTest {
       } while (false == correctMove);
    }
    
+   private static String getPrompt(int turn) {
+      final String TURN_INFO = getTurnInfo(turn);
+      final String RANGE = String.format("Row and column must be from %d to %d", 1, SQUARE_SIZE);
+      
+      String prompt = "Enter number of row then after whitespace number of column";
+      prompt = String.format("%s %n %s. %s %n", TURN_INFO, prompt, RANGE);
+      
+      return prompt;
+   }
+   
    private static String getTurnInfo(int turn) {
       boolean oddTurnNumber = turn % 2 == 1;
       char playerNumber = (oddTurnNumber) ? 
                              TicTacToeView.getFirstPlayerMarker() : TicTacToeView.getSecondPlayerMarker();
       
-      String turnInfo = String.format("Turn %d. Move for %s", turn, String.valueOf(playerNumber));
+      String turnInfo = String.format("--- Turn %d. Move for %s", turn, String.valueOf(playerNumber));
       
       return turnInfo;
    }
@@ -109,8 +120,9 @@ public class TicTacToeTest {
    private static Byte getColumn() {
       boolean promptDisplaying     = false;
       boolean acceptInfoDisplaying = false;
+      final String EMPTY_PROMT = "";
 
-      Byte column = GettingDataFromStandardInput.getByteRejectOthersData("", 
+      Byte column = GettingDataFromStandardInput.getByteRejectOthersData(EMPTY_PROMT, 
                                                             promptDisplaying, acceptInfoDisplaying);
       return column;
    }

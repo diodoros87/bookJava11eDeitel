@@ -14,6 +14,7 @@
  */
 
 import java.io.PrintStream;
+import java.util.logging.Logger;
 
 enum MoveStatus { AFTER_GAME_OVER, OUT_OF_BOARD_ROW, OUT_OF_BOARD_COLUMN, OCCUPIED_POSITION, CORRECT };
 
@@ -41,10 +42,13 @@ public class TicTacToe {
    
    private CellValue [][] board = new CellValue [SQUARE_SIZE][SQUARE_SIZE];
    private byte turn = 0;
-   private static final byte MIN_TURN_TO_VICTORY = 2 * SQUARE_SIZE - 1;
+   private static final byte MIN_TURN_TO_VICTORY = 2 * SQUARE_SIZE - 1;  // numberOfPlayers = 2
    private static final byte MIN_TURN_TO_DRAW    = NUMBER_OF_CELLS - SQUARE_SIZE;
    
    private GameStatus gameStatus = GameStatus.CONTINUE;
+   public static Logger globalLogger = Logger.getGlobal();
+   
+   private int NUMBER_OF_CELLS_TO_ALMOST_WIN = SQUARE_SIZE - 1;
    
    public TicTacToe() {
       for (int row = 0; row < SQUARE_SIZE; row++) {
@@ -122,7 +126,7 @@ public class TicTacToe {
          // otherwise private methods in class TicTacToe assume that first index of array is 0
          markBoardCell(--row, --column);  
                                        
-         if (NUMBER_OF_CELLS - 1 == turn) {
+         if (NUMBER_OF_CELLS - 1 == turn && gameStatus == GameStatus.CONTINUE) {
             performLastMoveAutomatically();
          }
       } 
@@ -143,17 +147,17 @@ public class TicTacToe {
    }
    
    private void checkGameStatus() {
-      boolean continueSearching = isWinnerInRows();
+      boolean gameOver = isWinnerInRows();
       
-      if (true == continueSearching) {
-         continueSearching = isWinnerInColumns();
+      if (false == gameOver) {
+         gameOver = isWinnerInColumns();
       } 
-      if (true == continueSearching) {
-         continueSearching = isWinnerInDiagonals();
+      if (false == gameOver) {
+         gameOver = isWinnerInDiagonals();
       }
-      if (true == continueSearching && turn >= MIN_TURN_TO_DRAW) {
+      if (false == gameOver && turn >= MIN_TURN_TO_DRAW) {
          if (NUMBER_OF_CELLS == turn) {
-            gameStatus = GameStatus.DRAW;
+            this.gameStatus = GameStatus.DRAW;
          }
          else {
             checkEarlyGameTermination();
@@ -168,24 +172,62 @@ public class TicTacToe {
       }
       
       int firstPlayerVictoryChances  = calculateVictoryChance(CellValue.X);
+      int secondPlayerVictoryChances = calculateVictoryChance(CellValue.O);
+      
+      globalLogger.info("Victory chances: firstPlayer  = " + firstPlayerVictoryChances
+                     +  "                 secondPlayer = " + secondPlayerVictoryChances);
+      
+      if (firstPlayerVictoryChances == 0 && secondPlayerVictoryChances == 0) {
+         if (MIN_TURN_TO_DRAW < turn || 
+            (MIN_TURN_TO_DRAW == turn && false == areAdjacentCells(CellValue.EMPTY, 2))) {
+         
+            this.gameStatus = GameStatus.DRAW;
+         }
+      }
+      else {
+         checkEarlyGameVictory();
+      }
+   }
+   
+   private void checkEarlyGameVictory() {
+      int firstPlayerVictoryChances  = calculateVictoryChance(CellValue.X);
       int firstPlayerRemainedMoves   = getRemainedMoves(CellValue.X);
       int secondPlayerVictoryChances = calculateVictoryChance(CellValue.O);
       int secondPlayerRemainedMoves  = getRemainedMoves(CellValue.O);
       
-      if (firstPlayerVictoryChances == 0 && secondPlayerVictoryChances == 0) {
-         assert (secondPlayerRemainedMoves <= 1);
-         this.gameStatus = GameStatus.DRAW;
-      }
+      globalLogger.info("Victory chances: firstPlayer  = " + firstPlayerVictoryChances
+                     +  "                 secondPlayer = " + secondPlayerVictoryChances);
+                     
+      globalLogger.info("Remained moves:  firstPlayer  = " + firstPlayerRemainedMoves
+                     +  "                 secondPlayer = " + secondPlayerRemainedMoves);
       
-      int firstPlayerFactualVictoryMoves  = firstPlayerVictoryChances  - secondPlayerRemainedMoves;
-      int secondPlayerFactualVictoryMoves = secondPlayerVictoryChances - firstPlayerRemainedMoves;
-      
-      if (firstPlayerFactualVictoryMoves > 0) {
-         assert (secondPlayerFactualVictoryMoves == 0);
-         this.gameStatus = GameStatus.FIRST_PLAYER_WIN;
+      boolean afterFirstPlayerMove = turn % 2 == 1;
+      int remainedTurns = NUMBER_OF_CELLS - turn;
+      if (true == afterFirstPlayerMove) {
+         if (secondPlayerVictoryChances >= remainedTurns || 
+            (secondPlayerVictoryChances > firstPlayerRemainedMoves && 0 == firstPlayerVictoryChances)) { // delete this if when SQUARE_SIZE > 3
+               
+            this.gameStatus = GameStatus.SECOND_PLAYER_WIN;
+         }
+         else if (firstPlayerVictoryChances >= remainedTurns && 0 == secondPlayerVictoryChances) {
+            
+            this.gameStatus = GameStatus.FIRST_PLAYER_WIN;
+         }
       }
-      else if (secondPlayerFactualVictoryMoves > 0) {
-         this.gameStatus = GameStatus.SECOND_PLAYER_WIN;
+      else {   // if (false == afterFirstPlayerMove) {
+         if (firstPlayerVictoryChances >= remainedTurns ||
+            (firstPlayerVictoryChances > secondPlayerRemainedMoves && 0 == secondPlayerVictoryChances)) { // delete this if when SQUARE_SIZE > 3
+         
+            this.gameStatus = GameStatus.FIRST_PLAYER_WIN;
+         }
+         else if (secondPlayerVictoryChances >= remainedTurns && 0 == firstPlayerVictoryChances) {
+            this.gameStatus = GameStatus.SECOND_PLAYER_WIN;
+         }
+         //assert (secondPlayerFactualVictoryMoves <= 0);
+         /*
+         if (false == afterFirstPlayerMove || (true == afterFirstPlayerMove && 0 == secondPlayerVictoryChances)) {
+            this.gameStatus = GameStatus.FIRST_PLAYER_WIN;
+         }*/
       }
       
    }
@@ -205,8 +247,8 @@ public class TicTacToe {
    
    private void performLastMoveAutomatically() {
       turn++;
-      for (int row = 1; row <= SQUARE_SIZE; row++) {
-         for (int column = 1; column <= SQUARE_SIZE; column++) {
+      for (int row = 0; row < SQUARE_SIZE; row++) {
+         for (int column = 0; column < SQUARE_SIZE; column++) {
             if (CellValue.EMPTY == board[row][column]) {
                markBoardCell((byte)row, (byte)column);
             }
@@ -216,9 +258,8 @@ public class TicTacToe {
    
    private boolean isWinnerInRows() {
       CellValue cell;
-      boolean continueSearching = true;
       
-      for (int row = 0; row < SQUARE_SIZE && true == continueSearching; row++) {
+      for (int row = 0; row < SQUARE_SIZE; row++) {
          cell = board[row][0];
          if (CellValue.EMPTY == cell) {
             continue;
@@ -233,18 +274,17 @@ public class TicTacToe {
          
          if (SQUARE_SIZE == column) {
             setWinner(cell);
-            continueSearching = false;
+            return true;
          }
       }
       
-      return continueSearching;
+      return false;
    }
    
    private boolean isWinnerInColumns() {
       CellValue cell;
-      boolean continueSearching = true;
       
-      for (int column = 0; column < SQUARE_SIZE && true == continueSearching; column++) {
+      for (int column = 0; column < SQUARE_SIZE; column++) {
          cell = board[0][column];
          if (CellValue.EMPTY == cell) {
             continue;
@@ -259,11 +299,11 @@ public class TicTacToe {
          
          if (SQUARE_SIZE == row) {
             setWinner(cell);
-            continueSearching = false;
+            return true;
          }
       }
       
-      return continueSearching;
+      return false;
    }
    
    private boolean isWinnerInDiagonals() {
@@ -275,7 +315,7 @@ public class TicTacToe {
                break;
             }
          }
-         if (SQUARE_SIZE > diagonalIndex) {
+         if (SQUARE_SIZE == diagonalIndex) {
             setWinner(cell);
             return true;
          }
@@ -284,12 +324,12 @@ public class TicTacToe {
       cell = board[SQUARE_SIZE - 1][0];
       if (CellValue.EMPTY != cell) {
          int row = SQUARE_SIZE - 1;
-         for (int column = 0; column < SQUARE_SIZE; row--, column++) {
+         for (int column = 0; row > -1; row--, column++) {
             if (cell != board[row][column]) {
                break;
             }
          }
-         if (0 == row) {
+         if (-1 == row) {
             setWinner(cell);
             return true;
          }
@@ -380,6 +420,8 @@ public class TicTacToe {
       return remainedMoves;
    }
    
+   // return number of possible victory chances on all empty positions in board
+   // for player with cellValue marked on board
    private int calculateVictoryChance(CellValue cellValue) {
       if (cellValue == CellValue.EMPTY) {
          assert(false) : "cellValue can not be EMPTY";
@@ -400,30 +442,212 @@ public class TicTacToe {
       return victoryChancesCounter;
    }
    
+
+   private boolean areAdjacentCells(CellValue cellValue, final int NUMBER_OF_CELLS) {
+      
+      for (int row = 0; row < SQUARE_SIZE; row++) {
+         for (int column = 0; column < SQUARE_SIZE; column++) {
+            if (cellValue == board[row][column]) {
+               
+               if (NUMBER_OF_CELLS == calculateNumberOfCellValueInRow(row, CellValue.EMPTY) 
+                   && true == areAdjacentCellsInRow(row, CellValue.EMPTY)) {
+                     
+                  return true;
+               }
+               if (NUMBER_OF_CELLS == calculateNumberOfCellValueInColumn(column, CellValue.EMPTY)
+                   && true == areAdjacentCellsInColumn(column, CellValue.EMPTY)) {
+                     
+                  return true;
+               }
+               if (true == existInUpperLeftDiagonal(row, column)) {
+                  if (NUMBER_OF_CELLS == calculateNumberOfCellValueInUpperLeftDiagonal(CellValue.EMPTY)
+                      && true == areAdjacentCellsInUpperLeftDiagonal(CellValue.EMPTY)) {
+                        
+                     return true;
+                  }
+               }
+               if (true == existInLowerLeftDiagonal(row, column)) {
+                  if (NUMBER_OF_CELLS == calculateNumberOfCellValueInLowerLeftDiagonal(CellValue.EMPTY)
+                      && true == areAdjacentCellsInLowerLeftDiagonal(CellValue.EMPTY)) {
+                         
+                     return true;
+                  }
+               }
+            }
+         }
+      }
+      
+      return false;
+   }
+   
+   private boolean areAdjacentCellsInRow(final int ROW, CellValue cellValue) {
+      int identicalCellsCounter = 0;
+      
+      for (int column = 0; column < SQUARE_SIZE; column++) {
+         if (cellValue == board[ROW][column]) {
+            identicalCellsCounter++;
+         }
+         else if (identicalCellsCounter == 1) { 
+            identicalCellsCounter = 0;
+         }
+      }
+      
+      if (identicalCellsCounter < 2) {
+         return false;
+      }
+      
+      return true;
+   }
+   
+   private boolean areAdjacentCellsInColumn(final int COLUMN, CellValue cellValue) {
+      int identicalCellsCounter = 0;
+      
+      for (int row = 0; row < SQUARE_SIZE; row++) {
+         if (cellValue == board[row][COLUMN]) {
+            identicalCellsCounter++;
+         }
+         else if (identicalCellsCounter == 1) { 
+            identicalCellsCounter = 0;
+         }
+      }
+      
+      if (identicalCellsCounter < 2) {
+         return false;
+      }
+      
+      return true;
+   }
+   
+   private boolean areAdjacentCellsInUpperLeftDiagonal(CellValue cellValue) {
+      int identicalCellsCounter = 0;
+      
+      for (int index = 0; index < SQUARE_SIZE; index++) {
+         if (cellValue == board[index][index]) {
+            identicalCellsCounter++;
+         }
+         else if (identicalCellsCounter == 1) { 
+            identicalCellsCounter = 0;
+         }
+      }
+      
+      if (identicalCellsCounter < 2) {
+         return false;
+      }
+      
+      return true;
+   }
+   
+   private boolean areAdjacentCellsInLowerLeftDiagonal(CellValue cellValue) {
+      int identicalCellsCounter = 0;
+      
+      for (int column = 0, row = SQUARE_SIZE - 1; column < SQUARE_SIZE; column++, row--) {
+         if (cellValue == board[row][column]) {
+            identicalCellsCounter++;
+         }
+         else if (identicalCellsCounter == 1) { 
+            identicalCellsCounter = 0;
+         }
+      }
+      
+      if (identicalCellsCounter < 2) {
+         return false;
+      }
+      
+      return true;
+   }
+   
    private boolean isVictoryChanceOnPosition(final int ROW, final int COLUMN, CellValue cellValue) {
       if (cellValue == CellValue.EMPTY) {
          assert(false) : "cellValue can not be EMPTY";
          return false;
       }
       
-      if (SQUARE_SIZE - 1 == calculateNumberOfCellValueInRow(ROW, cellValue)) {
+      //CellValue otherPlayerCellValue = getOtherPlayerCellValue(cellValue);
+      if (true == isAlmostWinInRow(ROW, cellValue)) {
          return true;
       }
-      if (SQUARE_SIZE - 1 == calculateNumberOfCellValueInColumn(COLUMN, cellValue)) {
+      if (true == isAlmostWinInColumn(COLUMN, cellValue)) {
          return true;
       }
       if (true == existInUpperLeftDiagonal(ROW, COLUMN)) {
-         if (SQUARE_SIZE - 1 == calculateNumberOfCellValueInUpperLeftDiagonal(cellValue)) {
+         if (true == isAlmostWinInUpperLeftDiagonal(cellValue)) {
             return true;
          }
       }
       if (true == existInLowerLeftDiagonal(ROW, COLUMN)) {
-         if (SQUARE_SIZE - 1 == calculateNumberOfCellValueInLowerLeftDiagonal(cellValue)) {
+         if (true == isAlmostWinInLowerLeftDiagonal(cellValue)) {
             return true;
          }
       }
       
       return false;
+   }
+   
+   private boolean isAlmostWinInRow(final int ROW, CellValue cellValue) {
+      int numberOfCellsOccupiedByCellValue = calculateNumberOfCellValueInRow(ROW, cellValue);
+      
+      if (NUMBER_OF_CELLS_TO_ALMOST_WIN == numberOfCellsOccupiedByCellValue) {
+         if (1 == calculateNumberOfCellValueInRow(ROW, CellValue.EMPTY)) {
+            
+            return true;
+         }
+      }
+      
+      return false;
+   }
+   
+   private boolean isAlmostWinInColumn(final int COLUMN, CellValue cellValue) {
+      int numberOfCellsOccupiedByCellValue = calculateNumberOfCellValueInColumn(COLUMN, cellValue);
+      
+      if (NUMBER_OF_CELLS_TO_ALMOST_WIN == numberOfCellsOccupiedByCellValue) {
+         if (1 == calculateNumberOfCellValueInColumn(COLUMN, CellValue.EMPTY)) {
+            
+            return true;
+         }
+      }
+      
+      return false;
+   }
+   
+   private boolean isAlmostWinInUpperLeftDiagonal(CellValue cellValue) {
+      int numberOfCellsOccupiedByCellValue = calculateNumberOfCellValueInUpperLeftDiagonal(cellValue);
+      
+      if (NUMBER_OF_CELLS_TO_ALMOST_WIN == numberOfCellsOccupiedByCellValue) {
+         if (1 == calculateNumberOfCellValueInUpperLeftDiagonal(CellValue.EMPTY)) {
+            
+            return true;
+         }
+      }
+      
+      return false;
+   }
+   
+   private boolean isAlmostWinInLowerLeftDiagonal(CellValue cellValue) {
+      int numberOfCellsOccupiedByCellValue = calculateNumberOfCellValueInLowerLeftDiagonal(cellValue);
+      
+      if (NUMBER_OF_CELLS_TO_ALMOST_WIN == numberOfCellsOccupiedByCellValue) {
+         if (1 == calculateNumberOfCellValueInLowerLeftDiagonal(CellValue.EMPTY)) {
+            
+            return true;
+         }
+      }
+      
+      return false;
+   }
+   
+   private CellValue getOtherPlayerCellValue(CellValue cell) {
+      switch (cell) {
+         case O:
+            return CellValue.X;
+         case X:
+            gameStatus = GameStatus.FIRST_PLAYER_WIN;
+            return CellValue.O;
+            
+         case EMPTY:
+         default:
+            assert(false) : "CellValue's enum of' " + cell + " should not be here as argument";
+            throw new IllegalArgumentException("CellValue's enum of' " + cell);
+      }
    }
    /*
    private boolean isVictoryChanceInEmptyPosition() {

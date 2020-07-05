@@ -18,13 +18,13 @@ import java.io.PrintStream;
 public class TicTacToeView {
    private static final String START_INFO = "This program is tic-tac-toe game's simulation for 2 human players.";
                                                    
-   private static final char firstPlayerMarker  = 'X';
-   private static final char secondPlayerMarker = 'O';
-   private static final char EmptyCellMarker    = ':';
-   private static final char horizontalBorderMarker  = '=';
-   private static final char verticalBorderMarker    = '|';
+   private static final char FIRST_PLAYER_MARKER  = 'X';
+   private static final char SECOND_PLAYER_MARKER = 'O';
+   private static final char EMPTY_CELL_MARKER    = ':';
+   private static final char HORIZONTAL_BORDER_MARKER  = '=';
+   private static final char VERTICAL_BORDER_MARKER    = '|';
    
-   private static final String BORDER_HORIZONTAL_LINE = getHorizontalLine(3 * TicTacToe.getSQUARE_SIZE());
+   private static final String BORDER_HORIZONTAL_LINE = getHorizontalLine(1 + 4 * TicTacToe.getSQUARE_SIZE());
    
    private PrintStream printStream = System.out;
    
@@ -41,11 +41,11 @@ public class TicTacToeView {
    }
    
    public static char getFirstPlayerMarker() {
-      return firstPlayerMarker;
+      return FIRST_PLAYER_MARKER;
    }
    
    public static char getSecondPlayerMarker() {
-      return secondPlayerMarker;
+      return SECOND_PLAYER_MARKER;
    }
    
    public void printStartInfo() {
@@ -53,15 +53,15 @@ public class TicTacToeView {
    }
    
    public void printGameOver() {
-      printStream.println("Game is over");
+      printStream.println("\t Game is over");
    }
    
    public void printOccupiedPositionInfo(byte row, byte column) {
-      printStream.printf("Cell in (%d, %d) is not empty %n", row, column);
+      printStream.printf("ERROR: Cell in (%d, %d) is not empty %n", row, column);
    }
    
    public void printGameStatus(GameStatus gameStatus) {
-      printStream.println("Game's status: " + gameStatus);
+      printStream.println("\t Game's status: " + gameStatus);
    }
    
    public void printBoard(TicTacToe ticTacToe) {
@@ -70,7 +70,6 @@ public class TicTacToeView {
       printStream.println();
       
       String result = String.format("TicTacToeView's data: ");
-      int cellWidth = 2;
       String boardString = generateBoardString(ticTacToe, true);
       printStream.println(boardString);
    } 
@@ -79,26 +78,25 @@ public class TicTacToeView {
       final TicTacToe.CellValue[][] BOARD = ticTacToe.getBoard();
       final byte SQUARE_SIZE = TicTacToe.getSQUARE_SIZE();
       String boardString = "";
-      int cellWidth = 1;
-      String numbersRow = appendNumbersRow(SQUARE_SIZE, cellWidth);
+      String numbersRow = appendNumbersRow(SQUARE_SIZE);
       
       if (true == numbersAppending) {
          boardString = numbersRow;
       }
       
       boardString += BORDER_HORIZONTAL_LINE;
-      
-      for (int row = 0; row < SQUARE_SIZE; ) {
+      for (int row = 0; row < SQUARE_SIZE; row++) {
          if (true == numbersAppending) {
             boardString += row + 1;
          }
-            
+         
+         boardString += String.valueOf(VERTICAL_BORDER_MARKER);
          for (int column = 0; column < SQUARE_SIZE; column++) {
             boardString += getCellMarker(BOARD[row][column]);
          }
          
          if (true == numbersAppending) {
-            boardString += ++row;
+            boardString += row + 1;
          }
          
          boardString = boardString.concat(String.format("%n")); 
@@ -115,10 +113,10 @@ public class TicTacToeView {
    }
    
    private static String getHorizontalLine(int length) {
-      String line = "";
+      String line = " ";
       
       for (int counter = 0; counter < length; counter++) {
-         line += horizontalBorderMarker;
+         line += HORIZONTAL_BORDER_MARKER;
       }
       
       line = line.concat(String.format("%n")); 
@@ -131,13 +129,13 @@ public class TicTacToeView {
       
       switch (cellValue) {
          case X:
-            positionMarker = String.format("%c", firstPlayerMarker); 
+            positionMarker = String.format("%c", FIRST_PLAYER_MARKER); 
             break;
          case O:
-            positionMarker = String.format("%c", secondPlayerMarker); 
+            positionMarker = String.format("%c", SECOND_PLAYER_MARKER); 
             break;
          default:
-            positionMarker = String.format("%c", EmptyCellMarker); 
+            positionMarker = String.format("%c", EMPTY_CELL_MARKER); 
       }
       
       return positionMarker;
@@ -148,23 +146,23 @@ public class TicTacToeView {
       
       switch (cellValue) {
          case X:
-            positionMarker = String.format("%c", firstPlayerMarker); 
+            positionMarker = String.format(" %c %c", FIRST_PLAYER_MARKER, VERTICAL_BORDER_MARKER); 
             break;
          case O:
-            positionMarker = String.format("%c", secondPlayerMarker); 
+            positionMarker = String.format(" %c %c", SECOND_PLAYER_MARKER, VERTICAL_BORDER_MARKER); 
             break;
          default:
-            positionMarker = String.format("%c", EmptyCellMarker); 
+            positionMarker = String.format(" %c %c", EMPTY_CELL_MARKER, VERTICAL_BORDER_MARKER); 
       }
       
       return positionMarker;
    }
    
-   private String appendNumbersRow(final byte SQUARE_SIZE, int cellWidth) {
-      String numbersRowString = " ";
+   private String appendNumbersRow(final byte SQUARE_SIZE) {
+      String numbersRowString = "";
       
       for (int column = 1; column <= SQUARE_SIZE; column++) {
-         numbersRowString += String.format("%" + cellWidth + "d", column);
+         numbersRowString += String.format("   %d", column);
       }
       
       numbersRowString += String.format("%n");
