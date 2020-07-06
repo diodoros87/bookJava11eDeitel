@@ -64,10 +64,14 @@ public class GettingDataFromStandardInput {
       return value;
    }
    
-   public static int getInteger(String prompt) {
+   public static Integer getInteger(String prompt) {
       printStream.print(prompt);
       
-      int     value = 0;
+      Integer value = null;   
+      
+      if (false == input.hasNext()) {
+         return null;     // return if End-of-transmission character was detected
+      }
       
       if (false == input.hasNextInt()) {
          throw new IllegalArgumentException("Value entered by User is not type int");

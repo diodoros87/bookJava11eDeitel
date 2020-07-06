@@ -16,7 +16,7 @@
 import java.io.PrintStream;
 
 public class TicTacToeView {
-   private static final String START_INFO = "This program is tic-tac-toe game's simulation for 2 human players.";
+   private static final String START_INFO = "This program is tic-tac-toe game's simulation for 2 players.";
                                                    
    private static final char FIRST_PLAYER_MARKER  = 'X';
    private static final char SECOND_PLAYER_MARKER = 'O';

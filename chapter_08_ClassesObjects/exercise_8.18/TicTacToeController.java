@@ -12,6 +12,7 @@
  *
  * =====================================================================================
  */
+import java.io.PrintStream;
 
 public class TicTacToeController {
 
@@ -29,6 +30,14 @@ public class TicTacToeController {
       
       this.model = model;
       this.view = view;
+   }
+   
+   public void setPrintStream(PrintStream printStream) {
+      view.setPrintStream(printStream);
+   }
+   
+   public PrintStream getPrintStream() {
+      return view.getPrintStream();
    }
    
    public GameStatus getGameStatus() {

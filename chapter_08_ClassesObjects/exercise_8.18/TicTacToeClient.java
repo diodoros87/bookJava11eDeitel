@@ -12,135 +12,122 @@
  *
  * =====================================================================================
  */
-import standardInputDataPackage.GettingDataFromStandardInput;
 
 import java.io.PrintStream;
 
+enum Player { HUMAN, COMPUTER };
+
 public class TicTacToeClient {
-   private static final String  QUIT = "q";
-   private static final byte SQUARE_SIZE = TicTacToeController.getSQUARE_SIZE();
-   
-   private final PrintStream printStream;
-   
-   private final TicTacToe     model = new TicTacToe();
-   private final TicTacToeView view;
-   private final TicTacToeController controller;
+   private final TicTacToeController CONTROLLER;
+   private Player firstPlayer;
+   private Player secondPlayer;
    
    public TicTacToeClient() {
-      printStream = System.out;
-      view        = new TicTacToeView(printStream);
-      controller  = new TicTacToeController(model, view);
+      TicTacToe model    = new TicTacToe();
+      TicTacToeView view = new TicTacToeView(System.out);
+      this.CONTROLLER    = new TicTacToeController(model, view);
    }
    
    public TicTacToeClient(PrintStream printStream) {
-      if (null == printStream) {
-         throw new NullPointerException("Null reference to printStream");
-      }
-      
-      this.printStream = printStream;
-      view       = new TicTacToeView(printStream);
-      controller = new TicTacToeController(model, view);
+      this();
+
+      this.CONTROLLER.setPrintStream(printStream);
    }
 
    public void run() throws Exception {
-      controller.printStartInfo(); 
+      int gameOption;
       
       do {
-         runGame();
-      } while(true == isProcessContinue());
-      
-   }   
+         CONTROLLER.printStartInfo(); 
+         
+         try {
+            gameOption = ClientInputOutput.getGameOption();
+            setPlayers(gameOption);
+            runGame();
+         } 
+         catch (IllegalArgumentException exception) {
+            System.err.printf("%nERROR: %s%n", exception.getMessage());
+            exception.printStackTrace();
+         }
+      } while (true == isPlayingAgain());
+   }
    
-   private boolean isProcessContinue() {
-      GettingDataFromStandardInput.clearNextLine();
-      String processContinue = GettingDataFromStandardInput.getString(String.format
-                              ("%n %s %s to quit %n", "***** To restart game press ENTER or only", QUIT));
-
-      if (null == processContinue || QUIT.equals(processContinue.toLowerCase())) {
-         return false;
+   private void setPlayers(int gameOption) {
+      switch (gameOption) {
+         case ClientInputOutput.TWO_HUMAN_PLAYERS:
+            firstPlayer  = Player.HUMAN;
+            secondPlayer = Player.HUMAN;
+            break;
+         case ClientInputOutput.HUMAN_VS_COMPUTER:
+            firstPlayer  = Player.HUMAN;
+            secondPlayer = Player.COMPUTER;
+            break;
+         case ClientInputOutput.TWO_COMPUTER_PLAYERS:
+            firstPlayer  = Player.COMPUTER;
+            secondPlayer = Player.COMPUTER;
+            break;
+      }
+   }
+   
+   private boolean isPlayingAgain() {
+      boolean playingAgain = ClientInputOutput.isProcessContinue();
+      if (true == playingAgain) {
+         CONTROLLER.restart();
       }
       
-      controller.restart();
-      return true;
+      return playingAgain;
    }
    
    private void runGame() throws Exception {
       int turn = 1;
-      String prompt;
       
       do {
-         controller.printBoard();
-         controller.printGameStatus();
-         prompt = getPrompt(turn);
-         markPositionOnBoard(prompt);
+         CONTROLLER.printBoard();
+         CONTROLLER.printGameStatus();
+         markPositionOnBoard(turn);
          turn++;  
-      } while (false == controller.isGameOver());
+      } while (false == CONTROLLER.isGameOver());
       
-      controller.printBoard();
-      controller.printGameStatus();  
+      CONTROLLER.printBoard();
+      CONTROLLER.printGameStatus();  
    }
    
-   private void markPositionOnBoard(final String PROMT) throws Exception {
+   private void markPositionOnBoard(final int TURN) throws Exception {
+      Player player = (TURN % 2 == 1) ? firstPlayer : secondPlayer;
+      
+      if (player == Player.HUMAN) {
+         markPositionOnBoardByHuman(TURN);
+      }
+      else {   // if (player == Player.COMPUTER) {
+         markPositionOnBoardByComputer();
+      } 
+   }
+   
+   private void markPositionOnBoardByComputer() {
+      
+   }
+   
+   private void markPositionOnBoardByHuman(final int TURN) throws Exception {
       Byte row;
       Byte column;
       boolean correctMove = false;
+      final String PROMT = StringMaker.getPrompt(TURN);
       
       do {
-         row    = getRow(PROMT);
-         if (null == row) { 
-            throw new Exception("End-of-transmission character was detected");
-         }
-         column = getColumn();
-         if (null == column) { 
-            throw new Exception("End-of-transmission character was detected");
-         }
+         row    = ClientInputOutput.getRow(PROMT);
+         column = ClientInputOutput.getColumn();
          
          try {
-            correctMove = controller.move(row, column);
+            correctMove = CONTROLLER.move(row, column);
          } 
          catch (Exception exception) {
-            printStream.printf("%n%s%n", exception.getMessage());
+            System.err.printf("%n%s%n", exception.getMessage());
             exception.printStackTrace();
          }
       } while (false == correctMove);
    }
    
-   private static String getPrompt(int turn) {
-      final String TURN_INFO = getTurnInfo(turn);
-      final String RANGE = String.format("Row and column must be from %d to %d", 1, SQUARE_SIZE);
+   private void getRow(Player player) {
       
-      String prompt = "Enter number of row then after whitespace number of column";
-      prompt = String.format("%s %n %s. %s %n", TURN_INFO, prompt, RANGE);
-      
-      return prompt;
    }
-   
-   private static String getTurnInfo(int turn) {
-      boolean oddTurnNumber = turn % 2 == 1;
-      char playerNumber = (oddTurnNumber) ? 
-                             TicTacToeView.getFirstPlayerMarker() : TicTacToeView.getSecondPlayerMarker();
-      
-      String turnInfo = String.format("--- Turn %d. Move for %s", turn, String.valueOf(playerNumber));
-      
-      return turnInfo;
-   }
-   
-   private static Byte getRow(final String PROMT) {
-      boolean promptDisplaying     = true;
-      boolean acceptInfoDisplaying = false;
-
-      Byte row = GettingDataFromStandardInput.getByteRejectOthersData(PROMT, 
-                                                            promptDisplaying, acceptInfoDisplaying);
-      return row;
-   }
-   
-   private static Byte getColumn() {
-      boolean promptDisplaying     = false;
-      boolean acceptInfoDisplaying = false;
-      final String EMPTY_PROMT = "";
-
-      Byte column = GettingDataFromStandardInput.getByteRejectOthersData(EMPTY_PROMT, 
-                                                            promptDisplaying, acceptInfoDisplaying);
-      return column;
-   }
-} 
+}
