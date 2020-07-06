@@ -25,6 +25,7 @@ public class TicTacToeView {
    private static final char VERTICAL_BORDER_MARKER    = '|';
    
    private static final String BORDER_HORIZONTAL_LINE = getHorizontalLine(1 + 4 * TicTacToe.getSQUARE_SIZE());
+   private static final String NUMBERS_ROW            = appendNumbersRow();
    
    private PrintStream printStream = System.out;
    
@@ -38,6 +39,18 @@ public class TicTacToeView {
       }
       
       this.printStream = printStream;
+   }
+   
+   public void setPrintStream (PrintStream printStream) {
+      if (null == printStream) {
+         throw new NullPointerException("Null reference to " + printStream);
+      }
+      
+      this.printStream = printStream;
+   }
+   
+   public PrintStream getPrintStream() {
+      return printStream;
    }
    
    public static char getFirstPlayerMarker() {
@@ -69,31 +82,25 @@ public class TicTacToeView {
       printStream.println("########  Board: ");
       printStream.println();
       
-      String result = String.format("TicTacToeView's data: ");
       String boardString = generateBoardString(ticTacToe, true);
       printStream.println(boardString);
    } 
    
    private String generateBoardString(TicTacToe ticTacToe, boolean numbersAppending) {
-      final TicTacToe.CellValue[][] BOARD = ticTacToe.getBoard();
-      final byte SQUARE_SIZE = TicTacToe.getSQUARE_SIZE();
+      final CellValue[][] BOARD = ticTacToe.getBoard();
       String boardString = "";
-      String numbersRow = appendNumbersRow(SQUARE_SIZE);
       
       if (true == numbersAppending) {
-         boardString = numbersRow;
+         boardString = NUMBERS_ROW;
       }
       
       boardString += BORDER_HORIZONTAL_LINE;
-      for (int row = 0; row < SQUARE_SIZE; row++) {
+      for (int row = 0; row < TicTacToe.getSQUARE_SIZE(); row++) {
          if (true == numbersAppending) {
             boardString += row + 1;
          }
          
-         boardString += String.valueOf(VERTICAL_BORDER_MARKER);
-         for (int column = 0; column < SQUARE_SIZE; column++) {
-            boardString += getCellMarker(BOARD[row][column]);
-         }
+         boardString += getBoardRow(row, BOARD);
          
          if (true == numbersAppending) {
             boardString += row + 1;
@@ -103,13 +110,22 @@ public class TicTacToeView {
          boardString += BORDER_HORIZONTAL_LINE;
       }
       
-      //boardString += BORDER_HORIZONTAL_LINE;
-      
       if (true == numbersAppending) {
-         boardString = boardString.concat(numbersRow);
+         boardString = boardString.concat(NUMBERS_ROW);
       }
       
       return boardString;
+   }
+   
+   private static String getBoardRow(final int ROW, final CellValue[][] BOARD) {
+      String boardRow = "";
+      
+      boardRow += String.valueOf(VERTICAL_BORDER_MARKER);
+      for (int column = 0; column < TicTacToe.getSQUARE_SIZE(); column++) {
+         boardRow += getCellMarker(BOARD[ROW][column]);
+      } 
+      
+      return boardRow;
    }
    
    private static String getHorizontalLine(int length) {
@@ -123,25 +139,8 @@ public class TicTacToeView {
       
       return line;
    }
-   /*
-   private String getUnborderedCell(TicTacToe.CellValue cellValue, int cellWidth) {
-      String positionMarker = "";
-      
-      switch (cellValue) {
-         case X:
-            positionMarker = String.format("%c", FIRST_PLAYER_MARKER); 
-            break;
-         case O:
-            positionMarker = String.format("%c", SECOND_PLAYER_MARKER); 
-            break;
-         default:
-            positionMarker = String.format("%c", EMPTY_CELL_MARKER); 
-      }
-      
-      return positionMarker;
-   }*/
    
-   private String getCellMarker(TicTacToe.CellValue cellValue) {
+   private static String getCellMarker(CellValue cellValue) {
       String positionMarker = "";
       
       switch (cellValue) {
@@ -158,10 +157,10 @@ public class TicTacToeView {
       return positionMarker;
    }
    
-   private String appendNumbersRow(final byte SQUARE_SIZE) {
+   private static String appendNumbersRow() {
       String numbersRowString = "";
       
-      for (int column = 1; column <= SQUARE_SIZE; column++) {
+      for (int column = 1; column <= TicTacToe.getSQUARE_SIZE(); column++) {
          numbersRowString += String.format("   %d", column);
       }
       

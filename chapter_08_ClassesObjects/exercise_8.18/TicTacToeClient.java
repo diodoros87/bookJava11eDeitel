@@ -1,10 +1,10 @@
 /* =====================================================================================
- *       Filename:  TicTacToeTest.java
+ *       Filename:  TicTacToeClient.java
  *
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 8.18 - test of tic tac toe game
+                             Exercise 8.18 - client application of tic tac toe game
                            
                              
  *
@@ -13,26 +13,45 @@
  * =====================================================================================
  */
 import standardInputDataPackage.GettingDataFromStandardInput;
+
 import java.io.PrintStream;
 
-public class TicTacToeTest {
+public class TicTacToeClient {
    private static final String  QUIT = "q";
-   private static final PrintStream PRINT_STREAM = System.out;
    private static final byte SQUARE_SIZE = TicTacToeController.getSQUARE_SIZE();
+   
+   private final PrintStream printStream;
+   
+   private final TicTacToe     model = new TicTacToe();
+   private final TicTacToeView view;
+   private final TicTacToeController controller;
+   
+   public TicTacToeClient() {
+      printStream = System.out;
+      view        = new TicTacToeView(printStream);
+      controller  = new TicTacToeController(model, view);
+   }
+   
+   public TicTacToeClient(PrintStream printStream) {
+      if (null == printStream) {
+         throw new NullPointerException("Null reference to printStream");
+      }
+      
+      this.printStream = printStream;
+      view       = new TicTacToeView(printStream);
+      controller = new TicTacToeController(model, view);
+   }
 
-   public static void main(String[] args) {
-      TicTacToe     model = new TicTacToe();
-      TicTacToeView view  = new TicTacToeView(PRINT_STREAM);
-      TicTacToeController controller = new TicTacToeController(model, view);
+   public void run() throws Exception {
+      controller.printStartInfo(); 
       
       do {
-         //printMenu();
-         runGame(controller);
-      } while(true == isProcessContinue(controller));
+         runGame();
+      } while(true == isProcessContinue());
       
    }   
    
-   private static boolean isProcessContinue(TicTacToeController controller) {
+   private boolean isProcessContinue() {
       GettingDataFromStandardInput.clearNextLine();
       String processContinue = GettingDataFromStandardInput.getString(String.format
                               ("%n %s %s to quit %n", "***** To restart game press ENTER or only", QUIT));
@@ -45,9 +64,7 @@ public class TicTacToeTest {
       return true;
    }
    
-   private static void runGame(TicTacToeController controller) {
-      controller.printStartInfo(); 
-      
+   private void runGame() throws Exception {
       int turn = 1;
       String prompt;
       
@@ -55,15 +72,15 @@ public class TicTacToeTest {
          controller.printBoard();
          controller.printGameStatus();
          prompt = getPrompt(turn);
-         markPositionOnBoard(controller, prompt);
+         markPositionOnBoard(prompt);
          turn++;  
       } while (false == controller.isGameOver());
       
       controller.printBoard();
-      controller.printGameStatus();   
+      controller.printGameStatus();  
    }
    
-   private static void markPositionOnBoard(TicTacToeController controller, final String PROMT) {
+   private void markPositionOnBoard(final String PROMT) throws Exception {
       Byte row;
       Byte column;
       boolean correctMove = false;
@@ -71,18 +88,18 @@ public class TicTacToeTest {
       do {
          row    = getRow(PROMT);
          if (null == row) { 
-            abnormalTermination("End-of-transmission character was detected");
+            throw new Exception("End-of-transmission character was detected");
          }
          column = getColumn();
          if (null == column) { 
-            abnormalTermination("End-of-transmission character was detected");
+            throw new Exception("End-of-transmission character was detected");
          }
          
          try {
             correctMove = controller.move(row, column);
          } 
          catch (Exception exception) {
-            PRINT_STREAM.printf("%n%s%n", exception.getMessage());
+            printStream.printf("%n%s%n", exception.getMessage());
             exception.printStackTrace();
          }
       } while (false == correctMove);
@@ -125,11 +142,5 @@ public class TicTacToeTest {
       Byte column = GettingDataFromStandardInput.getByteRejectOthersData(EMPTY_PROMT, 
                                                             promptDisplaying, acceptInfoDisplaying);
       return column;
-   }
-   
-   public static void abnormalTermination(final String INFO) {
-      System.out.println("****** Program is interrupted ");
-      System.out.println(INFO);
-      System.exit(1);
    }
 } 
