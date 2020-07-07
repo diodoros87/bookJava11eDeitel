@@ -17,14 +17,17 @@
 import standardInputDataPackage.GettingDataFromStandardInput;
 
 public class ClientInputOutput {
+   static final String MENU               = StringMaker.getMenu();
+   static final int  TWO_HUMAN_PLAYERS    = 1;
+   static final int  HUMAN_VS_COMPUTER    = 2;
+   static final int  TWO_COMPUTER_PLAYERS = 3;
+   static final String REJECT_ANSWER      = "y";
    
-   private static final String  QUIT = "q";
-   private static final String  MENU = getMenu();
-   public static final int  TWO_HUMAN_PLAYERS    = 1;
-   public static final int  HUMAN_VS_COMPUTER    = 2;
-   public static final int  TWO_COMPUTER_PLAYERS = 3;
+   static boolean inputWhitespaces = false;
    
    static Byte getRow(final String PROMT) throws Exception {
+      inputWhitespaces = true;   // GettingDataFromStandardInput.getInteger() leaves whitespaces in input
+      
       boolean promptDisplaying     = true;
       boolean acceptInfoDisplaying = false;
 
@@ -36,6 +39,8 @@ public class ClientInputOutput {
    }
    
    static Byte getColumn() throws Exception {
+      inputWhitespaces = true;   // GettingDataFromStandardInput.getInteger() leaves whitespaces in input
+      
       boolean promptDisplaying     = false;
       boolean acceptInfoDisplaying = false;
       final String EMPTY_PROMT = "";
@@ -47,51 +52,76 @@ public class ClientInputOutput {
       return column;
    }
    
-   private static String getMenu() {
-      String menu =        ("\t \t \t *** MENU *** \n");
-      menu += ("Select option for game \n");
-      menu += String.format("%d. Human vs Human    - enter %d %n", TWO_HUMAN_PLAYERS, TWO_HUMAN_PLAYERS);
-      menu += String.format("%d. Human vs Computer - enter %d %n", HUMAN_VS_COMPUTER, HUMAN_VS_COMPUTER);
-      menu += String.format("%d. Computer vs Computer - enter %d %n", TWO_COMPUTER_PLAYERS, TWO_COMPUTER_PLAYERS);
+   static boolean isPlayingAgain() {
+      String question = StringMaker.getPlayingAgainQuestion();
       
-      return menu;
+      boolean answer = answerToQuestion(question);
+      return answer;
    }
    
-   static boolean isProcessContinue() {
-      GettingDataFromStandardInput.clearNextLine();
-      String processContinue = GettingDataFromStandardInput.getString(String.format
-                              ("%n %s %s to quit %n", "***** To restart game press ENTER or only", QUIT));
-
-      if (null == processContinue || QUIT.equals(processContinue.toLowerCase())) {
-         return false;
-      }
+   static boolean isHumanFirstPlayer() {
+      String question = StringMaker.getHumanFirstPlayerQuestion();
       
-      return true;
+      boolean answer = answerToQuestion(question);
+      return answer;
    }
    
    static boolean isCorrectGameOption(int gameOption) {
       
       switch (gameOption) {
-         case ClientInputOutput.TWO_HUMAN_PLAYERS:
-         case ClientInputOutput.HUMAN_VS_COMPUTER:
-         case ClientInputOutput.TWO_COMPUTER_PLAYERS:
+         case TWO_HUMAN_PLAYERS:
+         case HUMAN_VS_COMPUTER:
+         case TWO_COMPUTER_PLAYERS:
             return true;
       }
          
       return false;
    }
    
-   static int getGameOption() throws Exception {
-      Integer gameOption = GettingDataFromStandardInput.getInteger(MENU);
-      ExceptionChecker.checkNullPointerException(gameOption, "End-of-transmission character was detected");
+   static boolean answerToQuestion(final String QUESTION) {
+      if (true == inputWhitespaces) {
+         clearNextLine();
+      }
+      
+      String answer = GettingDataFromStandardInput.getString(QUESTION);
+
+      if (null == answer || REJECT_ANSWER.equals(answer.toLowerCase())) {
+         return false;
+      }
+      
+      return true;
+   }
+   
+   static int getCorrectGameOption() throws Exception {
+      //inputWhitespaces = true;   // GettingDataFromStandardInput.getInteger() leaves whitespaces in input
+      
+      int gameOption = getGameOption();
       
       while (false == isCorrectGameOption(gameOption)) {
          System.err.printf("ERROR: %d is incorrect game option. Try again %n", gameOption);
-         gameOption = GettingDataFromStandardInput.getInteger(MENU);
-         ExceptionChecker.checkNullPointerException(gameOption, "End-of-transmission character was detected");
+         gameOption = getGameOption();
       }
          
       return gameOption;
+   }
+   
+   static int getGameOption() throws Exception {
+      try {
+         Integer gameOption = GettingDataFromStandardInput.getInteger(MENU);
+         ExceptionChecker.checkNullPointerException(gameOption, "End-of-transmission character was detected");
+         
+         return gameOption;
+      } 
+      catch (IllegalArgumentException exception) {
+         clearNextLine();
+   
+         throw exception;
+      }
+   }
+   
+   static void clearNextLine() {
+      GettingDataFromStandardInput.clearNextLine();
+      inputWhitespaces = false;
    }
 }
 
@@ -104,9 +134,24 @@ class ExceptionChecker {
 }
 
 class StringMaker {
-   private static final byte SQUARE_SIZE = TicTacToeController.getSQUARE_SIZE();
+   static final byte SQUARE_SIZE = TicTacToeController.getSQUARE_SIZE();
    
-   static String getPrompt(int turn) {
+   static String getPlayingAgainQuestion() {
+      String question = String.format("***** To exit program press \'%s\' - to restart game press other key %n",
+                                       ClientInputOutput.REJECT_ANSWER);
+                                       
+      return question;
+   }
+   
+   static String getHumanFirstPlayerQuestion() {
+      String question = String.format(
+            "***** If first turn for computer player press \'%s\' - otherwise press other key %n", 
+                                       ClientInputOutput.REJECT_ANSWER);
+            
+      return question;
+   }
+   
+   static String getRowColumnPrompt(int turn) {
       final String TURN_INFO = getTurnInfo(turn);
       final String RANGE = String.format("Row and column must be from %d to %d", 1, SQUARE_SIZE);
       
@@ -124,5 +169,18 @@ class StringMaker {
       String turnInfo = String.format("--- Turn %d. Move for %s", turn, String.valueOf(playerNumber));
       
       return turnInfo;
+   }
+   
+   static String getMenu() {
+      String menu =        ("\t \t \t *** MENU *** \n");
+      menu += ("Select option for game \n");
+      menu += String.format("%d. Human vs Human    - enter %d %n", 
+                     ClientInputOutput.TWO_HUMAN_PLAYERS, ClientInputOutput.TWO_HUMAN_PLAYERS);
+      menu += String.format("%d. Human vs Computer - enter %d %n", 
+                     ClientInputOutput.HUMAN_VS_COMPUTER, ClientInputOutput.HUMAN_VS_COMPUTER);
+      menu += String.format("%d. Computer vs Computer - enter %d %n", 
+                     ClientInputOutput.TWO_COMPUTER_PLAYERS, ClientInputOutput.TWO_COMPUTER_PLAYERS);
+      
+      return menu;
    }
 } 

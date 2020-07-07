@@ -39,16 +39,16 @@ public class TicTacToeClient {
       
       do {
          CONTROLLER.printStartInfo(); 
-         
          try {
-            gameOption = ClientInputOutput.getGameOption();
+            gameOption = ClientInputOutput.getCorrectGameOption();
             setPlayers(gameOption);
             runGame();
-         } 
+         }
          catch (IllegalArgumentException exception) {
             System.err.printf("%nERROR: %s%n", exception.getMessage());
             exception.printStackTrace();
          }
+
       } while (true == isPlayingAgain());
    }
    
@@ -57,20 +57,30 @@ public class TicTacToeClient {
          case ClientInputOutput.TWO_HUMAN_PLAYERS:
             firstPlayer  = Player.HUMAN;
             secondPlayer = Player.HUMAN;
+            
             break;
          case ClientInputOutput.HUMAN_VS_COMPUTER:
-            firstPlayer  = Player.HUMAN;
-            secondPlayer = Player.COMPUTER;
+            boolean humanFirstPlayer = ClientInputOutput.isHumanFirstPlayer();
+            
+            if (true == humanFirstPlayer) {
+               firstPlayer  = Player.HUMAN;
+               secondPlayer = Player.COMPUTER;
+            }
+            else {
+               firstPlayer  = Player.COMPUTER;
+               secondPlayer = Player.HUMAN;
+            }
+            
             break;
          case ClientInputOutput.TWO_COMPUTER_PLAYERS:
             firstPlayer  = Player.COMPUTER;
             secondPlayer = Player.COMPUTER;
-            break;
+            //break;
       }
    }
    
-   private boolean isPlayingAgain() {
-      boolean playingAgain = ClientInputOutput.isProcessContinue();
+   private boolean isPlayingAgain() { 
+      boolean playingAgain = ClientInputOutput.isPlayingAgain();
       if (true == playingAgain) {
          CONTROLLER.restart();
       }
@@ -111,7 +121,7 @@ public class TicTacToeClient {
       Byte row;
       Byte column;
       boolean correctMove = false;
-      final String PROMT = StringMaker.getPrompt(TURN);
+      final String PROMT = StringMaker.getRowColumnPrompt(TURN);
       
       do {
          row    = ClientInputOutput.getRow(PROMT);
