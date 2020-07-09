@@ -12,20 +12,28 @@
  *
  * =====================================================================================
  */
+ 
+import pairPackage.ByteIntegersPair;
 
 import java.io.PrintStream;
 
 enum Player { HUMAN, COMPUTER };
 
 public class TicTacToeClient {
+   private final TicTacToe           MODEL;
+   private final TicTacToeView       VIEW;
    private final TicTacToeController CONTROLLER;
+   private int gameOption = ClientInputOutput.TWO_HUMAN_PLAYERS;  // default gameOption 
+   
    private Player firstPlayer;
    private Player secondPlayer;
+   private ComputerPlayer firstComputerPlayer  = new ComputerPlayer("first computer player", CellValue.X);
+   private ComputerPlayer secondComputerPlayer = new ComputerPlayer("second computer player", CellValue.O);
    
    public TicTacToeClient() {
-      TicTacToe model    = new TicTacToe();
-      TicTacToeView view = new TicTacToeView(System.out);
-      this.CONTROLLER    = new TicTacToeController(model, view);
+      MODEL         = new TicTacToe();
+      VIEW          = new TicTacToeView(System.out);
+      CONTROLLER    = new TicTacToeController(MODEL, VIEW);
    }
    
    public TicTacToeClient(PrintStream printStream) {
@@ -40,8 +48,9 @@ public class TicTacToeClient {
       do {
          CONTROLLER.printStartInfo(); 
          try {
-            gameOption = ClientInputOutput.getCorrectGameOption();
-            setPlayers(gameOption);
+            // gameOption = ClientInputOutput.getCorrectGameOption(); Debug
+            //setPlayers(gameOption);
+            setPlayers(ClientInputOutput.TWO_COMPUTER_PLAYERS);
             runGame();
          }
          catch (IllegalArgumentException exception) {
@@ -75,7 +84,6 @@ public class TicTacToeClient {
          case ClientInputOutput.TWO_COMPUTER_PLAYERS:
             firstPlayer  = Player.COMPUTER;
             secondPlayer = Player.COMPUTER;
-            //break;
       }
    }
    
@@ -109,12 +117,29 @@ public class TicTacToeClient {
          markPositionOnBoardByHuman(TURN);
       }
       else {   // if (player == Player.COMPUTER) {
-         markPositionOnBoardByComputer();
+         markPositionOnBoardByComputer(TURN);
       } 
    }
    
-   private void markPositionOnBoardByComputer() {
+   private void markPositionOnBoardByComputer(final int TURN) {
+      ComputerPlayer computerPlayer = (TURN % 2 == 1) ? firstComputerPlayer : secondComputerPlayer;
       
+      ByteIntegersPair moveCoordinations = computerPlayer.move(CONTROLLER.getModel());
+      printMoveCoordinationsInfo(computerPlayer.toString(), moveCoordinations);
+   }
+   
+   private void printMoveCoordinationsInfo(String computerPlayerName, ByteIntegersPair moveCoordinations) {
+      if (null == moveCoordinations) { 
+         throw new NullPointerException("moveCoordinations is null");
+      }
+      if (true == moveCoordinations.isNullInPair()) { 
+         throw new NullPointerException("in pair of moveCoordinations is null");
+      }
+      
+      Byte row    = moveCoordinations.getFirstNumber();
+      Byte column = moveCoordinations.getSecondNumber();
+         
+      VIEW.printMoveCoordinationsInfo(computerPlayerName, ++row, ++column);
    }
    
    private void markPositionOnBoardByHuman(final int TURN) throws Exception {
@@ -135,9 +160,5 @@ public class TicTacToeClient {
             exception.printStackTrace();
          }
       } while (false == correctMove);
-   }
-   
-   private void getRow(Player player) {
-      
    }
 }

@@ -32,6 +32,10 @@ public class TicTacToeController {
       this.view = view;
    }
    
+   public TicTacToe getModel() {
+      return model;
+   }
+   
    public void setPrintStream(PrintStream printStream) {
       view.setPrintStream(printStream);
    }

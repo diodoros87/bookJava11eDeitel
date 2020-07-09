@@ -93,8 +93,6 @@ public class ClientInputOutput {
    }
    
    static int getCorrectGameOption() throws Exception {
-      //inputWhitespaces = true;   // GettingDataFromStandardInput.getInteger() leaves whitespaces in input
-      
       int gameOption = getGameOption();
       
       while (false == isCorrectGameOption(gameOption)) {

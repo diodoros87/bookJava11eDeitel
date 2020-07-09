@@ -12,6 +12,10 @@
  *
  * =====================================================================================
  */
+ 
+import pairPackage.ByteIntegersPair;
+ 
+import java.util.ArrayList;
 
 enum MoveStatus { AFTER_GAME_OVER, OUT_OF_BOARD_ROW, OUT_OF_BOARD_COLUMN, OCCUPIED_POSITION, CORRECT }; 
 
@@ -27,6 +31,26 @@ public class GameBoard {
       for (int row = 0; row < SQUARE_SIZE; row++) {
          for (int column = 0; column < SQUARE_SIZE; column++) {
             board[row][column] = CellValue.EMPTY;
+         }
+      }
+   }
+   
+   public GameBoard(CellValue [][] board) {
+      if (null == board) {
+         throw new NullPointerException("board can not be null");
+      }
+      if (board.length != SQUARE_SIZE) {
+         throw new IllegalArgumentException("board.length != SQUARE_SIZE");
+      }
+      for (int row = 0; row < SQUARE_SIZE; row++) {
+         if (board[row].length != SQUARE_SIZE) {
+            throw new IllegalArgumentException(String.format("board[%d].length != SQUARE_SIZE", row));
+         }
+      }
+      
+      for (int row = 0; row < SQUARE_SIZE; row++) {
+         for (int column = 0; column < SQUARE_SIZE; column++) {
+            this.board[row][column] = board[row][column];
          }
       }
    }
@@ -82,13 +106,29 @@ public class GameBoard {
    }
  
    void markBoardEmptyCell(CellValue cellValue) {
-      for (int row = 0; row < SQUARE_SIZE; row++) {
-         for (int column = 0; column < SQUARE_SIZE; column++) {
+      for (byte row = 0; row < SQUARE_SIZE; row++) {
+         for (byte column = 0; column < SQUARE_SIZE; column++) {
             if (CellValue.EMPTY == board[row][column]) {
-               markBoardCell((byte)row, (byte)column, cellValue);
+               markBoardCell(row, column, cellValue);
             }
          }
       }
+   }
+   
+   public ArrayList<ByteIntegersPair> getAllowedCellsCoordinations() {
+      ArrayList<ByteIntegersPair> allowedCellsCoordinations = new ArrayList<ByteIntegersPair>();
+      
+      for (byte row = 0; row < SQUARE_SIZE; row++) {
+         for (byte column = 0; column < SQUARE_SIZE; column++) {
+            if (CellValue.EMPTY == board[row][column]) {
+               ByteIntegersPair coordination = new ByteIntegersPair(row, column);
+               
+               allowedCellsCoordinations.add(coordination);
+            }
+         }
+      }
+      
+      return allowedCellsCoordinations;
    }
    
    CellValue getWinnerInRows() {
@@ -385,20 +425,6 @@ public class GameBoard {
       }
       
       return false;
-   }
-   
-   private CellValue getOtherPlayerCellValue(CellValue cell) {
-      switch (cell) {
-         case O:
-            return CellValue.X;
-         case X:
-            return CellValue.O;
-            
-         case EMPTY:
-         default:
-            assert(false) : "CellValue's enum of' " + cell + " should not be here as argument";
-            throw new IllegalArgumentException("CellValue's enum of' " + cell);
-      }
    }
    
    private int calculateNumberOfCellValueInRow(final int ROW, CellValue cellValue) {

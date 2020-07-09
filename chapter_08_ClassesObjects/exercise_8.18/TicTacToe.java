@@ -12,13 +12,17 @@
  *
  * =====================================================================================
  */
+ 
+import pairPackage.ByteIntegersPair;
+
+import java.util.ArrayList;
 
 public class TicTacToe {
-   private final GameBoard GAME_BOARD = new GameBoard();
+   private final GameBoard GAME_BOARD;
    private byte  turn;
    private GameStatus gameStatus = GameStatus.CONTINUE;
    
-   private static final byte NUMBER_OF_CELLS = GameBoard.getNUMBER_OF_CELLS();
+   public  static final byte NUMBER_OF_CELLS = GameBoard.getNUMBER_OF_CELLS();
    private static final byte MIN_TURN_TO_VICTORY = (byte)(2 * GameBoard.getSQUARE_SIZE() - 1);  // numberOfPlayers = 2
    private static final byte MIN_TURN_TO_DRAW    = (byte)(NUMBER_OF_CELLS - GameBoard.getSQUARE_SIZE());
    public  static final byte NUMBER_OF_CELLS_TO_ALMOST_WIN = (byte)(GameBoard.getSQUARE_SIZE() - 1);
@@ -26,6 +30,29 @@ public class TicTacToe {
    public TicTacToe() {
       turn = 0;
       gameStatus = GameStatus.CONTINUE;
+      GAME_BOARD = new GameBoard();
+   }
+   
+   public TicTacToe(GameBoard gameBoard) {
+      if (null == gameBoard) {
+         throw new NullPointerException("gameBoard can not be null");
+      }
+      turn = 0;
+      gameStatus = GameStatus.CONTINUE;
+      
+      CellValue [][] board = gameBoard.getBoard();
+      GAME_BOARD = new GameBoard(board);
+   }
+   
+   public TicTacToe(TicTacToe ticTacToe) {
+      if (null == ticTacToe) {
+         throw new NullPointerException("ticTacToe can not be null");
+      }
+      turn = 0;
+      gameStatus = GameStatus.CONTINUE;
+      
+      CellValue [][] board = ticTacToe.getBoard();
+      GAME_BOARD = new GameBoard(board);
    }
    
    public GameStatus getGameStatus() {
@@ -36,8 +63,20 @@ public class TicTacToe {
       return gameStatus != GameStatus.CONTINUE;
    }
    
+   GameBoard getGameBoard() {
+      return GAME_BOARD;
+   }
+   
    CellValue[][] getBoard() {
       return GAME_BOARD.getBoard();
+   }
+   
+   public byte getTurn() {
+      return turn;
+   }
+   
+   ArrayList<ByteIntegersPair> getAllowedCellsCoordinations() {
+      return GAME_BOARD.getAllowedCellsCoordinations();
    }
    
    public void restart() {
@@ -71,10 +110,10 @@ public class TicTacToe {
          turn++;
          // otherwise private methods in class TicTacToe assume that first index of array is 0
          markBoardCell(--row, --column);  
-                                       
+         /*
          if (NUMBER_OF_CELLS - 1 == turn && gameStatus == GameStatus.CONTINUE) {
             performLastMoveAutomatically();
-         }
+         }*/
       } 
     
       return moveStatus;
@@ -199,7 +238,7 @@ public class TicTacToe {
             assert(false) : "CellValue's enum of' " + cell + " should not be here as argument";
             throw new IllegalArgumentException("CellValue's enum of' " + cell);
       }
-   }
+   } 
    
    private void setWinner(CellValue cell) {
       switch (cell) {

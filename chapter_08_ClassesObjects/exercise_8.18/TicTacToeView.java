@@ -73,6 +73,14 @@ public class TicTacToeView {
       printStream.printf("ERROR: Cell in (%d, %d) is not empty %n", row, column);
    }
    
+   public void printMoveCoordinationsInfo(String playerName, byte row, byte column) {
+      if (null == playerName) {
+         throw new NullPointerException("Null reference to " + playerName);
+      }
+      
+      printStream.printf(" %s marks cell in (%d, %d) %n", playerName, row, column);
+   }
+   
    public void printGameStatus(GameStatus gameStatus) {
       printStream.println("\t Game's status: " + gameStatus);
    }
