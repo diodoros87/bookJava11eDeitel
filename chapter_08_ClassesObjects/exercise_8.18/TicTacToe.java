@@ -33,23 +33,12 @@ public class TicTacToe {
       GAME_BOARD = new GameBoard();
    }
    
-   public TicTacToe(GameBoard gameBoard) {
-      if (null == gameBoard) {
-         throw new NullPointerException("gameBoard can not be null");
-      }
-      turn = 0;
-      gameStatus = GameStatus.CONTINUE;
-      
-      CellValue [][] board = gameBoard.getBoard();
-      GAME_BOARD = new GameBoard(board);
-   }
-   
    public TicTacToe(TicTacToe ticTacToe) {
       if (null == ticTacToe) {
          throw new NullPointerException("ticTacToe can not be null");
       }
-      turn = 0;
-      gameStatus = GameStatus.CONTINUE;
+      turn = ticTacToe.getTurn();
+      gameStatus = ticTacToe.getGameStatus();
       
       CellValue [][] board = ticTacToe.getBoard();
       GAME_BOARD = new GameBoard(board);
@@ -161,9 +150,9 @@ public class TicTacToe {
       
       int firstPlayerVictoryChances  = GAME_BOARD.calculateVictoryChance(CellValue.X);
       int secondPlayerVictoryChances = GAME_BOARD.calculateVictoryChance(CellValue.O);
-      
+      /*
       GlobalLogger.logInfo("Victory chances: firstPlayer  = ", firstPlayerVictoryChances, 
-                                          " secondPlayer = ", secondPlayerVictoryChances);
+                                          " secondPlayer = ", secondPlayerVictoryChances);*/
       
       if (firstPlayerVictoryChances == 0 && secondPlayerVictoryChances == 0) {
          if (MIN_TURN_TO_DRAW < turn || 
@@ -183,9 +172,9 @@ public class TicTacToe {
       int secondPlayerVictoryChances = GAME_BOARD.calculateVictoryChance(CellValue.O);
       int secondPlayerRemainedMoves  = getRemainedMoves(CellValue.O);
       
-      
+      /*
       GlobalLogger.logInfo("Remained moves:  firstPlayer  = ", firstPlayerRemainedMoves, 
-                                          " secondPlayer = ", secondPlayerRemainedMoves);
+                                          " secondPlayer = ", secondPlayerRemainedMoves);*/
       
       boolean afterFirstPlayerMove = turn % 2 == 1;
       int remainedTurns = NUMBER_OF_CELLS - turn;

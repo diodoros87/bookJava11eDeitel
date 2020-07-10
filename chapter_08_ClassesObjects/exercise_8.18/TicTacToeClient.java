@@ -48,9 +48,8 @@ public class TicTacToeClient {
       do {
          CONTROLLER.printStartInfo(); 
          try {
-            // gameOption = ClientInputOutput.getCorrectGameOption(); Debug
-            //setPlayers(gameOption);
-            setPlayers(ClientInputOutput.TWO_COMPUTER_PLAYERS);
+            gameOption = ClientInputOutput.getCorrectGameOption();
+            setPlayers(gameOption);
             runGame();
          }
          catch (IllegalArgumentException exception) {
