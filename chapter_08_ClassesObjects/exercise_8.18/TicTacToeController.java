@@ -36,6 +36,10 @@ public class TicTacToeController {
       return model;
    }
    
+   public TicTacToeView getView() {
+      return view;
+   }
+   
    public void setPrintStream(PrintStream printStream) {
       view.setPrintStream(printStream);
    }
@@ -74,14 +78,14 @@ public class TicTacToeController {
       }
    }
    
-   public boolean validatePosition(byte row, byte column) throws Exception {
+   public boolean validatePosition(byte row, byte column) {
       MoveStatus moveStatus = model.validatePosition(row, column);
       boolean result = validateMoveStatus(row, column, moveStatus);
     
       return result;
    }
    
-   private boolean validateMoveStatus(byte row, byte column, MoveStatus moveStatus) throws Exception {
+   private boolean validateMoveStatus(byte row, byte column, MoveStatus moveStatus) {
       boolean result = false;
       
       switch (moveStatus) {
@@ -99,15 +103,12 @@ public class TicTacToeController {
             break;
          case CORRECT:
             result = true;
-            break;
-         default:
-            throw new Exception("Unexpected enum MoveStatus " + moveStatus);
       }
     
       return result;
    }
    
-   public boolean move(byte row, byte column) throws Exception {
+   public boolean move(byte row, byte column) {
       MoveStatus moveStatus = model.move(row, column);
       boolean result = validateMoveStatus(row, column, moveStatus);
     
@@ -116,6 +117,9 @@ public class TicTacToeController {
    
    public void printStartInfo() {
       view.printStartInfo();
+   }
+   public void printMoveCoordinationsInfo(String playerName, byte row, byte column) {
+      view.printMoveCoordinationsInfo(playerName, row, column);
    }
    
    public void printGameStatus() {

@@ -99,10 +99,10 @@ public class TicTacToe {
          turn++;
          // otherwise private methods in class TicTacToe assume that first index of array is 0
          markBoardCell(--row, --column);  
-         /*
+         
          if (NUMBER_OF_CELLS - 1 == turn && gameStatus == GameStatus.CONTINUE) {
             performLastMoveAutomatically();
-         }*/
+         }
       } 
     
       return moveStatus;

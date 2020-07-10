@@ -23,9 +23,9 @@ public class ClientInputOutput {
    static final int  TWO_COMPUTER_PLAYERS = 3;
    static final String REJECT_ANSWER      = "y";
    
-   static boolean inputWhitespaces = false;
+   private boolean inputWhitespaces = false;
    
-   static Byte getRow(final String PROMT) throws Exception {
+   public Byte getRow(final String PROMT) throws Exception {
       inputWhitespaces = true;   // GettingDataFromStandardInput.getInteger() leaves whitespaces in input
       
       boolean promptDisplaying     = true;
@@ -38,7 +38,7 @@ public class ClientInputOutput {
       return row;
    }
    
-   static Byte getColumn() throws Exception {
+   public Byte getColumn() throws Exception {
       inputWhitespaces = true;   // GettingDataFromStandardInput.getInteger() leaves whitespaces in input
       
       boolean promptDisplaying     = false;
@@ -52,21 +52,21 @@ public class ClientInputOutput {
       return column;
    }
    
-   static boolean isPlayingAgain() {
+   public boolean isPlayingAgain() {
       String question = StringMaker.getPlayingAgainQuestion();
       
       boolean answer = answerToQuestion(question);
       return answer;
    }
    
-   static boolean isHumanFirstPlayer() {
+   public boolean isHumanFirstPlayer() {
       String question = StringMaker.getHumanFirstPlayerQuestion();
       
       boolean answer = answerToQuestion(question);
       return answer;
    }
    
-   static boolean isCorrectGameOption(int gameOption) {
+   public static boolean isCorrectGameOption(int gameOption) {
       
       switch (gameOption) {
          case TWO_HUMAN_PLAYERS:
@@ -78,7 +78,7 @@ public class ClientInputOutput {
       return false;
    }
    
-   static boolean answerToQuestion(final String QUESTION) {
+   public boolean answerToQuestion(final String QUESTION) {
       if (true == inputWhitespaces) {
          clearNextLine();
       }
@@ -92,7 +92,7 @@ public class ClientInputOutput {
       return true;
    }
    
-   static int getCorrectGameOption() throws Exception {
+   public int getCorrectGameOption() throws Exception {
       int gameOption = getGameOption();
       
       while (false == isCorrectGameOption(gameOption)) {
@@ -103,7 +103,7 @@ public class ClientInputOutput {
       return gameOption;
    }
    
-   static int getGameOption() throws Exception {
+   public int getGameOption() throws Exception {
       try {
          Integer gameOption = GettingDataFromStandardInput.getInteger(MENU);
          ExceptionChecker.checkNullPointerException(gameOption, "End-of-transmission character was detected");
@@ -117,7 +117,7 @@ public class ClientInputOutput {
       }
    }
    
-   static void clearNextLine() {
+   public void clearNextLine() {
       GettingDataFromStandardInput.clearNextLine();
       inputWhitespaces = false;
    }
@@ -132,7 +132,7 @@ class ExceptionChecker {
 }
 
 class StringMaker {
-   static final byte SQUARE_SIZE = TicTacToeController.getSQUARE_SIZE();
+   private static final byte SQUARE_SIZE = TicTacToeController.getSQUARE_SIZE();
    
    static String getPlayingAgainQuestion() {
       String question = String.format("***** To exit program press \'%s\' - to restart game press other key %n",

@@ -19,7 +19,6 @@ import pairPackage.ByteIntegersPair;
 import java.util.ArrayList;
 
 public class ComputerPlayer {
-   
    private CellValue cellMarker;
    private String name;
    
@@ -29,7 +28,11 @@ public class ComputerPlayer {
    }  
    
    public ComputerPlayer(String name, CellValue cellMarker) {
+      if (name == null) {
+         throw new NullPointerException("name is null");
+      }
       validateCellMarker(cellMarker);
+      
       this.cellMarker = cellMarker;
       this.name = name;
    }
@@ -50,40 +53,47 @@ public class ComputerPlayer {
    }
    
    public ByteIntegersPair move(final TicTacToe TIC_TAC_TOE) {
-      
-      byte row    = -1;
-      byte column = -1;
       ArrayList<ByteIntegersPair> allowedCellsCoordinations = TIC_TAC_TOE.getAllowedCellsCoordinations();
-      int maxDepth = TicTacToe.NUMBER_OF_CELLS - TIC_TAC_TOE.getTurn();
+      ByteIntegersPair coordinations = null;
+      int gameTurn = TIC_TAC_TOE.getTurn();
+      int maxDepth = TicTacToe.NUMBER_OF_CELLS - gameTurn;
+      boolean nextMaximizing = false;  // next stage is minimizing (other player's turn)
       int maximum = Integer.MIN_VALUE;
       int maxValueIndex = Integer.MIN_VALUE;
-      ByteIntegersPair coordinations = null;
       
       for (int index = 0; index < allowedCellsCoordinations.size(); index++) {
          coordinations = allowedCellsCoordinations.get(index);
-         row    = coordinations.getFirstNumber();
-         column = coordinations.getSecondNumber();
-         TicTacToe ticTacToe = new TicTacToe(TIC_TAC_TOE);
+         byte row    = coordinations.getFirstNumber();
+         byte column = coordinations.getSecondNumber();
+         TicTacToe temporaryTicTacToe = new TicTacToe(TIC_TAC_TOE);
          
-         ticTacToe.move(++row, ++column);
-         int resultAfterMove = minMax(ticTacToe, false, maxDepth - 1);
+         temporaryTicTacToe.move(++row, ++column); // next turn // public methods in class TicTacToe assume that first index of array is 1
+         
+         int resultAfterMove = minMax(temporaryTicTacToe, nextMaximizing, maxDepth - 1); // next turn decrease depth of search
          if (maximum < resultAfterMove) {
             maxValueIndex = index;
             maximum       = resultAfterMove;
          }
       }
       
-      if (maxValueIndex != Integer.MIN_VALUE) {
-         coordinations = allowedCellsCoordinations.get(maxValueIndex);
-         row    = coordinations.getFirstNumber();
-         column = coordinations.getSecondNumber();
-         TIC_TAC_TOE.move(++row, ++column);
+      if (allowedCellsCoordinations.size() > 0) {
+         coordinations = move(TIC_TAC_TOE, allowedCellsCoordinations, maxValueIndex);
       }
       
       return coordinations;
    }
    
-   public int minMax(final TicTacToe TIC_TAC_TOE, boolean maximizing, int depth) {
+   private ByteIntegersPair move(final TicTacToe TIC_TAC_TOE, ArrayList<ByteIntegersPair> allowedCellsCoordinations, int index) {
+      ByteIntegersPair coordinations = allowedCellsCoordinations.get(index);
+      byte row    = coordinations.getFirstNumber();
+      byte column = coordinations.getSecondNumber();
+      
+      TIC_TAC_TOE.move(++row, ++column);
+      
+      return coordinations;
+   }
+   
+   private int minMax(final TicTacToe TIC_TAC_TOE, boolean maximizing, int depth) {
       if (true == TIC_TAC_TOE.isGameOver() || 0 == depth) {
          return evaluate(TIC_TAC_TOE);
       }
@@ -94,13 +104,14 @@ public class ComputerPlayer {
       if (true == maximizing) {
          extremum = Integer.MIN_VALUE;
          for (ByteIntegersPair coordinations : allowedCellsCoordinations) {
-
+            int resultAfterMove = calculateExtremum(coordinations, maximizing, TIC_TAC_TOE, depth);
+            /*
             byte row    = coordinations.getFirstNumber();
             byte column = coordinations.getSecondNumber();
             TicTacToe ticTacToe = new TicTacToe(TIC_TAC_TOE);
             ticTacToe.move(++row, ++column);
 
-            int resultAfterMove = minMax(ticTacToe, false, depth - 1);
+            int resultAfterMove = minMax(ticTacToe, false, depth - 1);*/
             
             extremum = Math.max(resultAfterMove, extremum);
          }
@@ -108,19 +119,35 @@ public class ComputerPlayer {
       else {
          extremum = Integer.MAX_VALUE;
          for (ByteIntegersPair coordinations : allowedCellsCoordinations) {
-
+            int resultAfterMove = calculateExtremum(coordinations, maximizing, TIC_TAC_TOE, depth);
+            /*
             byte row    = coordinations.getFirstNumber();
             byte column = coordinations.getSecondNumber();
             TicTacToe ticTacToe = new TicTacToe(TIC_TAC_TOE);
             ticTacToe.move(++row, ++column);
 
-            int resultAfterMove = minMax(ticTacToe, true, depth - 1);
+            int resultAfterMove = minMax(ticTacToe, true, depth - 1);*/
             extremum = Math.min(resultAfterMove, extremum);
          }
          
       }
       
       return extremum;
+   }
+   
+   private int calculateExtremum(final ByteIntegersPair COORDINATIONS, boolean maximizing, final TicTacToe TIC_TAC_TOE, int depth) {
+      byte row    = COORDINATIONS.getFirstNumber();
+      byte column = COORDINATIONS.getSecondNumber();
+      TicTacToe temporaryTicTacToe = new TicTacToe(TIC_TAC_TOE);
+      
+      temporaryTicTacToe.move(++row, ++column);   // next turn // public methods in class TicTacToe assume that first index of array is 1
+      
+      boolean nextMaximizing = ! maximizing;  // next stage is minimizing (other player's turn)
+       // next stage (turn) changes player and maximizing will be minimizing, otherwise minimizing will be maximizing
+      int nextDepth = --depth;     // next turn decrease depth of search
+      int resultAfterMove = minMax(temporaryTicTacToe, nextMaximizing, nextDepth);
+      
+      return resultAfterMove;
    }
    
    private int evaluate(final TicTacToe TIC_TAC_TOE) {

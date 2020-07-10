@@ -20,20 +20,24 @@ import java.io.PrintStream;
 enum Player { HUMAN, COMPUTER };
 
 public class TicTacToeClient {
-   private final TicTacToe           MODEL;
-   private final TicTacToeView       VIEW;
    private final TicTacToeController CONTROLLER;
+   
+   private final ClientInputOutput CLIENT_INPUT_OUTPUT = new ClientInputOutput();
    private int gameOption = ClientInputOutput.TWO_HUMAN_PLAYERS;  // default gameOption 
    
    private Player firstPlayer;
    private Player secondPlayer;
-   private ComputerPlayer firstComputerPlayer  = new ComputerPlayer("first computer player", CellValue.X);
-   private ComputerPlayer secondComputerPlayer = new ComputerPlayer("second computer player", CellValue.O);
+   
+   private ComputerPlayer FIRST_COMPUTER_PLAYER;
+   private ComputerPlayer SECOND_COMPUTER_PLAYER;
    
    public TicTacToeClient() {
-      MODEL         = new TicTacToe();
-      VIEW          = new TicTacToeView(System.out);
-      CONTROLLER    = new TicTacToeController(MODEL, VIEW);
+      final TicTacToe     MODEL = new TicTacToe();
+      final TicTacToeView VIEW  = new TicTacToeView(System.out);
+      CONTROLLER                = new TicTacToeController(MODEL, VIEW);
+      
+      FIRST_COMPUTER_PLAYER  = new ComputerPlayer("first computer player",  CellValue.X);
+      SECOND_COMPUTER_PLAYER = new ComputerPlayer("second computer player", CellValue.O);
    }
    
    public TicTacToeClient(PrintStream printStream) {
@@ -47,8 +51,9 @@ public class TicTacToeClient {
       
       do {
          CONTROLLER.printStartInfo(); 
+         
          try {
-            gameOption = ClientInputOutput.getCorrectGameOption();
+            gameOption = CLIENT_INPUT_OUTPUT.getCorrectGameOption();
             setPlayers(gameOption);
             runGame();
          }
@@ -68,16 +73,7 @@ public class TicTacToeClient {
             
             break;
          case ClientInputOutput.HUMAN_VS_COMPUTER:
-            boolean humanFirstPlayer = ClientInputOutput.isHumanFirstPlayer();
-            
-            if (true == humanFirstPlayer) {
-               firstPlayer  = Player.HUMAN;
-               secondPlayer = Player.COMPUTER;
-            }
-            else {
-               firstPlayer  = Player.COMPUTER;
-               secondPlayer = Player.HUMAN;
-            }
+            setHumanVsComputerOrder();
             
             break;
          case ClientInputOutput.TWO_COMPUTER_PLAYERS:
@@ -86,8 +82,21 @@ public class TicTacToeClient {
       }
    }
    
+   private void setHumanVsComputerOrder() {
+      boolean humanFirstPlayer = CLIENT_INPUT_OUTPUT.isHumanFirstPlayer();
+            
+      if (true == humanFirstPlayer) {
+         firstPlayer  = Player.HUMAN;
+         secondPlayer = Player.COMPUTER;
+      }
+      else {
+         firstPlayer  = Player.COMPUTER;
+         secondPlayer = Player.HUMAN;
+      }
+   }
+   
    private boolean isPlayingAgain() { 
-      boolean playingAgain = ClientInputOutput.isPlayingAgain();
+      boolean playingAgain = CLIENT_INPUT_OUTPUT.isPlayingAgain();
       if (true == playingAgain) {
          CONTROLLER.restart();
       }
@@ -121,10 +130,13 @@ public class TicTacToeClient {
    }
    
    private void markPositionOnBoardByComputer(final int TURN) {
-      ComputerPlayer computerPlayer = (TURN % 2 == 1) ? firstComputerPlayer : secondComputerPlayer;
+      ComputerPlayer computerPlayer = (TURN % 2 == 1) ? FIRST_COMPUTER_PLAYER : SECOND_COMPUTER_PLAYER;
       
-      ByteIntegersPair moveCoordinations = computerPlayer.move(CONTROLLER.getModel());
-      printMoveCoordinationsInfo(computerPlayer.toString(), moveCoordinations);
+      TicTacToe model = CONTROLLER.getModel();
+      ByteIntegersPair moveCoordinations = computerPlayer.move(model);
+      String computerPlayerName = computerPlayer.toString();
+      
+      printMoveCoordinationsInfo(computerPlayerName, moveCoordinations);
    }
    
    private void printMoveCoordinationsInfo(String computerPlayerName, ByteIntegersPair moveCoordinations) {
@@ -138,7 +150,7 @@ public class TicTacToeClient {
       Byte row    = moveCoordinations.getFirstNumber();
       Byte column = moveCoordinations.getSecondNumber();
          
-      VIEW.printMoveCoordinationsInfo(computerPlayerName, ++row, ++column);
+      CONTROLLER.printMoveCoordinationsInfo(computerPlayerName, ++row, ++column);// public methods in class TicTacToe assume that first index of array is 1
    }
    
    private void markPositionOnBoardByHuman(final int TURN) throws Exception {
@@ -148,13 +160,13 @@ public class TicTacToeClient {
       final String PROMT = StringMaker.getRowColumnPrompt(TURN);
       
       do {
-         row    = ClientInputOutput.getRow(PROMT);
-         column = ClientInputOutput.getColumn();
+         row    = CLIENT_INPUT_OUTPUT.getRow(PROMT);
+         column = CLIENT_INPUT_OUTPUT.getColumn();
          
          try {
             correctMove = CONTROLLER.move(row, column);
          } 
-         catch (Exception exception) {
+         catch (IllegalArgumentException exception) {
             System.err.printf("%n%s%n", exception.getMessage());
             exception.printStackTrace();
          }
