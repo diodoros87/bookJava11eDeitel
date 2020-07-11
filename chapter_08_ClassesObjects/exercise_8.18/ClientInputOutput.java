@@ -21,13 +21,24 @@ public class ClientInputOutput {
    static final int  TWO_HUMAN_PLAYERS    = 1;
    static final int  HUMAN_VS_COMPUTER    = 2;
    static final int  TWO_COMPUTER_PLAYERS = 3;
-   static final String REJECT_ANSWER      = "y";
+   static final String ACCEPT_ANSWER      = "y";
    
-   private boolean inputWhitespaces = false;
-   
-   public Byte getRow(final String PROMT) throws Exception {
-      inputWhitespaces = true;   // GettingDataFromStandardInput.getInteger() leaves whitespaces in input
+   public static void setMoveCoordinations(final String PROMT, byte[] moveCoordinations) throws Exception {
+      if (null == moveCoordinations) { 
+         throw new NullPointerException();
+      }
+      if (2 != moveCoordinations.length) { 
+         throw new IllegalArgumentException("moveCoordinations must be 2 elements array");
+      }
       
+      moveCoordinations[0] = getRow(PROMT);
+      moveCoordinations[1] = getColumn();
+      
+      GettingDataFromStandardInput.clearNextLine(); // GettingDataFromStandardInput.getByteRejectOthersData() leaves whitespaces in input
+                                                    // and may leaves other characters
+   }
+   
+   public static Byte getRow(final String PROMT) throws Exception {
       boolean promptDisplaying     = true;
       boolean acceptInfoDisplaying = false;
 
@@ -38,9 +49,7 @@ public class ClientInputOutput {
       return row;
    }
    
-   public Byte getColumn() throws Exception {
-      inputWhitespaces = true;   // GettingDataFromStandardInput.getInteger() leaves whitespaces in input
-      
+   public static Byte getColumn() throws Exception {
       boolean promptDisplaying     = false;
       boolean acceptInfoDisplaying = false;
       final String EMPTY_PROMT = "";
@@ -52,14 +61,14 @@ public class ClientInputOutput {
       return column;
    }
    
-   public boolean isPlayingAgain() {
+   public static boolean isPlayingAgain() {
       String question = StringMaker.getPlayingAgainQuestion();
       
       boolean answer = answerToQuestion(question);
       return answer;
    }
    
-   public boolean isHumanFirstPlayer() {
+   public static boolean isHumanFirstPlayer() {
       String question = StringMaker.getHumanFirstPlayerQuestion();
       
       boolean answer = answerToQuestion(question);
@@ -78,21 +87,17 @@ public class ClientInputOutput {
       return false;
    }
    
-   public boolean answerToQuestion(final String QUESTION) {
-      if (true == inputWhitespaces) {
-         clearNextLine();
-      }
-      
+   public static boolean answerToQuestion(final String QUESTION) {
       String answer = GettingDataFromStandardInput.getString(QUESTION);
 
-      if (null == answer || REJECT_ANSWER.equals(answer.toLowerCase())) {
+      if (null == answer || ACCEPT_ANSWER.equals(answer.toLowerCase())) {
          return false;
       }
       
       return true;
    }
    
-   public int getCorrectGameOption() throws Exception {
+   public static int getCorrectGameOption() throws Exception {
       int gameOption = getGameOption();
       
       while (false == isCorrectGameOption(gameOption)) {
@@ -103,7 +108,7 @@ public class ClientInputOutput {
       return gameOption;
    }
    
-   public int getGameOption() throws Exception {
+   public static int getGameOption() throws Exception {
       try {
          Integer gameOption = GettingDataFromStandardInput.getInteger(MENU);
          ExceptionChecker.checkNullPointerException(gameOption, "End-of-transmission character was detected");
@@ -111,15 +116,10 @@ public class ClientInputOutput {
          return gameOption;
       } 
       catch (IllegalArgumentException exception) {
-         clearNextLine();
+         GettingDataFromStandardInput.clearNextLine();
    
          throw exception;
       }
-   }
-   
-   public void clearNextLine() {
-      GettingDataFromStandardInput.clearNextLine();
-      inputWhitespaces = false;
    }
 }
 
@@ -136,7 +136,7 @@ class StringMaker {
    
    static String getPlayingAgainQuestion() {
       String question = String.format("***** To exit program press \'%s\' - to restart game press other key %n",
-                                       ClientInputOutput.REJECT_ANSWER);
+                                       ClientInputOutput.ACCEPT_ANSWER);
                                        
       return question;
    }
@@ -144,7 +144,7 @@ class StringMaker {
    static String getHumanFirstPlayerQuestion() {
       String question = String.format(
             "***** If first turn for computer player press \'%s\' - otherwise press other key %n", 
-                                       ClientInputOutput.REJECT_ANSWER);
+                                       ClientInputOutput.ACCEPT_ANSWER);
             
       return question;
    }

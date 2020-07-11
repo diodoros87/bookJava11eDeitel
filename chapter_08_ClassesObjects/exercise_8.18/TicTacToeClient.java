@@ -22,7 +22,6 @@ enum Player { HUMAN, COMPUTER };
 public class TicTacToeClient {
    private final TicTacToeController CONTROLLER;
    
-   private final ClientInputOutput CLIENT_INPUT_OUTPUT = new ClientInputOutput();
    private int gameOption = ClientInputOutput.TWO_HUMAN_PLAYERS;  // default gameOption 
    
    private Player firstPlayer;
@@ -53,7 +52,7 @@ public class TicTacToeClient {
          CONTROLLER.printStartInfo(); 
          
          try {
-            gameOption = CLIENT_INPUT_OUTPUT.getCorrectGameOption();
+            gameOption = ClientInputOutput.getCorrectGameOption();
             setPlayers(gameOption);
             runGame();
          }
@@ -83,7 +82,7 @@ public class TicTacToeClient {
    }
    
    private void setHumanVsComputerOrder() {
-      boolean humanFirstPlayer = CLIENT_INPUT_OUTPUT.isHumanFirstPlayer();
+      boolean humanFirstPlayer = ClientInputOutput.isHumanFirstPlayer();
             
       if (true == humanFirstPlayer) {
          firstPlayer  = Player.HUMAN;
@@ -96,7 +95,7 @@ public class TicTacToeClient {
    }
    
    private boolean isPlayingAgain() { 
-      boolean playingAgain = CLIENT_INPUT_OUTPUT.isPlayingAgain();
+      boolean playingAgain = ClientInputOutput.isPlayingAgain();
       if (true == playingAgain) {
          CONTROLLER.restart();
       }
@@ -154,17 +153,15 @@ public class TicTacToeClient {
    }
    
    private void markPositionOnBoardByHuman(final int TURN) throws Exception {
-      Byte row;
-      Byte column;
+      byte[] moveCoordinations = new byte[2];
       boolean correctMove = false;
       final String PROMT = StringMaker.getRowColumnPrompt(TURN);
       
       do {
-         row    = CLIENT_INPUT_OUTPUT.getRow(PROMT);
-         column = CLIENT_INPUT_OUTPUT.getColumn();
+         ClientInputOutput.setMoveCoordinations(PROMT, moveCoordinations);
          
          try {
-            correctMove = CONTROLLER.move(row, column);
+            correctMove = CONTROLLER.move(moveCoordinations[0], moveCoordinations[1]);
          } 
          catch (IllegalArgumentException exception) {
             System.err.printf("%n%s%n", exception.getMessage());

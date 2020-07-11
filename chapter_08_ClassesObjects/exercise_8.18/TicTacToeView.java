@@ -24,7 +24,8 @@ public class TicTacToeView {
    private static final char HORIZONTAL_BORDER_MARKER  = '=';
    private static final char VERTICAL_BORDER_MARKER    = '|';
    
-   private static final String BORDER_HORIZONTAL_LINE = getHorizontalLine(1 + 4 * TicTacToe.getSQUARE_SIZE());
+   private static final byte CELL_WIDTH = 4;
+   private static final String BORDER_HORIZONTAL_LINE = getHorizontalLine(1 + CELL_WIDTH * TicTacToe.getSQUARE_SIZE());
    private static final String NUMBERS_ROW            = appendNumbersRow();
    
    private PrintStream printStream = System.out;
