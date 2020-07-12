@@ -13,9 +13,10 @@
  * =====================================================================================
  */
  
+ /*
 import pairPackage.ByteIntegersPair;
  
-import java.util.ArrayList;
+import java.util.ArrayList;*/
 
 enum MoveStatus { AFTER_GAME_OVER, OUT_OF_BOARD_LEVEL, OUT_OF_BOARD_ROW, OUT_OF_BOARD_COLUMN, OCCUPIED_POSITION, CORRECT }; 
 
