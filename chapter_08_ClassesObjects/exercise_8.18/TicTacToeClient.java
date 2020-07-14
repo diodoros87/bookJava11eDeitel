@@ -46,14 +46,12 @@ public class TicTacToeClient {
    }
 
    public void run() throws Exception {
-      int gameOption;
-      
       do {
          CONTROLLER.printStartInfo(); 
          
          try {
             gameOption = ClientInputOutput.getCorrectGameOption();
-            setPlayers(gameOption);
+            setPlayers();
             runGame();
          }
          catch (IllegalArgumentException exception) {
@@ -64,7 +62,7 @@ public class TicTacToeClient {
       } while (true == isPlayingAgain());
    }
    
-   private void setPlayers(int gameOption) {
+   private void setPlayers() {
       switch (gameOption) {
          case ClientInputOutput.TWO_HUMAN_PLAYERS:
             firstPlayer  = Player.HUMAN;

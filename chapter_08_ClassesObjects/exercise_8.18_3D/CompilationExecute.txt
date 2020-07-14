@@ -1,8 +1,0 @@
-Command to compile in Linux's terminal:
-in current folder type in terminal:
-javac -Xlint -cp .:.. *.java
-
-
-Command to execute in Linux's terminal:
-in current folder type in terminal:
-java -ea -cp .:.. TicTacToeConsoleClient
