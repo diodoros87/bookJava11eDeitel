@@ -19,6 +19,9 @@ package standardInputDataPackage;
 
 import java.util.Scanner;
 import java.io.PrintStream;
+import java.math.BigDecimal;
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 
 public class GettingDataFromStandardInput {
    private static final Scanner input               = new Scanner(System.in);
@@ -304,6 +307,34 @@ public class GettingDataFromStandardInput {
       
       clearNextLine(); // clear input data
       return value;
+   }
+   
+   public static BigDecimal getBigDecimal(String prompt) {
+      printStream.print(prompt);
+      
+      try {
+         BigDecimal     value = input.nextBigDecimal();
+         
+         clearNextLine(); // clear input data
+         
+         return value;
+         
+      } catch (InputMismatchException exception) {
+         clearNextLine();
+         
+         throw new InputMismatchException("Value entered by User is not type BigDecimal");
+      } 
+      
+      catch (NoSuchElementException exception) {
+         clearNextLine();
+         
+         throw new NoSuchElementException("End-of-transmission character was detected");
+      } 
+      
+      catch (IllegalStateException exception) {
+         
+         throw new IllegalStateException("Scanner is closed");
+      }
    }
    
 }
