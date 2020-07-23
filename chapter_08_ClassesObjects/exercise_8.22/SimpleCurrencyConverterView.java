@@ -13,15 +13,10 @@
  * =====================================================================================
  */
  
-//import        org.javamoney.moneta.Money;
 import static org.javamoney.moneta.format.AmountFormatParams.PATTERN;
 import static org.javamoney.moneta.format.CurrencyStyle.SYMBOL;
  
-//import javax.money.convert.MonetaryConversions;
-//import javax.money.convert.ExchangeRateProvider;
-//import javax.money.convert.CurrencyConversion;
 import javax.money.Monetary;
-//import javax.money.CurrencyUnit;
 import javax.money.MonetaryAmount;
 import javax.money.format.MonetaryAmountFormat;
 import javax.money.format.MonetaryFormats;
@@ -91,6 +86,7 @@ public class SimpleCurrencyConverterView {
    public void printAmountSecondCurrency(SimpleCurrencyConverter simpleCurrencyConverter) {
       MonetaryAmount monetaryAmount = simpleCurrencyConverter.getSecondAmount();
       String formattedAmount = MONETARY_AMOUNT_FORMAT.format(monetaryAmount);
+      
       printStream.println("Second amount is " + formattedAmount);
    }
    
@@ -107,12 +103,14 @@ public class SimpleCurrencyConverterView {
    public void printFirstToSecondConversion(SimpleCurrencyConverter simpleCurrencyConverter) {
       MonetaryAmount monetaryAmount = simpleCurrencyConverter.getFirstToSecondWithCurrencyConversion();
       String formattedAmount = MONETARY_AMOUNT_FORMAT.format(monetaryAmount);
+      
       printStream.println("First amount after conversion is " + formattedAmount);
    }
    
    public void printSecondToFirstConversion(SimpleCurrencyConverter simpleCurrencyConverter) {
       MonetaryAmount monetaryAmount = simpleCurrencyConverter.getSecondToFirstWithCurrencyConversion();
       String formattedAmount = MONETARY_AMOUNT_FORMAT.format(monetaryAmount);
+      
       printStream.println("Second amount after conversion is " + formattedAmount);
    }
 

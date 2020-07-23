@@ -47,7 +47,7 @@ public class SimpleCurrencyConverter {
    public SimpleCurrencyConverter() {
       this.firstCurrencyCode  = "PLN";
       this.secondCurrencyCode = "USD";
-      this.amount = BigDecimal.ZERO;
+      this.amount             = BigDecimal.ZERO;
    }
    
    public SimpleCurrencyConverter(String firstCurrencyCode, BigDecimal amount, String secondCurrencyCode) {
@@ -56,7 +56,7 @@ public class SimpleCurrencyConverter {
       
       this.firstCurrencyCode  = firstCurrencyCode;
       this.secondCurrencyCode = secondCurrencyCode;
-      this.amount = amount;
+      this.amount             = amount;
    }
    
    public String getFirstCurrencyCode() {
@@ -105,7 +105,6 @@ public class SimpleCurrencyConverter {
          return code;
       }
       catch (IndexOutOfBoundsException exception) {
-         //throw new IndexOutOfBoundsException(exception.getMessage());
          throw new IndexOutOfBoundsException(index);
       }
    }
@@ -171,7 +170,7 @@ public class SimpleCurrencyConverter {
    public MonetaryAmount getSecondToFirstWithCurrencyConversion() {
       try {
          CurrencyConversion convertion = MonetaryConversions.getConversion(firstCurrencyCode, EXCHANGE_RATE_PROVIDER_STRING);
-         MonetaryAmount amount                = Money.of(this.amount, secondCurrencyCode);
+         MonetaryAmount amount         = Money.of(this.amount, secondCurrencyCode);
          
          try {
             MonetaryAmount amountAfterConvertion = amount.with(convertion);
@@ -206,7 +205,6 @@ public class SimpleCurrencyConverter {
       while (true == iterator.hasNext()) {
          Currency currency = iterator.next();
          String currencyCode = currency.getCurrencyCode();
-         System.out.println(" currency's code = " + currencyCode);
          if (true == currencyCodeString.equals(currencyCode)) {
             
             return true;

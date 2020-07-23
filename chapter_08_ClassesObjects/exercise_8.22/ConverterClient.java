@@ -17,6 +17,7 @@
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.InputMismatchException;
+import java.io.IOException;
 
 import javax.money.MonetaryException;
 import javax.money.UnknownCurrencyException;
@@ -28,7 +29,7 @@ public class ConverterClient {
    public ConverterClient() {
       final SimpleCurrencyConverter     MODEL = new SimpleCurrencyConverter();
       final SimpleCurrencyConverterView VIEW  = new SimpleCurrencyConverterView(System.out);
-      CONTROLLER                = new SimpleCurrencyConverterController(MODEL, VIEW);
+      CONTROLLER                              = new SimpleCurrencyConverterController(MODEL, VIEW);
    }
    
    public ConverterClient(PrintStream printStream) {
@@ -50,6 +51,10 @@ public class ConverterClient {
             CONTROLLER.printAmountSecondCurrency();
             CONTROLLER.printFirstToSecondConversion();
             CONTROLLER.printSecondToFirstConversion();
+         }
+         catch (IOException exception) {
+            System.err.printf("%n%s%n", exception.getMessage());
+            exception.printStackTrace();
          }
          catch (CurrencyConversionException exception) {
             System.err.printf("%n%s%n", exception.getMessage());
@@ -111,4 +116,5 @@ public class ConverterClient {
          }
       } while (false == correctCurrencies);
    }
+   
 }
