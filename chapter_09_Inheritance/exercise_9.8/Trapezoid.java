@@ -12,16 +12,22 @@
  *
  * =====================================================================================
  */
- 
-import java.lang.Object;
+
+import java.math.BigDecimal;
 
 public class Trapezoid extends Quadrilateral {
+   //private final BigDecimal HEIGHT;
 
    public Trapezoid(Point... pointsArray) {
-      validatePoints(pointsArray);
-      
-      Point.assignPoints(getVertices(), pointsArray, NUMBER_OF_VERTICES);
+      super(pointsArray);
+      //validatePoints(pointsArray);
+      int parallelSides = calculateSidesRelations(Line.LinesRelation.PARALLEL);
+      if (1 > parallelSides) {
+         throw new IllegalArgumentException("Trapezoid must have at least 1 pair of parallel sides");
+      }
    }
+   
+   
    /*
    public static void validatePoints(Point... pointsArray) {
       Quadrilateral.validatePoints(pointsArray);

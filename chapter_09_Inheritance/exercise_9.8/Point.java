@@ -73,13 +73,11 @@ public class Point {
          throw new IllegalArgumentException("argument type is " + other.getClass().getName() + " Only type Point is allowed");
       }
       
-      //if (other instanceof Point) {
       Point point = (Point)other;
       if ( getX() == point.getX() && getY() == point.getY() ) {
       
          return true;
       }
-      //}
       
       return false;
    }

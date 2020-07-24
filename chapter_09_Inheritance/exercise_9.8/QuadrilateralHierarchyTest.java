@@ -19,8 +19,10 @@ public class QuadrilateralHierarchyTest {
       Point[] vertices = { new Point("A", 5, 6), new Point("B", -5, -6), new Point("C", -5, 6), new Point("D", 5, -6) };
       
       Trapezoid trapez = new Trapezoid(vertices);
-      
       System.out.println(trapez);
+      
+      //Quadrilateral quadrilateral = new Quadrilateral();
+      //System.out.println(quadrilateral);
       
       vertices[0] = new Point("E", 5, 6);
       vertices[1].setX(67);
@@ -43,6 +45,26 @@ public class QuadrilateralHierarchyTest {
       
       try {  
          Point[] vertices = { new Point("A", 5, 6), new Point("B", -5, -6), new Point("C", 75, 6) };
+         Trapezoid trapez = new Trapezoid(vertices);
+         assert(false);
+      }
+      catch (IllegalArgumentException exception) {
+         System.out.printf("%nException while construct Trapezoid: %s%n", exception.getMessage());
+         exception.printStackTrace();
+      }
+      
+      try {  
+         Point[] vertices = { new Point("A", 0, 0), new Point("B", 1, 1), new Point("C", 2, 2), new Point("D", 5, -6) };
+         Trapezoid trapez = new Trapezoid(vertices);
+         assert(false);
+      }
+      catch (IllegalArgumentException exception) {
+         System.out.printf("%nException while construct Trapezoid: %s%n", exception.getMessage());
+         exception.printStackTrace();
+      }
+      
+      try {  
+         Point[] vertices = { new Point("A", 0, 0), new Point("B", 1.5, 3), new Point("C", 2, 2), new Point("D", -3, -6) };
          Trapezoid trapez = new Trapezoid(vertices);
          assert(false);
       }
