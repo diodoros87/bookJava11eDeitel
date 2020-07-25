@@ -14,6 +14,9 @@
  */
 import validateParametersPackage.ValidateParameters;
 
+import java.util.ArrayList;
+import java.math.BigDecimal;
+
 public abstract class Quadrilateral {
    public  static final int NUMBER_OF_VERTICES = 4;
    
@@ -21,10 +24,10 @@ public abstract class Quadrilateral {
    private final Point[] VERTICES  = new Point[NUMBER_OF_VERTICES];  
    
    /*
-    *  SIDES[0] create from VERTICES[0] VERTICES[1]
-    *  SIDES[1] create from VERTICES[1] VERTICES[2]
-    *  SIDES[2] create from VERTICES[2] VERTICES[3]
-    *  SIDES[3] create from VERTICES[3] VERTICES[0]
+    *  SIDES[0] create from VERTICES[0] to VERTICES[1]
+    *  SIDES[1] create from VERTICES[1] to VERTICES[2]
+    *  SIDES[2] create from VERTICES[2] to VERTICES[3]
+    *  SIDES[3] create from VERTICES[3] to VERTICES[0]
    */
    private final LineSegment[] SIDES = new LineSegment[NUMBER_OF_VERTICES];  
    
@@ -42,6 +45,17 @@ public abstract class Quadrilateral {
       return String.format(" %s %s %s %s %s", CLASS_NAME,
          VERTICES[0], VERTICES[1], VERTICES[2], VERTICES[3]);
    } 
+   
+   public abstract BigDecimal calculateArea();
+   
+   public LineSegment getSide(int index) {
+      try {
+         return SIDES[index];
+      }
+      catch (ArrayIndexOutOfBoundsException exception) {
+         throw exception;
+      }
+   }
    
    public final void validatePoints(Point... pointsArray) {
       Point identicalPoint = Point.getIdenticalPoint(pointsArray);
@@ -79,7 +93,7 @@ public abstract class Quadrilateral {
             Line sideLine      = SIDES[index].getLine();
             Line otherSideLine = SIDES[nextIndex].getLine();
             
-            if (Line.LinesRelation.IDENTICALLY == sideLine.getRelation(otherSideLine)) {
+            if (LinesRelation.IDENTICALLY == sideLine.getRelation(otherSideLine)) {
                String message = Message.getErrorMessage(SIDES[index], SIDES[nextIndex]);
                         
                throw new IllegalArgumentException(message);
@@ -88,21 +102,21 @@ public abstract class Quadrilateral {
       }
    }
    
+   // detect intersections between two segments which can not intersect
    private final void detectForbiddenSidesIntersections() {
-      Point intersectionPoint = SIDES[0].getIntersectionPoint(SIDES[2]);
+      detectForbiddenSidesIntersections(SIDES[0], SIDES[2]);  
+      detectForbiddenSidesIntersections(SIDES[1], SIDES[3]);
+   }
+   
+   private final void detectForbiddenSidesIntersections(LineSegment first, LineSegment second) {
+      Point intersectionPoint = first.getIntersectionPoint(second);
       if (null != intersectionPoint) {
-         throw new IllegalArgumentException(String.format("Intersect between %s and %s in %s ", 
-                                                SIDES[0], SIDES[2], intersectionPoint));
-      }
-      
-      intersectionPoint = SIDES[1].getIntersectionPoint(SIDES[3]);
-      if (null != intersectionPoint) {
-         throw new IllegalArgumentException(String.format("Intersect between %s and %s in %s ", 
-                                                SIDES[1], SIDES[3], intersectionPoint));
+         throw new IllegalArgumentException(String.format("Intersection between %s and %s in %s ", 
+                                                first, second, intersectionPoint));
       }
    }
    
-   protected int calculateSidesRelations(Line.LinesRelation linesRelation) {
+   protected int calculateSidesPairRelations(LinesRelation linesRelation) {
       int sidesRelationsCounter = 0;
       for (int index = 0; index < NUMBER_OF_VERTICES - 1; index++) {
          for (int nextIndex = index + 1; nextIndex < NUMBER_OF_VERTICES; nextIndex++) {
@@ -116,6 +130,30 @@ public abstract class Quadrilateral {
       }
       
       return sidesRelationsCounter;
+   }
+   
+   protected ArrayList<Integer> getSidesWithRelations(LinesRelation linesRelation, int sidesNumber) {
+      if (sidesNumber < 2 || sidesNumber > NUMBER_OF_VERTICES) {
+         throw new IllegalArgumentException("Requirement: 2 <= sides number <= " + NUMBER_OF_VERTICES);
+                                                
+      }
+      
+      ArrayList<Integer> sidesList = new ArrayList<>();
+      for (int index = 0; index < NUMBER_OF_VERTICES - 1 && sidesList.size() < sidesNumber; index++) {
+         for (int nextIndex = index + 1; nextIndex < NUMBER_OF_VERTICES && sidesList.size() < sidesNumber; nextIndex++) {
+            Line sideLine      = SIDES[index].getLine();
+            Line otherSideLine = SIDES[nextIndex].getLine();
+            
+            if (linesRelation == sideLine.getRelation(otherSideLine)) {
+               if (false == sidesList.contains(index))
+                  sidesList.add(index);
+               if (false == sidesList.contains(nextIndex))
+                  sidesList.add(nextIndex);
+            }
+         }
+      }
+      
+      return sidesList;
    }
    
 } 

@@ -65,11 +65,14 @@ public class Point {
    
    @Override
    public boolean equals(Object other) {
+      if (this == other) {
+         return true;
+      }
       if (null == other) {
          return false;
       }
       
-      if (false == other instanceof Point) {
+      if (getClass() != other.getClass()) {
          throw new IllegalArgumentException("argument type is " + other.getClass().getName() + " Only type Point is allowed");
       }
       

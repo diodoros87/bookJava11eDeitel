@@ -12,7 +12,46 @@
  *
  * =====================================================================================
  */
+import java.math.BigDecimal;
 
 public class Square extends Rectangle {
+   public  static final int NUMBER_OF_EQUAL_LENGTH_OF_SIDES = 4;
    
+   public Square(Point... pointsArray) {
+      super(pointsArray);
+      checkEquality();
+      //validatePoints(pointsArray);
+      /*
+      int equalLengthSidesPairs = calculateSidesPairRelations(LinesRelation.PERPENDICULAR);
+      if (perpendicularSidesPairs != 2) {
+         throw new IllegalArgumentException(this + "\n must have 2 pairs of perpendicular sides");
+      }*/
+   }
+   
+   private final void checkEquality() {
+      LineSegment side       = getSide(0);
+      BigDecimal  sideLength = side.calculateLength();
+      for (int index = 1; index < NUMBER_OF_EQUAL_LENGTH_OF_SIDES; index++) {
+         LineSegment otherSide       = getSide(index);
+         BigDecimal  otherSideLength = otherSide.calculateLength();
+         
+         if (0 != sideLength.compareTo(otherSideLength)) {
+            
+            String message = String.format("%s %n and %s %n have different lengths: %n %s and %s",
+                                    side, otherSide, sideLength, otherSideLength)
+                        + String.format("%s %n must have all sides with identical length", this);
+            throw new IllegalArgumentException(message);
+         }
+      }
+   }
+   
+   @Override
+   public BigDecimal calculateArea() {
+      LineSegment side             = getSide(0);
+      final BigDecimal SIDE_LENGTH = side.calculateLength();
+      
+      BigDecimal result = SIDE_LENGTH.multiply(SIDE_LENGTH, Line.MATH_CONTEXT);
+      
+      return result;
+   }
 } 

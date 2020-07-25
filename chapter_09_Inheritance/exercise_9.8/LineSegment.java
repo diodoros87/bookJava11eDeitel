@@ -14,10 +14,11 @@
  */
  
 import java.util.Arrays;
+import java.math.BigDecimal;
 
 import validateParametersPackage.ValidateParameters;
 
-public class LineSegment {
+public class LineSegment implements Cloneable {
    public  static final int NUMBER_OF_EXTREMITIES = 2;
 
    private final Point[] EXTREMITIES = new Point[NUMBER_OF_EXTREMITIES]; 
@@ -45,6 +46,35 @@ public class LineSegment {
       return LINE;
    }
    
+   @Override
+   protected Object clone() throws CloneNotSupportedException {
+      super.clone();
+      LineSegment lineSegment = new LineSegment(this.EXTREMITIES);
+        
+      return lineSegment;
+   }
+   
+   public BigDecimal calculateLength() {
+      BigDecimal extremity_0X = BigDecimal.valueOf(EXTREMITIES[0].getX());
+      BigDecimal extremity_0Y = BigDecimal.valueOf(EXTREMITIES[0].getY());
+      BigDecimal extremity_1X = BigDecimal.valueOf(EXTREMITIES[1].getX());
+      BigDecimal extremity_1Y = BigDecimal.valueOf(EXTREMITIES[1].getY());
+      
+      BigDecimal horizontal   = extremity_0X.subtract(extremity_1X, Line.MATH_CONTEXT);
+      BigDecimal vertical     = extremity_0Y.subtract(extremity_1Y, Line.MATH_CONTEXT);
+      
+      horizontal   = horizontal.abs(Line.MATH_CONTEXT);
+      vertical     = vertical.abs(Line.MATH_CONTEXT);
+      
+      BigDecimal squareHorizontal = horizontal.multiply(horizontal, Line.MATH_CONTEXT);
+      BigDecimal squareVertical   = vertical.multiply(vertical, Line.MATH_CONTEXT);
+      
+      BigDecimal length = squareHorizontal.add(squareVertical, Line.MATH_CONTEXT);
+      length            = length.sqrt(Line.MATH_CONTEXT);
+      
+      return length;
+   }
+   
    protected Point[] getExtremities() {
       Point[] extremitiesCopy = Arrays.copyOf(EXTREMITIES, EXTREMITIES.length);
       
@@ -56,13 +86,17 @@ public class LineSegment {
       
       final Line OTHER_LINE = other.getLine();
       Point intersectionPoint = LINE.calculateIntersectionPoint(OTHER_LINE);
+      
+      if (null != intersectionPoint) {
+         return getIntersectionPoint(intersectionPoint);
+      }
+      
+      return null;
+   }
+   
+   private Point getIntersectionPoint(Point intersectionPoint) {
       double intersectionPoint_X = intersectionPoint.getX();
       double intersectionPoint_Y = intersectionPoint.getY();
-      /*
-      double extremity_0X = EXTREMITIES[0].getX();
-      double extremity_0Y = EXTREMITIES[0].getY();
-      double extremity_1X = EXTREMITIES[1].getX();
-      double extremity_1Y = EXTREMITIES[1].getY();*/
       
       double minX = Math.min(EXTREMITIES[0].getX(), EXTREMITIES[1].getX());
       double minY = Math.min(EXTREMITIES[0].getY(), EXTREMITIES[1].getY());

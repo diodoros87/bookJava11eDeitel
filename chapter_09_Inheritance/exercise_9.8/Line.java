@@ -23,9 +23,8 @@ public class Line {
    private static final int PRECISION = 16;
    private static final BigDecimal EPSILON = new BigDecimal(10e-16);
    private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
-   private static final MathContext  MATH_CONTEXT  = new MathContext(PRECISION, ROUNDING_MODE);
+   static final MathContext  MATH_CONTEXT  = new MathContext(PRECISION, ROUNDING_MODE);
    
-   public enum LinesRelation { IDENTICALLY, PARALLEL, INTERSECTING, PERPENDICULAR };  
    // general line's equation in two-dimensional Cartesian coordinate system: Ax + By + C = 0
    private final BigDecimal A;   // factor A in general line's equation Ax + By + C = 0
    private final BigDecimal B;   // factor B in general line's equation Ax + By + C = 0
@@ -37,6 +36,15 @@ public class Line {
       this.A = A;
       this.B = B;
       this.C = C;
+   }
+   
+   public Line(Line line) {
+      ValidateParameters.checkNullPointer(line);
+      Line.validateLineFactors(line.A, line.B, line.C);
+      
+      this.A = line.A;
+      this.B = line.B;
+      this.C = line.C;
    }
    
    // construct line according to two points
@@ -185,7 +193,9 @@ public class Line {
       
       BigDecimal squareA = A.pow(2, MATH_CONTEXT);
       BigDecimal squareB = B.pow(2, MATH_CONTEXT);
+      
       BigDecimal resultDenominator = squareA.add(squareB, MATH_CONTEXT);
+      resultDenominator            = resultDenominator.sqrt(MATH_CONTEXT);
       
       BigDecimal result = resultNumerator.divide(resultDenominator, MATH_CONTEXT);
       
