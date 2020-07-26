@@ -37,7 +37,6 @@ public abstract class Quadrilateral {
       createSides(pointsArray);
       validateSides();
       Point.assignPoints(VERTICES, pointsArray, NUMBER_OF_VERTICES);
-      //Point.assignPoints(getVertices(), pointsArray, NUMBER_OF_VERTICES);
    }
 
    @Override 
@@ -162,15 +161,15 @@ class Message {
    static String getErrorMessage(LineSegment first, LineSegment second) {
       ValidateParameters.checkNullPointer(first, second);
       
-      Point[] firstExtremities  = first.getExtremities();
-      Point[] secondExtremities = second.getExtremities();
-      Point   thirdCollinearPoint = secondExtremities[1];
+      Point firstExtremity_0    = first.getExtremity(0);
+      Point firstExtremity_1    = first.getExtremity(1);
+      Point thirdCollinearPoint = second.getExtremity(1);
       
-      if (true == thirdCollinearPoint.equals(firstExtremities[0]) || true == thirdCollinearPoint.equals(firstExtremities[1])) {
-         thirdCollinearPoint = secondExtremities[0];
+      if (true == thirdCollinearPoint.equals(firstExtremity_0) || true == thirdCollinearPoint.equals(firstExtremity_1)) {
+         thirdCollinearPoint = second.getExtremity(0);
       }
       
-      String message = String.format(" 3 vertexes %s, %s, %s are collinear ", firstExtremities[0], firstExtremities[1], 
+      String message = String.format(" 3 vertexes %s, %s, %s are collinear ", firstExtremity_0, firstExtremity_1, 
                   thirdCollinearPoint);
                   
       return message;

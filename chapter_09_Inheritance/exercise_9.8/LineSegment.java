@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 
 import validateParametersPackage.ValidateParameters;
 
-public class LineSegment implements Cloneable {
+public class LineSegment {
    public  static final int NUMBER_OF_EXTREMITIES = 2;
 
    private final Point[] EXTREMITIES = new Point[NUMBER_OF_EXTREMITIES]; 
@@ -46,14 +46,6 @@ public class LineSegment implements Cloneable {
       return LINE;
    }
    
-   @Override
-   protected Object clone() throws CloneNotSupportedException {
-      super.clone();
-      LineSegment lineSegment = new LineSegment(this.EXTREMITIES);
-        
-      return lineSegment;
-   }
-   
    public BigDecimal calculateLength() {
       BigDecimal extremity_0X = BigDecimal.valueOf(EXTREMITIES[0].getX());
       BigDecimal extremity_0Y = BigDecimal.valueOf(EXTREMITIES[0].getY());
@@ -62,9 +54,6 @@ public class LineSegment implements Cloneable {
       
       BigDecimal horizontal   = extremity_0X.subtract(extremity_1X, Line.MATH_CONTEXT);
       BigDecimal vertical     = extremity_0Y.subtract(extremity_1Y, Line.MATH_CONTEXT);
-      
-      horizontal   = horizontal.abs(Line.MATH_CONTEXT);
-      vertical     = vertical.abs(Line.MATH_CONTEXT);
       
       BigDecimal squareHorizontal = horizontal.multiply(horizontal, Line.MATH_CONTEXT);
       BigDecimal squareVertical   = vertical.multiply(vertical, Line.MATH_CONTEXT);
@@ -75,38 +64,40 @@ public class LineSegment implements Cloneable {
       return length;
    }
    
-   protected Point[] getExtremities() {
-      Point[] extremitiesCopy = Arrays.copyOf(EXTREMITIES, EXTREMITIES.length);
-      
-      return extremitiesCopy;
+   protected Point getExtremity(int index) {
+      try {
+         return EXTREMITIES[index];
+      }
+      catch (ArrayIndexOutOfBoundsException exception) {
+         throw exception;
+      }
+   }
+   
+   public Point getCloneOfExtremity(int index) throws CloneNotSupportedException {
+      try {
+         return (Point)EXTREMITIES[index].clone();
+      }
+      catch (ArrayIndexOutOfBoundsException exception) {
+         throw exception;
+      }
    }
    
    public Point getIntersectionPoint(LineSegment other) {
       ValidateParameters.checkNullPointer(other);
       
-      final Line OTHER_LINE = other.getLine();
+      final Line OTHER_LINE   = other.getLine();
       Point intersectionPoint = LINE.calculateIntersectionPoint(OTHER_LINE);
       
       if (null != intersectionPoint) {
-         return getIntersectionPoint(intersectionPoint);
-      }
-      
-      return null;
-   }
-   
-   private Point getIntersectionPoint(Point intersectionPoint) {
-      double intersectionPoint_X = intersectionPoint.getX();
-      double intersectionPoint_Y = intersectionPoint.getY();
-      
-      double minX = Math.min(EXTREMITIES[0].getX(), EXTREMITIES[1].getX());
-      double minY = Math.min(EXTREMITIES[0].getY(), EXTREMITIES[1].getY());
-      double maxX = Math.max(EXTREMITIES[0].getX(), EXTREMITIES[1].getX());
-      double maxY = Math.max(EXTREMITIES[0].getY(), EXTREMITIES[1].getY());
-      
-      if (intersectionPoint_X >= minX && intersectionPoint_X <= maxX) {
-         if (intersectionPoint_Y >= minY && intersectionPoint_Y <= maxY) {
+         boolean containsPoint = intersectionPoint.isPointLieBetweenCoordinations
+                                                (getExtremity(0), getExtremity(1));
+         boolean otherContainsPoint = intersectionPoint.isPointLieBetweenCoordinations
+                                                   (other.getExtremity(0), other.getExtremity(1));
+         //System.out.printf("\nOTHER_LINE %s", OTHER_LINE);
+         //System.out.printf("\nLINE %s\n", LINE);
+         if (true == containsPoint && true == otherContainsPoint) {
             
-            return new Point("I", intersectionPoint_X, intersectionPoint_Y);
+            return intersectionPoint;
          }
       }
       

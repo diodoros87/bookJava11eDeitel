@@ -4,7 +4,7 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 9.8 - Rectangle class inherits from Quadrilateral
+                             Exercise 9.8 - Rectangle class inherits from Parallelogram
                                  
                                                   
  *
@@ -19,17 +19,8 @@ public class Rectangle extends Parallelogram {
    
    public Rectangle(Point... pointsArray) {
       super(pointsArray);
-      //validatePoints(pointsArray);
       checkSides(LinesRelation.PERPENDICULAR, NUMBER_OF_PERPENDICULAR_PAIRS_OF_SIDES, true);
-      //checkSidesPerpendicularity();
    }
-   /*
-   private final void checkSidesPerpendicularity() {
-      int perpendicularSidesPairs = calculateSidesPairRelations(LinesRelation.PERPENDICULAR);
-      if (perpendicularSidesPairs != 2) {
-         throw new IllegalArgumentException(this + "\n must have 2 pairs of perpendicular sides");
-      }
-   }*/
    
    @Override
    public BigDecimal calculateArea() {

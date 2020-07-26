@@ -20,9 +20,9 @@ import java.math.RoundingMode;
 import java.math.MathContext;
 
 public class Line {
-   private static final int PRECISION = 16;
-   private static final BigDecimal EPSILON = new BigDecimal(10e-16);
-   private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
+   static final int          PRECISION     = 16;
+   static final BigDecimal   EPSILON       = new BigDecimal(10e-16);
+   static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
    static final MathContext  MATH_CONTEXT  = new MathContext(PRECISION, ROUNDING_MODE);
    
    // general line's equation in two-dimensional Cartesian coordinate system: Ax + By + C = 0
@@ -48,9 +48,12 @@ public class Line {
    }
    
    // construct line according to two points
+   // A = second.Y - first.Y
+   // B = first.X  - second.X
+   // C = second.X * first.Y - first.X * second.Y
    public Line(Point first, Point second) {
       ValidateParameters.checkNullPointer(first, second);
-      //Line.validatePoints(first, second);
+      
       BigDecimal firstX  = BigDecimal.valueOf(first.getX());
       BigDecimal firstY  = BigDecimal.valueOf(first.getY());
       BigDecimal secondX = BigDecimal.valueOf(second.getX());
@@ -73,18 +76,9 @@ public class Line {
          throw new IllegalArgumentException("A = B = 0");
       }
    }
-   /* UNNECESSARY
-   public static void validatePoints(Point... pointsArray) {
-      Point identicalPoint = Point.getIdenticalPoint(pointsArray);
-      if (null != identicalPoint) {
-         String message = String.format("Identical points %s was detected. %n", identicalPoint)
-                        + " Each points in line must be unique";
-                        
-         throw new IllegalArgumentException(message);
-      }
-   }*/
    
-   // is point lie on line ?
+   // is point lie on line ?  verification of:
+   // A * point.X + B * point.Y + C == 0   absoluteValue(A * point.X + B * point.Y + C) < EPSILON 
    public boolean contains(Point point) {
       ValidateParameters.checkNullPointer(point);
       
@@ -161,7 +155,7 @@ public class Line {
    
    private LinesRelation getRelation(BigDecimal determinant_AB, BigDecimal determinant_BC, BigDecimal determinant_CA) {
       if (true == isLessThanEpsilon(determinant_AB)) {
-         if (true == isLessThanEpsilon(determinant_BC) &&  true == isLessThanEpsilon(determinant_CA)) {
+         if (true == isLessThanEpsilon(determinant_BC) && true == isLessThanEpsilon(determinant_CA)) {
             
             return LinesRelation.IDENTICALLY;
          }

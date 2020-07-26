@@ -18,50 +18,92 @@ import validateParametersPackage.ValidateParameters;
 
 public class QuadrilateralHierarchyTest {
    
-   public static void main(String[] args) {
+   public static void main(String[] args) throws CloneNotSupportedException {
       Point[] vertices = { new Point("A", -1, -1), new Point("B", -1, 1), new Point("C", 1, 1), new Point("D", 1, -1) };
       Trapezoid trapez = new Trapezoid(vertices);
       AreaCalculating.printArea(trapez);
-      
+      testPointCloning();
+      testExtremitiesOfLineSegment();
       testAreaCalculating();
-      testIncorrectAreaCalculating();
-      //testIncorrectSettings();
+      testIncorrectSettings();
    }  
+   
+   private static void testPointCloning() throws CloneNotSupportedException {
+      Point A = new Point("A", -11, -11);
+      Point clonedA = (Point)A.clone();
+      System.out.printf("%n %s and cloned: %s %n", A, clonedA);
+      A.setX(456);
+      System.out.printf("%n %s and cloned: %s %n", A, clonedA);
+   }
+   
+   private static void testExtremitiesOfLineSegment() throws CloneNotSupportedException {
+      Point[] points = { new Point("A", 0, 0), new Point("B", -1, 1) };
+      LineSegment lineSegment = new LineSegment(points);
+      System.out.printf("%n %s %n", lineSegment);
+      
+      Point extremity = lineSegment.getExtremity(0);
+      extremity.setX(55);
+      System.out.printf("%n only modified %s and %s %n", extremity, lineSegment);
+      
+      Point clonedExtremity = lineSegment.getCloneOfExtremity(1);
+      clonedExtremity.setX(777);
+      System.out.printf("%n modified and cloned %s and %s %n", clonedExtremity, lineSegment);
+   }
    
    private static void testAreaCalculating() {
       AreaCalculating areaCalculating  = new AreaCalculating();
       
+      testUpToTrapezoidAreaCalculating(areaCalculating);
+      testUpToParallelogramAreaCalculating(areaCalculating);
+      testUpToRectangleAreaCalculating(areaCalculating);
+      testUpToSquareAreaCalculating(areaCalculating);
+      
+      testIncorrectAreaCalculating(areaCalculating);
+   }
+   
+   private static void testUpToTrapezoidAreaCalculating(AreaCalculating areaCalculating) {
+      System.out.printf("%n%n             TESTS OF up to TRAPEZOID AREA CALCULATING:%n%n");
+      double[][] verticesCoordinations = { {0, 0}, {1, 1}, {2, 1}, {2, 0} };
+      areaCalculating.run("Trapezoid", verticesCoordinations);
+      areaCalculating.testIncorrectAreaCalculating("Parallelogram", verticesCoordinations);
+      areaCalculating.testIncorrectAreaCalculating("Rectangle", verticesCoordinations);
+      areaCalculating.testIncorrectAreaCalculating("Square", verticesCoordinations);
+   }
+   
+   private static void testUpToParallelogramAreaCalculating(AreaCalculating areaCalculating) {
+      System.out.printf("%n%n             TESTS OF up to PARALLELOGRAM AREA CALCULATING:%n%n");
+      double[][] verticesCoordinations = { {0, 0}, {1, 1}, {2, 1}, {1, 0} };
+      areaCalculating.run("Trapezoid", verticesCoordinations);
+      areaCalculating.run("Parallelogram", verticesCoordinations);
+      areaCalculating.testIncorrectAreaCalculating("Rectangle", verticesCoordinations);
+      areaCalculating.testIncorrectAreaCalculating("Square", verticesCoordinations);
+   }
+   
+   private static void testUpToRectangleAreaCalculating(AreaCalculating areaCalculating) {
+      System.out.printf("%n%n             TESTS OF up to RECTANGLE AREA CALCULATING:%n%n");
+      double[][] verticesCoordinations = { {-2, -3}, {-2, 4}, {6, 4}, {6, -3} };
+      areaCalculating.run("Trapezoid", verticesCoordinations);
+      areaCalculating.run("Parallelogram", verticesCoordinations);
+      areaCalculating.run("Rectangle", verticesCoordinations);
+      areaCalculating.testIncorrectAreaCalculating("Square", verticesCoordinations);
+   }
+   
+   private static void testUpToSquareAreaCalculating(AreaCalculating areaCalculating) {
+      System.out.printf("%n%n             TESTS OF up to SQUARE AREA CALCULATING:%n%n");
       double[][] verticesCoordinations = { {0, 0}, {0, 1}, {1, 1}, {1, 0} };
       areaCalculating.run("Trapezoid", verticesCoordinations);
       areaCalculating.run("Parallelogram", verticesCoordinations);
       areaCalculating.run("Rectangle", verticesCoordinations);
       areaCalculating.run("Square", verticesCoordinations);
-      
-      double[][] verticesCoordinations_02 = { {-2, -3}, {-2, 4}, {6, 4}, {6, -3} };
-      areaCalculating.run("Trapezoid", verticesCoordinations_02);
-      areaCalculating.run("Parallelogram", verticesCoordinations_02);
-      areaCalculating.run("Rectangle", verticesCoordinations_02);
-      areaCalculating.testIncorrectAreaCalculating("Square", verticesCoordinations_02);
-      
-      double[][] verticesCoordinations_01 = { {0, 0}, {1, 1}, {2, 1}, {1, 0} };
-      areaCalculating.run("Trapezoid", verticesCoordinations_01);
-      areaCalculating.run("Parallelogram", verticesCoordinations_01);
-      areaCalculating.testIncorrectAreaCalculating("Rectangle", verticesCoordinations_01);
-      areaCalculating.testIncorrectAreaCalculating("Square", verticesCoordinations_01);
-      
-      double[][] verticesCoordinations_03 = { {0, 0}, {1, 1}, {2, 1}, {2, 0} };
-      areaCalculating.run("Trapezoid", verticesCoordinations_03);
-      areaCalculating.testIncorrectAreaCalculating("Parallelogram", verticesCoordinations_03);
-      areaCalculating.testIncorrectAreaCalculating("Rectangle", verticesCoordinations_03);
-      areaCalculating.testIncorrectAreaCalculating("Square", verticesCoordinations_03);
    }
    
-   
-   
-   private static void testIncorrectAreaCalculating() {
-      AreaCalculating areaCalculating  = new AreaCalculating();
+   private static void testIncorrectAreaCalculating(AreaCalculating areaCalculating) {
+      System.out.printf("%n%n             TESTS OF INCORRECT AREA CALCULATING:%n%n");
       double[][] verticesCoordinations_01 = { {2, 0}, {0, 1}, {1, 1}, {1, 0} };
-      areaCalculating.run("Parallelogram", verticesCoordinations_01);
+      areaCalculating.testIncorrectAreaCalculating("Parallelogram", verticesCoordinations_01);
+      
+      double[][] verticesCoordinations_02 = { {-1, -1}, {0, 6}, {2, 2}, {5, -1} };
+      areaCalculating.testIncorrectAreaCalculating("Parallelogram", verticesCoordinations_02);
    }
    
    private static void testIncorrectSettings() {
@@ -112,7 +154,7 @@ class AreaCalculating {
    }
    
    public void modifyVertices(double[][] pointCoordinations) {
-      ValidateParameters.checkNullPointer(pointCoordinations);
+      ValidateParameters.checkNullPointer((Object[])pointCoordinations);
       
       if (pointCoordinations.length != Quadrilateral.NUMBER_OF_VERTICES) {
          

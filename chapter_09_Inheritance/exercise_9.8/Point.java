@@ -15,7 +15,7 @@
  
 import validateParametersPackage.ValidateParameters;
 
-public class Point {
+public class Point implements Cloneable {
    private final String name;
    private double x;
    private double y;
@@ -64,6 +64,32 @@ public class Point {
    }
    
    @Override
+   public Object clone() throws CloneNotSupportedException {
+      super.clone();
+      Point point = new Point(this);
+     
+      return point;
+   }
+   
+   public boolean isPointLieBetweenCoordinations(Point first, Point second) {
+      ValidateParameters.checkNullPointer(first, second);
+      
+      double minX = Math.min(first.getX(), second.getX());
+      double minY = Math.min(first.getY(), second.getY());
+      double maxX = Math.max(first.getX(), second.getX());
+      double maxY = Math.max(first.getY(), second.getY());
+      
+      if (this.x >= minX && this.x <= maxX) {
+         if (this.y >= minY && this.y <= maxY) {
+            
+            return true;
+         }
+      }
+      
+      return false;
+   }
+   
+   @Override
    public boolean equals(Object other) {
       if (this == other) {
          return true;
@@ -105,8 +131,7 @@ public class Point {
    }
    
    public static Point getIdenticalPoint(Point... pointsArray) {
-      //Object[] objects = pointsArray;
-      ValidateParameters.checkNullPointer(pointsArray);
+      ValidateParameters.checkNullPointer((Object[])pointsArray);
       
       for (int index = 0; index < pointsArray.length - 1; index++) {
          for (int nextIndex = index + 1; nextIndex < pointsArray.length; nextIndex++) {

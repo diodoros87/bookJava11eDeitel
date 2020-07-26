@@ -4,7 +4,7 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 9.8 - Parallelogram class inherits from Quadrilateral
+                             Exercise 9.8 - Parallelogram class inherits from Trapezoid
                                  
                                                   
  *
@@ -19,7 +19,6 @@ public class Parallelogram extends Trapezoid {
    
    public Parallelogram(Point... pointsArray) {
       super(pointsArray);
-      //validatePoints(pointsArray);
       checkSides(LinesRelation.PARALLEL, NUMBER_OF_PARALLEL_PAIRS_OF_SIDES, true);
    }
    

@@ -20,19 +20,10 @@ import validateParametersPackage.ValidateParameters;
 
 public class Trapezoid extends Quadrilateral {
    private static final int NUMBER_OF_PARALLEL_PAIRS_OF_SIDES = 1;
-   //private final BigDecimal HEIGHT;
-   //private final BigDecimal[] BASES = new BigDecimal[2];
 
    public Trapezoid(Point... pointsArray) {
       super(pointsArray);
-      //validatePoints(pointsArray);
       checkSides(LinesRelation.PARALLEL, NUMBER_OF_PARALLEL_PAIRS_OF_SIDES, false);
-      /*
-      checkSidesParallelity(1);
-      int parallelSidesPairs = super.calculateSidesPairRelations(LinesRelation.PARALLEL);
-      if (1 > parallelSidesPairs || parallelSidesPairs > 2) {
-         throw new IllegalArgumentException(this + "\n must have 1 pair or 2 pairs of parallel sides");
-      }*/
    }
    
    protected final void checkSides(LinesRelation relation, int pairs, boolean exactly) {
@@ -70,7 +61,7 @@ public class Trapezoid extends Quadrilateral {
    protected final BigDecimal calculateHeight(LineSegment firstBase, LineSegment secondBase) {
       ValidateParameters.checkNullPointer(firstBase, secondBase);
       
-      Point firstBaseExtremity = firstBase.getExtremities()[0];
+      Point firstBaseExtremity = firstBase.getExtremity(0);
       Line  secondBaseLine     = secondBase.getLine();
       final BigDecimal HEIGHT  = secondBaseLine.calculateDistance(firstBaseExtremity);
       

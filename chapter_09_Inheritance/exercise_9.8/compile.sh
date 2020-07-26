@@ -1,4 +1,4 @@
 #!/bin/bash
  
- javac -cp .:.. -Xlint -Xdiags:verbose *.java -nowarn
+ javac -cp .:.. -Xlint -Xdiags:verbose *.java
  

@@ -4,7 +4,7 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 9.8 - Square class inherits from Quadrilateral
+                             Exercise 9.8 - Square class inherits from Rectangle
                                  
                                                   
  *
@@ -15,17 +15,11 @@
 import java.math.BigDecimal;
 
 public class Square extends Rectangle {
-   public  static final int NUMBER_OF_EQUAL_LENGTH_OF_SIDES = 4;
+   private  static final int NUMBER_OF_EQUAL_LENGTH_OF_SIDES = 4;
    
    public Square(Point... pointsArray) {
       super(pointsArray);
       checkEquality();
-      //validatePoints(pointsArray);
-      /*
-      int equalLengthSidesPairs = calculateSidesPairRelations(LinesRelation.PERPENDICULAR);
-      if (perpendicularSidesPairs != 2) {
-         throw new IllegalArgumentException(this + "\n must have 2 pairs of perpendicular sides");
-      }*/
    }
    
    private final void checkEquality() {
