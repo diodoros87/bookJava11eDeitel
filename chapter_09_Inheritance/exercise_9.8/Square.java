@@ -33,7 +33,7 @@ public class Square extends Rectangle {
             
             String message = String.format("%s %n and %s %n have different lengths: %n %s and %s",
                                     side, otherSide, sideLength, otherSideLength)
-                        + String.format("%s %n must have all sides with identical length", this);
+                        + String.format("%n%s %n must have all sides with identical length", this);
             throw new IllegalArgumentException(message);
          }
       }

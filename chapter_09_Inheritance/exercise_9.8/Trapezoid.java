@@ -52,8 +52,8 @@ public class Trapezoid extends Quadrilateral {
       final BigDecimal SECOND_BASE_LENGTH = secondBase.calculateLength();
       
       BigDecimal result = FIRST_BASE_LENGTH.add(SECOND_BASE_LENGTH, Line.MATH_CONTEXT);
-      result = result.multiply(HEIGHT, Line.MATH_CONTEXT);
-      result = result.divide(new BigDecimal(2, Line.MATH_CONTEXT), Line.MATH_CONTEXT);
+      result            = result.multiply(HEIGHT, Line.MATH_CONTEXT);
+      result            = result.divide(new BigDecimal(2, Line.MATH_CONTEXT), Line.MATH_CONTEXT);
       
       return result;
    }

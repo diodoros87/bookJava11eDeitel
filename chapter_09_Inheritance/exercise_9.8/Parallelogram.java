@@ -22,13 +22,6 @@ public class Parallelogram extends Trapezoid {
       checkSides(LinesRelation.PARALLEL, NUMBER_OF_PARALLEL_PAIRS_OF_SIDES, true);
    }
    
-   private final void checkSidesParallelity(int parallelityPairs) {
-      int parallelSidesPairs = calculateSidesPairRelations(LinesRelation.PARALLEL);
-      if (parallelSidesPairs != 2) {
-         throw new IllegalArgumentException(this + "\n must have 2 pairs of parallel sides");
-      }
-   }
-   
    @Override
    public BigDecimal calculateArea() {
       LineSegment side         = getSide(0);

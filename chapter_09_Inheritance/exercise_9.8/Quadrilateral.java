@@ -47,7 +47,7 @@ public abstract class Quadrilateral {
    
    public abstract BigDecimal calculateArea();
    
-   public LineSegment getSide(int index) {
+   protected LineSegment getSide(int index) {
       try {
          return SIDES[index];
       }
@@ -56,7 +56,7 @@ public abstract class Quadrilateral {
       }
    }
    
-   public final void validatePoints(Point... pointsArray) {
+   private final void validatePoints(Point... pointsArray) {
       Point identicalPoint = Point.getIdenticalPoint(pointsArray);
       if (null != identicalPoint) {
          String message = String.format("Identical vertices %s was detected. %n", identicalPoint)
@@ -131,9 +131,9 @@ public abstract class Quadrilateral {
       return sidesRelationsCounter;
    }
    
-   protected ArrayList<Integer> getSidesWithRelations(LinesRelation linesRelation, int sidesNumber) {
+   protected final ArrayList<Integer> getSidesWithRelations(LinesRelation linesRelation, int sidesNumber) {
       if (sidesNumber < 2 || sidesNumber > NUMBER_OF_VERTICES) {
-         throw new IllegalArgumentException("Requirement: 2 <= sides number <= " + NUMBER_OF_VERTICES);
+         throw new IllegalArgumentException("Requirement: 2 <= 'sides number' <= " + NUMBER_OF_VERTICES);
                                                 
       }
       

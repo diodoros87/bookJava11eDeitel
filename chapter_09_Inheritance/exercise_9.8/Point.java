@@ -22,7 +22,7 @@ public class Point implements Cloneable {
 
    public Point(String name, double x, double y) {
       ValidateParameters.checkBlankString(name);
-      Point.validateCoordination(x, y);    
+      Point.validateCoordinations(x, y);    
 
       this.x    = x;
       this.y    = y;
@@ -32,7 +32,7 @@ public class Point implements Cloneable {
    public Point(Point point) {
       ValidateParameters.checkNullPointer(point);
       ValidateParameters.checkBlankString(point.getName());
-      Point.validateCoordination(point.getX(), point.getY());    
+      Point.validateCoordinations(point.getX(), point.getY());    
 
       this.x    = point.getX();
       this.y    = point.getY();
@@ -40,7 +40,7 @@ public class Point implements Cloneable {
    }
    
    public void setX(double x) {
-      Point.validateCoordination(x);
+      Point.validateCoordinations(x);
       
       this.x    = x;
    }
@@ -50,7 +50,7 @@ public class Point implements Cloneable {
    }
    
    public void setY(double y) {
-      Point.validateCoordination(y);
+      Point.validateCoordinations(y);
       
       this.y    = y;
    }
@@ -116,11 +116,8 @@ public class Point implements Cloneable {
       return String.format("\'%s\'(%f, %f) ", getName(), getX(), getY());  
    } 
    
-   public static void validateCoordination(double... coordinationsArray) {
+   public static void validateCoordinations(double... coordinationsArray) {
       ValidateParameters.checkNullPointer(coordinationsArray);
-      if (coordinationsArray == null) {
-         throw new NullPointerException("coordinations array is null");
-      }
       
       for (double coordination : coordinationsArray) {
          if (false == Double.isFinite(coordination)) {
@@ -145,21 +142,21 @@ public class Point implements Cloneable {
       return null;
    }
    
-   public static void assignPoints(Point[] destination, final Point[] SOURCE, final int copies) {
-      if (copies <= 0) {
+   public static void assignPoints(Point[] destination, final Point[] SOURCE, final int COPIES) {
+      if (COPIES <= 0) {
          throw new IllegalArgumentException("Requirement: copies > 0");
       }
       ValidateParameters.checkNullPointerOnlyArray(destination);
-      ValidateParameters.checkNullPointersInArrays(SOURCE);
+      ValidateParameters.checkNullPointer((Object)SOURCE);
       
-      if (copies > destination.length) {
+      if (COPIES > destination.length) {
          throw new IllegalArgumentException("Requirement: copies <= destinations array's length");
       }
-      if (copies > SOURCE.length) {
+      if (COPIES > SOURCE.length) {
          throw new IllegalArgumentException("Requirement: copies <= source array's length");
       }
       
-      for (int index = 0; index < copies; index++) {
+      for (int index = 0; index < COPIES; index++) {
          destination[index] = new Point(SOURCE[index]);   // Point has not final coordinations (its coordinations may change)
          //destination[index] = SOURCE[index];
       }

@@ -19,7 +19,7 @@ import validateParametersPackage.ValidateParameters;
 public class QuadrilateralHierarchyTest {
    
    public static void main(String[] args) throws CloneNotSupportedException {
-      Point[] vertices = { new Point("A", -1, -1), new Point("B", -1, 1), new Point("C", 1, 1), new Point("D", 1, -1) };
+      Point[] vertices = { new Point("A", -1, -1), new Point("B", -1, 1), new Point("C", 1, 1), new Point("D", 0, -1) };
       Trapezoid trapez = new Trapezoid(vertices);
       AreaCalculating.printArea(trapez);
       testPointCloning();
