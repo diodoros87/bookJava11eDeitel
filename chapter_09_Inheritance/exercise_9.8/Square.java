@@ -14,7 +14,7 @@
  */
 import java.math.BigDecimal;
 
-public class Square extends Rectangle {
+public final class Square extends Rectangle {
    private  static final int NUMBER_OF_EQUAL_LENGTH_OF_SIDES = 4;
    
    public Square(Point... pointsArray) {
