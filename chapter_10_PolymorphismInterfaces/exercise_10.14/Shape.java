@@ -12,6 +12,8 @@
  *
  * =====================================================================================
  */
+ 
+import validateParametersPackage.ValidateParameters;
 
 public abstract class Shape {
    private final String lengthName;
@@ -21,6 +23,7 @@ public abstract class Shape {
    }
    
    protected final void validateLength(double... lengths) {
+      ValidateParameters.checkNullPointer(lengths);
       for (double length : lengths) {
          if (length <= 0) {
             throw new IllegalArgumentException(String.format(

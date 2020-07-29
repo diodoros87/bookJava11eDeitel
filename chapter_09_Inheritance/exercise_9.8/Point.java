@@ -147,7 +147,7 @@ public class Point implements Cloneable {
          throw new IllegalArgumentException("Requirement: copies > 0");
       }
       ValidateParameters.checkNullPointerOnlyArray(destination);
-      ValidateParameters.checkNullPointer((Object)SOURCE);
+      ValidateParameters.checkNullPointer((Object[])SOURCE);
       
       if (COPIES > destination.length) {
          throw new IllegalArgumentException("Requirement: copies <= destinations array's length");

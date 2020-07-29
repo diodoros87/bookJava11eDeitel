@@ -28,7 +28,7 @@ public class ShapeHierarchyTest {
       Circle circle = new Circle(100); 
       Square square = new Square(44);  
       Triangle triangle = new Triangle(5, 3, 4); 
-      
+
       assignShapes(shapes, fromIndex, circle, square, triangle);     
    }
    
