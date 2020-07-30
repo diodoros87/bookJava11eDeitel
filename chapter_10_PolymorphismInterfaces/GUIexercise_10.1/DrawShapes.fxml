@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- =====================================================================================
- *       Filename:  DrawRandomLinesRectanglesOvals.fxml
+ *       Filename:  DrawShapes.fxml
  *
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
                              GUI Exercise 10.1 - fxml file to display 
-                                  border pane with toolbar contains 3 buttons
+                                  border pane with toolbar contains 1 button
                              
                              
  *
@@ -21,13 +21,11 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="DrawRandomLinesRectanglesOvalsController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="DrawShapesController">
    <top>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
-          <Button mnemonicParsing="false" onAction="#drawRandomLinesButtonPressed" text="Draw lines" />
-            <Button mnemonicParsing="false" onAction="#drawRandomRectanglesButtonPressed" text="Draw rectangles" />
-            <Button mnemonicParsing="false" onAction="#drawRandomOvalsButtonPressed" text="Draw ovals" />
+          <Button mnemonicParsing="false" onAction="#drawShapesButtonPressed" text="Draw filled or outlined shapes" />
         </items>
       </ToolBar>
    </top>

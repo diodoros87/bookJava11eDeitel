@@ -16,95 +16,59 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class MyOval {
-   private double x1; 
-   private double y1; 
-   private double x2; 
-   private double y2; 
-   private Color strokeColor;
-   
+import java.util.Objects;
+
+public class MyOval extends MyShape {
    private boolean filled;
-   private Color filledColor; 
+   private Color   filledColor; 
 
    // constructor with input values
    public MyOval(
       double x1, double y1, double x2, double y2, Color strokeColor, Color filledColor, boolean filled) {
-
-      setX1(x1);
-      setX2(x2);
-      setY1(y1);
-      setY2(y2);
-      setStrokeColor(strokeColor);
-      setFilledColor(filledColor);
-      setFilled(filled);
+      super(x1, y1, x2, y2, strokeColor);
+      
+      this.filledColor = Objects.requireNonNull(filledColor, "filledColor must not be null");
+      this.filled      = filled;
    } 
    
    public MyOval() {
-      this.x1 = 0; 
-      this.y1 = 0; 
-      this.x2 = 0; 
-      this.y2 = 0; 
-      this.strokeColor = Color.BLACK;
-      this.filledColor = Color.BLACK;
-      this.filled = false;
+      this(0, 0, 0, 0, Color.BLACK, Color.BLACK, false);
    } 
-   
-   public void setX1 (double x1) {
-      if (0 > x1) {
-         this.x1 = 0;
-      }
-      else {
-         this.x1 = x1;
-      }
-   }
-   
-   public void setX2 (double x2) {
-      if (0 > x2) {
-         this.x2 = 0;
-      }
-      else {
-         this.x2 = x2;
-      }
-   }
-   
-   public void setY1 (double y1) {
-      this.y1 = (0 > y1) ? 0 : y1;
-   }
-   
-   public void setY2 (double y2) {
-      this.y2 = (0 > y2) ? 0 : y2;
-   }
    
    public void setFilled (boolean filled) {
       this.filled = filled;
    }
    
-   public void setFilledColor (Color filledColor) {
-      this.filledColor = filledColor;
+   public boolean isFilled () {
+      return filled;
    }
    
-   public void setStrokeColor (Color strokeColor) {
-      this.strokeColor = strokeColor;
+   public void setFilledColor (Color filledColor) {
+      this.filledColor = Objects.requireNonNull(filledColor, "filledColor must not be null");
+   }
+   
+   public Color getFilledColor () {
+      return filledColor;
    }
    
    public double getUpperLeftX() {
-      return Math.min(x1, x2);
+      return Math.min(getX1(), getX2());
    }
    
    public double getUpperLeftY() {
-      return Math.min(y1, y2);
+      return Math.min(getY1(), getY2());
    }
    
    public double getWidth() {
-      return Math.abs(x1 - x2);
+      return Math.abs(getX1() - getX2());
    }
    
    public double getHeigth() {
-      return Math.abs(y1 - y2);
+      return Math.abs(getY1() - getY2());
    }
    
    public void draw(GraphicsContext gc) {
-      if (true == filled) {
+      if (true == isFilled()) {
          drawFilledOval(gc);
       }
       else {
@@ -113,12 +77,12 @@ public class MyOval {
    } 
    
    private void drawStrokeOval(GraphicsContext gc) {
-      gc.setStroke(strokeColor);
+      gc.setStroke(getStrokeColor());
       gc.strokeOval(getUpperLeftX(), getUpperLeftY(), getWidth(), getHeigth());
    }
    
    private void drawFilledOval(GraphicsContext gc) {
-      gc.setFill(filledColor);
+      gc.setFill(getFilledColor());
       gc.fillOval(getUpperLeftX(), getUpperLeftY(), getWidth(), getHeigth());
    }
 } 

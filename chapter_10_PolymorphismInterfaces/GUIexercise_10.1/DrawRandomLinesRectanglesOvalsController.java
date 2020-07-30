@@ -21,6 +21,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+
 public class DrawRandomLinesRectanglesOvalsController { 
    private static final SecureRandom randomNumbers = new SecureRandom();
    @FXML private Canvas canvas;
