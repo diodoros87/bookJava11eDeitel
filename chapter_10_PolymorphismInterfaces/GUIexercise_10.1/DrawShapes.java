@@ -23,19 +23,22 @@ import javafx.stage.Stage;
 import java.util.List;
 import java.util.Map;
 import java.util.Collections;
+import java.util.Objects;
 
 public class DrawShapes extends Application {
    
-   public enum CommandLineParameters {RAW, UNNAMED, NAMED};
+   public enum CommandLineParameter {RAW, UNNAMED, NAMED};
    
    private static List<String>         rawParametersList;
    private static List<String>         unnamedParametersList;
    private static Map<String, String>  namedParametersMap;
    
+   private static String[] argsArray;
+   
    @Override
    public void start(Stage stage) throws Exception {
       setParameters();
-      //parametersList = getUnnamedParameters();
+
       // loads DrawShapes.fxml and configures the DrawShapesController
       Parent root = FXMLLoader.load(getClass().getResource("DrawShapes.fxml"));
 
@@ -46,27 +49,29 @@ public class DrawShapes extends Application {
    }
 
    public static void main(String[] args) {
+      argsArray = args;
       /*
-      System.out.println("args = " + args);
+      System.out.println("args = " + argsArray);
       for (int index = 0; index < args.length; index++) {
-         System.out.printf("args[%d] = %s%n", index , args[index]);
+         System.out.printf("argsArray[%d] = %s%n", index , argsArray[index]);
       }*/
       
       launch(args); // create a DrawShapes object and call its start method
-      
-      
-      //List<String> list = Application.Parameters.getParameters().getRaw();
    }
    
-   public List<String> getParametersList(CommandLineParameters commandLineParameters) {
-      switch (commandLineParameters) {
+   public List<String> getParametersList(CommandLineParameter commandLineParameter) {
+      switch (commandLineParameter) {
          case RAW:
             return rawParametersList;
          case UNNAMED:
             return unnamedParametersList;
          default:
-            throw new UnsupportedOperationException("CommandLineParameters " + commandLineParameters + " is not supported");
+            throw new UnsupportedOperationException("CommandLineParameter " + commandLineParameter + " is not supported");
       }
+   }
+   
+   public static String[] getArgs() {
+      return argsArray;
    }
    
    public Map<String, String> getNamedParameters() {
@@ -86,27 +91,30 @@ public class DrawShapes extends Application {
       namedParametersMap    = Collections.unmodifiableMap(namedParametersMap);
    }
    
-   public List<String> getUnnamedParameters() {
-      Application.Parameters parameters = getParameters();
-      List<String> parametersList = parameters.getUnnamed();
+   public String getParameter(int parameterNumber, CommandLineParameter commandLineParameters) {
+      if (0 > parameterNumber) {
+         throw new ArrayIndexOutOfBoundsException(String.format("0 > parameterNumber(%d)", parameterNumber));
+      }
       
-      return parametersList;
+      List<String>  parameterList = getParametersList(commandLineParameters);
+      
+      if (parameterList.size() <= parameterNumber) {
+         throw new ArrayIndexOutOfBoundsException(String.format("size of parameterList <= parameterNumber(%d)", parameterNumber));
+      }
+      
+      String parameter = parameterList.get(parameterNumber);
+      
+      return parameter;
    }
    
-   public int getParameter(int parameterNumber) {
-      Application.Parameters parameters = getParameters();
-      List<String> list = parameters.getUnnamed();
-      String shapesNumberParameter = list.get(parameterNumber);
-      System.out.printf("list.get(%d) = %d%n", parameterNumber, list.get(parameterNumber));
+   public String getParameter(String parameterName) {
+      Objects.requireNonNull(parameterName, "parameterName must not be null");
+      if (false == namedParametersMap.containsKey(parameterName)) {
+         throw new IllegalArgumentException(String.format("parameterName(%s) is not a key of map value", parameterName));
+      }
       
+      String parameter = namedParametersMap.get(parameterName);
       
-      int shapesNumber = Integer.parseUnsignedInt​(shapesNumberParameter);
-      
-      System.out.println("shapesNumber = " + shapesNumber);
-      
-      return shapesNumber;
-      
-      //int N = Integer.parseInt(getParameters().getUnnamed().get(parameterNumber));
-      //return N;
+      return parameter;
    }
 }

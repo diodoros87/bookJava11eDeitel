@@ -17,10 +17,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class MyLine extends MyShape {
-   private int lineWidth;
+   private double lineWidth;
 
    // constructor with input values
-   public MyLine(double x1, double y1, double x2, double y2, Color strokeColor, int lineWidth) {
+   public MyLine(double x1, double y1, double x2, double y2, Color strokeColor, double lineWidth) {
       super(x1, y1, x2, y2, strokeColor);
       this.lineWidth = Math.max(lineWidth, 0);
    } 
@@ -29,11 +29,11 @@ public class MyLine extends MyShape {
       this(0, 0, 0, 0, Color.BLACK, 0);
    } 
    
-   public void setLineWidth (int lineWidth) {
+   public void setLineWidth (double lineWidth) {
       this.lineWidth = Math.max(lineWidth, 0);
    }
    
-   public int getLineWidth () {
+   public double getLineWidth () {
       return lineWidth;
    }
    
