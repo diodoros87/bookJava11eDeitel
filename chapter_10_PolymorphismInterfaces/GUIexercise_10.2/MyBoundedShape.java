@@ -1,10 +1,10 @@
 /* =====================================================================================
- *       Filename:  MyOval.java
+ *       Filename:  MyBoundedShape.java
  *
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             GUI Exercise 10.1 - class represents an oval
+                             GUI Exercise 10.2 - class represents an bounded shape
                                  
                                                   
  *
@@ -18,12 +18,12 @@ import javafx.scene.paint.Color;
 
 import java.util.Objects;
 
-public class MyOval extends MyShape {
+public abstract class MyBoundedShape extends MyShape {
    private boolean filled;
    private Color   filledColor; 
 
    // constructor with input values
-   public MyOval(
+   public MyBoundedShape(
       double x1, double y1, double x2, double y2, Color strokeColor, Color filledColor, boolean filled) {
       super(x1, y1, x2, y2, strokeColor);
       
@@ -31,7 +31,7 @@ public class MyOval extends MyShape {
       this.filled      = filled;
    } 
    
-   public MyOval() {
+   public MyBoundedShape() {
       this(0, 0, 0, 0, Color.BLACK, Color.BLACK, false);
    } 
    
@@ -67,24 +67,4 @@ public class MyOval extends MyShape {
       return Math.abs(getY1() - getY2());
    }
    
-   public void draw(GraphicsContext gc) {
-      Objects.requireNonNull(gc, "GraphicsContext must not be null");
-      
-      if (true == isFilled()) {
-         drawFilledOval(gc);
-      }
-      else {
-         drawStrokeOval(gc);
-      }
-   } 
-   
-   private void drawStrokeOval(GraphicsContext gc) {
-      gc.setStroke(getStrokeColor());
-      gc.strokeOval(getUpperLeftX(), getUpperLeftY(), getWidth(), getHeigth());
-   }
-   
-   private void drawFilledOval(GraphicsContext gc) {
-      gc.setFill(getFilledColor());
-      gc.fillOval(getUpperLeftX(), getUpperLeftY(), getWidth(), getHeigth());
-   }
 } 
