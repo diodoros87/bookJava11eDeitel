@@ -39,7 +39,7 @@ public class ValidateParameters {
    }
    
    public static void checkNullPointersInArrays(Object[]... objectArrays) {
-      checkNullPointer((Object)objectArrays); 
+      checkNullPointerOnlyArray(objectArrays); 
       
       for (Object[] array : objectArrays) {
          checkNullPointer(array);

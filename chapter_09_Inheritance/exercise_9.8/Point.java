@@ -65,8 +65,8 @@ public class Point implements Cloneable {
    
    @Override
    public Object clone() throws CloneNotSupportedException {
-      super.clone();
       Point point = new Point(this);
+      //Point point = (Point)super.clone();  // other method to achieve identical result
      
       return point;
    }
