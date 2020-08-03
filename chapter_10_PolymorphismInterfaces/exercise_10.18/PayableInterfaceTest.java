@@ -29,13 +29,13 @@ public class PayableInterfaceTest {
       
       System.out.printf("%s %n%n", title);
       for (Payable currentPayable : payableArray) {
-         System.out.printf("%n%s %n", 
-            currentPayable.toString());
+         System.out.printf("%n%s %n", currentPayable.toString());
+         
          if (currentPayable instanceof Employee) {
             Employee employee = (Employee)currentPayable;
             
             CompensationModel compensationModel = employee.getCompensationModel();
-            // determine whether element is a BasePlusCommissionEmployee
+            // determine whether element is  BasePlusCommissionCompensationModel
             if (compensationModel instanceof BasePlusCommissionCompensationModel) {
                BasePlusCommissionCompensationModel basePlusModel = 
                                  (BasePlusCommissionCompensationModel)compensationModel;
@@ -53,14 +53,15 @@ public class PayableInterfaceTest {
    public static void fillPayableArray (Payable[] payableArray, Invoice[] invoiceArray, Employee[] employeeArray) {
       ValidateParameters.checkNullPointersInArrays(invoiceArray, employeeArray);
       ValidateParameters.checkNullPointerOnlyArray(payableArray);
+      
       try {
          int startIndex = 0;
          fillArray(payableArray, startIndex, invoiceArray);
-         if (payableArray.length > invoiceArray.length) {
+         if (employeeArray.length > 0 && payableArray.length > invoiceArray.length) {
             startIndex = invoiceArray.length;
             fillArray(payableArray, startIndex, employeeArray);
 
-            employeeArray[3].setCompensationModel(new HourlyCompensationModel(9999, 99));  //to test clone() method of class Employee
+            employeeArray[0].setCompensationModel(new HourlyCompensationModel(9999, 99));  //to test clone() method of class Employee
          }
       } catch (CloneNotSupportedException e) {
          e.printStackTrace();
@@ -129,7 +130,7 @@ public class PayableInterfaceTest {
       return compensationModelArray;
    }
    
-   public static Employee[] createEmployeeArray(CompensationModel[] compensationModelArray) {
+   private static Employee[] createEmployeeArray(CompensationModel[] compensationModelArray) {
       ValidateParameters.checkNullPointer((Object[])compensationModelArray);
       
       Employee[] employeeArray = new Employee[] {
