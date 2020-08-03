@@ -23,7 +23,7 @@ public class CarbonFootprintTest {
    public static void main(String[] args) {
       ArrayList<CarbonFootprint> carbonFootprintArrayList = getCarbonFootprintArrayList();
       
-      processCarbonFootprintObjects("Cars and Buildings processed polymorphically:", carbonFootprintArrayList); 
+      processCarbonFootprintObjects("Cars, Bikes and Buildings processed polymorphically:", carbonFootprintArrayList); 
    }
    
    public static void processCarbonFootprintObjects (String title, ArrayList<CarbonFootprint> carbonFootprintArray) {
@@ -32,8 +32,9 @@ public class CarbonFootprintTest {
       
       System.out.printf("%s %n%n", title);
       for (CarbonFootprint currentCarbonFootprint : carbonFootprintArray) {
-         System.out.printf("%n%s %n", currentCarbonFootprint.toString());
+         ValidateParameters.checkNullPointer(currentCarbonFootprint);
          
+         System.out.printf("%n%s %n", currentCarbonFootprint.toString());
       } 
    }
    
@@ -48,8 +49,10 @@ public class CarbonFootprintTest {
          if (buildingArray.length > 0 && carbonFootprintArray.length > vehicleArray.length) {
             startIndex = vehicleArray.length;
             fillArray(carbonFootprintArray, startIndex, buildingArray);
-
-            //buildingArray[0].setCompensationModel(new GeographicCoordination(99, 9));  //to test clone() method of class Building
+            
+            if (vehicleArray.length > 0) {
+               vehicleArray[0].moveTo(new GeographicCoordination(-99, -9));  //to test clone() method of class Vehicle
+            }
          }
       } catch (CloneNotSupportedException e) {
          e.printStackTrace();
@@ -74,20 +77,25 @@ public class CarbonFootprintTest {
       final int INDEX_LIMIT = Math.min(SOURCE.length, destination.length - startIndex);
       
       for (int index = 0; index < INDEX_LIMIT; index++) {
-         if (false == SOURCE[index] instanceof Building) {
-            destination[startIndex + index] = SOURCE[index];
+         if (true == SOURCE[index] instanceof Vehicle) {
+            Vehicle source                  = (Vehicle)SOURCE[index];
+            destination[startIndex + index] = (Vehicle)source.clone();
          }
-         else {
+         else if (true == SOURCE[index] instanceof Building) {
+            
             Building sourceBuilding         = (Building)SOURCE[index];
             destination[startIndex + index] = (Building)sourceBuilding.clone();
          }
+         else {
+            destination[startIndex + index] = SOURCE[index];
+         }
          
-         //destination[startIndex + index] = SOURCE[index];  //to test clone() method of class Building
+         //destination[startIndex + index] = SOURCE[index];  //to test clone() method of classes Building and Vehicle
       }
    }
    
    public static ArrayList<CarbonFootprint> getCarbonFootprintArrayList() {
-      CarbonFootprint[] carbonFootprintArray = createCarbonFootprintArray();
+      CarbonFootprint[] carbonFootprintArray              = createCarbonFootprintArray();
       ArrayList<CarbonFootprint> carbonFootprintArrayList = new ArrayList<>();
       
       Collections.addAll(carbonFootprintArrayList, carbonFootprintArray);
@@ -116,15 +124,6 @@ public class CarbonFootprintTest {
       
       return vehicleArray;
    }
-   /*
-   public static Bike[] createBikeArray() {
-      Bike[] carArray = new Bike[] {
-         new Bike(new GeographicCoordination(-60, 50), 776645.5, 78.6, "Honda", "diesel"),
-         new Bike(new GeographicCoordination(60, -30), 645.5, 58.6, "Skoda", "gas") 
-      };
-      
-      return carArray;
-   }*/
    
    public static Building[] createBuildingArray() {
       Building[] buildingArray = new Building[] {

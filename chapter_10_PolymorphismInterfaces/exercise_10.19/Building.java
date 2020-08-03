@@ -38,13 +38,13 @@ public class Building implements CarbonFootprint, Cloneable {
    public Building(Building building) throws CloneNotSupportedException {
       Objects.requireNonNull(building, "building must not be null");
       
-      this.LOCATION         = Objects.requireNonNull(building.getLocation(), "location must not be null"); 
+      this.LOCATION         = (GeographicCoordination)building.LOCATION.clone(); 
       this.coalUsage        = building.getCoalUsage();
       this.electricityUsage = building.getElectricityUsage(); 
    }
 
    public GeographicCoordination getLocation() throws CloneNotSupportedException {
-      Object clonedObject = LOCATION.clone();
+      Object clonedObject                   = LOCATION.clone();
       GeographicCoordination clonedLocation = (GeographicCoordination)clonedObject;
       
       return clonedLocation;

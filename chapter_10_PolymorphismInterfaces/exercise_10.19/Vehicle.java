@@ -67,19 +67,23 @@ public abstract class Vehicle implements CarbonFootprint, Cloneable {
    public double getCarbonFootprintPerKm() {
       return CARBON_FOOTPRINT_PER_KM;
    }
-   
-   public void moveTo(double latitude, double longitude) {
+   /*
+   private void moveTo(double latitude, double longitude) {
       setLatitude(latitude); 
       setLongitude(longitude);
-   }
+   }*/
    
+   public void moveTo(GeographicCoordination location) {
+      this.location = Objects.requireNonNull(location, "location must not be null");
+   }
+   /*
    private void setLatitude(double latitude) {
       location.setLatitude(latitude); 
    }
    
    private void setLongitude(double longitude) {
       location.setLongitude(longitude);
-   }
+   }*/
 
    @Override 
    public String toString() {
@@ -95,7 +99,7 @@ public abstract class Vehicle implements CarbonFootprint, Cloneable {
       Vehicle  cloned       = (Vehicle) clonedObject;
       
       GeographicCoordination clonedLocation = (GeographicCoordination)location.clone();
-      cloned.moveTo(clonedLocation.getLatitude(), clonedLocation.getLongitude());
+      cloned.moveTo(clonedLocation);
 
       return cloned;
    }

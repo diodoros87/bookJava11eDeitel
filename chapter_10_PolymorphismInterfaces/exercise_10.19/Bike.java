@@ -44,8 +44,8 @@ public class Bike extends Vehicle {
    
    @Override
    public Object clone() throws CloneNotSupportedException {
-      Object   clonedObject            = super.clone();
-      Bike cloned = (Bike) clonedObject;
+      Object clonedObject = super.clone();
+      Bike   cloned       = (Bike) clonedObject;
 
       return cloned;
    }
