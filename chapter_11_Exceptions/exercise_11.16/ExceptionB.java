@@ -15,5 +15,13 @@
  */
 
 public class ExceptionB extends ExceptionA {
-                                                                     
+   
+   public ExceptionB() {
+      super();
+   }    
+   
+   public ExceptionB(String string) {
+      //super(string);
+      //super();
+   }                                                              
 } 

@@ -1,10 +1,11 @@
 /* =====================================================================================
- *       Filename:  BasePlusCommissionExceptionA.java
+ *       Filename:  ExceptionB.java
  *
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 11.16 - ExceptionA superclass
+                             Exercise 11.17 - ExceptionB class 
+                                inherits from ExceptionA
                                  
                                                   
  *
@@ -13,12 +14,14 @@
  * =====================================================================================
  */
 
-public class ExceptionA extends Exception {
-   public ExceptionA() {
-      
+public class ExceptionB extends ExceptionA {
+   
+   public ExceptionB() {
+      super();
    }    
    
-   public ExceptionA(String string) {
-      super(string);
-   } 
+   public ExceptionB(String string) {
+      //super(string);
+      //super();
+   }                                                              
 } 
