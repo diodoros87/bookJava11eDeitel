@@ -4,7 +4,7 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 11.17 - ExceptionA hierarchy test program
+                             Exercise 11.17 - catching exceptions by Exception class
                                  
                                                   
  *
@@ -26,6 +26,7 @@ public class ExceptionsTest {
          List<Exception> exceptionsList = createExceptionsList();
          
          catchSubclassExceptionsBySuperclass(exceptionsList);
+         catchSubclassExceptionsBySuperclass(null);
       }
       catch (Exception e) {
          System.err.println(e + " handled by Exception object");
@@ -34,14 +35,18 @@ public class ExceptionsTest {
    }
    
    public static void catchSubclassExceptionsBySuperclass(List<Exception> exceptionsList) {
-      printMethodName("catchSubclassExceptionsBySuperclass");
+      if (null == exceptionsList) {
+         throw new NullPointerException();
+      }
       
+      printMethodName("catchSubclassExceptionsBySuperclass");
+      int index = 0;
       for (Exception e : exceptionsList) {
          try {
             throw e; 
          } 
          catch (Exception exception) { 
-            System.err.println(exception + " handled by Exception object");
+            System.err.printf("%2d. %s handled by Exception object %n", index++, exception);
             exception.printStackTrace();
          } 
       }
@@ -52,6 +57,14 @@ public class ExceptionsTest {
          
       try {
          throw new IOException(); 
+      } 
+      catch (Exception exception) { 
+         System.err.println(exception + " handled by Exception object");
+         exception.printStackTrace();
+      } 
+      
+      try {
+         throw new NullPointerException(); 
       } 
       catch (Exception exception) { 
          System.err.println(exception + " handled by Exception object");
@@ -75,7 +88,23 @@ public class ExceptionsTest {
       } 
       
       try {
-         throw new NullPointerException(); 
+         throw new ExceptionA((ExceptionA)null); 
+      } 
+      catch (Exception exception) { 
+         System.err.println(exception + " handled by Exception object");
+         exception.printStackTrace();
+      } 
+      
+      try {
+         throw new ExceptionA("String parameter message"); 
+      } 
+      catch (Exception exception) { 
+         System.err.println(exception + " handled by Exception object");
+         exception.printStackTrace();
+      } 
+      
+      try {
+         throw new ExceptionA("String parameter message", (Throwable)null); 
       } 
       catch (Exception exception) { 
          System.err.println(exception + " handled by Exception object");
@@ -85,7 +114,12 @@ public class ExceptionsTest {
    
    public static List<Exception> createExceptionsList() {
       List<Exception> list = List.of(
-         new IOException(), new ExceptionA(), new ExceptionB(), new NullPointerException());
+         new IOException(), new NullPointerException(),
+         new ExceptionA(), new ExceptionA("String parameter message"), 
+         new ExceptionA("String parameter message", (Exception)null), new ExceptionA((ExceptionA)null), 
+         new ExceptionB(), new ExceptionB("String parameter message"),
+         new ExceptionB("String parameter message", (ExceptionB)null), new ExceptionB((Exception)null)
+         );
       
       return list;   
    }

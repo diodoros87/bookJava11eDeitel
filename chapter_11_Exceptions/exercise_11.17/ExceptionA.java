@@ -18,7 +18,15 @@ public class ExceptionA extends Exception {
       
    }    
    
-   public ExceptionA(String string) {
-      super(string);
+   public ExceptionA(String message) {
+      super(message);
+   } 
+   
+   public ExceptionA(Throwable cause) {
+      super(cause);
+   }    
+   
+   public ExceptionA(String message, Throwable cause) {
+      super(message, cause);
    } 
 } 
