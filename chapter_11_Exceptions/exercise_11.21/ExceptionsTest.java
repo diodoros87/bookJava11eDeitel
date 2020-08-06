@@ -20,6 +20,7 @@ public class ExceptionsTest {
       
       functionCaller(2);
       functionCaller(5); 
+      functionCaller(1);
    }
    
    public static void functionCaller(int index) {
@@ -27,11 +28,7 @@ public class ExceptionsTest {
          throwExceptionToFunctionCaller(index);
       } 
       catch (IllegalFormatConversionException exception) { 
-         System.err.println(exception);
-         exception.printStackTrace();
-      }
-      catch (ArrayIndexOutOfBoundsException exception) { 
-         System.err.println(exception);
+         System.err.println("In functionCaller() was handled " + exception);
          exception.printStackTrace();
       }
    }
@@ -40,14 +37,22 @@ public class ExceptionsTest {
       int array[] = { 4, 6, 7 };
       
       try {
-         System.out.printf("%nIn index %d is %d", index, array[index]);
+         System.out.printf("%nIn index %d is %d%n", index, array[index]);
+         System.out.printf("%nIn index %f is %d%n", index, array[index]);
       }
       catch (ArrayIndexOutOfBoundsException exception) { 
-         System.err.println(exception);
+         System.err.println("In throwExceptionToFunctionCaller() was handled " + exception);
          exception.printStackTrace();
       }
       
-      System.out.printf("%nIn index %f is %d", index, array[index]);
+      try {
+         System.out.printf("%nIn index %f is %d%n", index, array[index]);
+      }
+      catch (ArrayIndexOutOfBoundsException exception) { 
+         System.err.println("In throwExceptionToFunctionCaller() was handled " + exception);
+         exception.printStackTrace();
+      }
+      
    }
    
 } 

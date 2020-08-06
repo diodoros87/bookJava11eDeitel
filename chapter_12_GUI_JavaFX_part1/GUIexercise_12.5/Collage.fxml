@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- =====================================================================================
+ *       Filename:  Collage.fxml
+ *
+ *    Description:  learning Java from book
+                       P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
+                          Polish Edition (chapters from 1 to 28)
+                             Exercise GUI 12.5 - fxml file to display collage with
+                                4 photos
+                             
+                             
+ *
+ *        @Author:  diodoros87
+ *
+ *   =====================================================================================
+-->
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="806.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Denali_Mt_McKinley.jpg" />
+         </image>
+      </ImageView>
+      <Label text="Denali Mt McKinley">
+         <font>
+            <Font name="System Bold" size="17.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Mytikas_Olympus.jpg" />
+         </image>
+      </ImageView>
+      <Label text="Mytikas Olympus">
+         <font>
+            <Font name="System Italic" size="20.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="133.0" fitWidth="242.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Nile_River_Uganda.jpg" />
+         </image>
+      </ImageView>
+      <Label text="Nile">
+         <font>
+            <Font name="System Bold" size="21.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="128.0" fitWidth="93.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Olkhon_Island_and_Lake_Baikal.jpg" />
+         </image>
+      </ImageView>
+      <Label text="Lake Baikal">
+         <font>
+            <Font name="System Bold" size="25.0" />
+         </font>
+      </Label>
+   </children>
+</VBox>
