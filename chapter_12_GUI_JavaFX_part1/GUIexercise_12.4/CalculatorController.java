@@ -1,5 +1,5 @@
 /* =====================================================================================
- *       Filename:  DrawShapesController.java
+ *       Filename:  CalculatorController.java
  *
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
@@ -13,9 +13,12 @@
  *
  * =====================================================================================
  */
+ 
+import java.text.DecimalFormat;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -38,33 +41,52 @@ public class CalculatorController {
    @FXML // fx:id="secondNumberTextField"
    private TextField secondNumberTextField; // Value injected by FXMLLoader
 
-   @FXML // fx:id="resultLabel"
-   private Label resultLabel; // Value injected by FXMLLoader
+   @FXML // fx:id="decimalResultLabel"
+   private Label decimalResultLabel; // Value injected by FXMLLoader
+
+   @FXML // fx:id="scientificResultLabel"
+   private Label scientificResultLabel; // Value injected by FXMLLoader
 
    @FXML
    void onAsteriskButtonPressed(ActionEvent event) {
       try {
           obtainNumbersFromUser();
           double result = firstNumber * secondNumber;
-          setResultLabel(result);
+          setResultLabels(result);
       }
       catch (NumberFormatException exception) {
-         resultLabel.setText("");
+         decimalResultLabel.setText("");
+         scientificResultLabel.setText("");
       }
    }
    
-   private void setResultLabel(double number) {
-      double absoluteNumber = Math.abs(number);
-      String numberString;
+   private void setResultLabels(double number) {
+      String numberString = formatDecimalResult(number);
+      decimalResultLabel.setText(numberString);
       
-      if (absoluteNumber > 1.0e20 || absoluteNumber < 1.0e-20) {
-         numberString = String.format("   %,e", number);
+      numberString        = formatScientificResult(number);
+      scientificResultLabel.setText(numberString);
+   }
+   
+   public String formatDecimalResult(double result) {
+      DecimalFormat formatter = new DecimalFormat("#,##0.#########################################################################");
+      String output           = formatter.format(result);
+      
+      return output;
+   }
+   
+   public String formatScientificResult(double result) {
+      DecimalFormat formatter = new DecimalFormat("0.###############################E0");
+      String output           = formatter.format(result);
+      
+      if (true == output.endsWith("E0")) {
+         output = output.replace("E0", "");
       }
-      else {
-         numberString = String.format("   %,f", number);
+      else if (false == output.contains("E-")) { //don't blast a negative sign
+         output = output.replace("E", "E+");
       }
       
-      resultLabel.setText(numberString);
+      return output;
    }
    
    private void obtainNumbersFromUser() {
@@ -101,10 +123,11 @@ public class CalculatorController {
       try {
           obtainNumbersFromUser();
           double result = firstNumber - secondNumber;
-          setResultLabel(result);
+          setResultLabels(result);
       }
       catch (NumberFormatException exception) {
-         resultLabel.setText("");
+         decimalResultLabel.setText("");
+         scientificResultLabel.setText("");
       }
    }
 
@@ -113,10 +136,11 @@ public class CalculatorController {
       try {
           obtainNumbersFromUser();
           double result = firstNumber + secondNumber;
-          setResultLabel(result);
+          setResultLabels(result);
       }
       catch (NumberFormatException exception) {
-         resultLabel.setText("");
+         decimalResultLabel.setText("");
+         scientificResultLabel.setText("");
       }
    }
 
@@ -128,22 +152,25 @@ public class CalculatorController {
              throw new ArithmeticException("can not divide by 0");
           }
           double result = firstNumber / secondNumber;
-          setResultLabel(result);
+          setResultLabels(result);
       }
       catch (NumberFormatException exception) {
-         resultLabel.setText("");
+         decimalResultLabel.setText("");
+         scientificResultLabel.setText("");
       }
       catch (ArithmeticException exception) {
-         resultLabel.setText(exception.getMessage());
+         decimalResultLabel.setText(exception.getMessage());
+         scientificResultLabel.setText("");
       }
    }
 
    @FXML // This method is called by the FXMLLoader when initialization is complete
-   void initialize() {
-      assert firstNumberTextField != null : "fx:id=\"firstNumberTextField\" was not injected: check your FXML file 'Calculator.fxml'.";
-      assert secondNumberTextField != null : "fx:id=\"secondNumberTextField\" was not injected: check your FXML file 'Calculator.fxml'.";
-      assert resultLabel != null : "fx:id=\"resultLabel\" was not injected: check your FXML file 'Calculator.fxml'.";
+    void initialize() {
+        assert firstNumberTextField != null : "fx:id=\"firstNumberTextField\" was not injected: check your FXML file 'Calculator.fxml'.";
+        assert secondNumberTextField != null : "fx:id=\"secondNumberTextField\" was not injected: check your FXML file 'Calculator.fxml'.";
+        assert decimalResultLabel != null : "fx:id=\"decimalResultLabel\" was not injected: check your FXML file 'Calculator.fxml'.";
+        assert scientificResultLabel != null : "fx:id=\"scientificResultLabel\" was not injected: check your FXML file 'Calculator.fxml'.";
 
-   }
+    }
 }
 
