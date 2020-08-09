@@ -68,6 +68,10 @@ public class TipCalculatorController {
          tipFieldString     = CURRENCY.format(tip);
          totalFieldString   = CURRENCY.format(total);
       }
+      catch (/* NumberFormatException is subclass of */ IllegalArgumentException exception) {
+         System.err.printf("%n%s%n", exception);
+         exception.printStackTrace();
+      }
       finally {
          tipTextField.setText(tipFieldString);
          totalTextField.setText(totalFieldString);
@@ -82,7 +86,8 @@ public class TipCalculatorController {
       return total;
    }
    
-   private BigDecimal getValueFromUser(TextField textField) {
+   private BigDecimal getValueFromUser(TextField textField)
+                                     throws NumberFormatException, IllegalArgumentException {
       assert(textField == this.amountTextField || this.numberOfClientsTextField == textField);
       
       BigDecimal value = null;
@@ -102,8 +107,8 @@ public class TipCalculatorController {
          if (false == exception instanceof NumberFormatException) {
             requestToEnterNumber(textField, exception.getMessage());
          }
-         System.err.printf("%n%s%n", exception);
-         exception.printStackTrace();
+         
+         throw exception;
       }
       
       return value; 
@@ -121,11 +126,7 @@ public class TipCalculatorController {
       catch (NumberFormatException exception) {
          requestToEnterNumber(amountTextField, "Enter amount");
          throw exception;
-      }/*
-      catch (IllegalArgumentException exception) {
-         requestToEnterNumber(amountTextField, exception.getMessage());
-         throw exception;
-      }*/
+      }
       
       return amount; 
    }
@@ -144,11 +145,7 @@ public class TipCalculatorController {
       catch (NumberFormatException exception) {
          requestToEnterNumber(numberOfClientsTextField, "Enter integer");
          throw exception;
-      }/*
-      catch (IllegalArgumentException exception) {
-         requestToEnterNumber(numberOfClientsTextField, exception.getMessage());
-         throw exception;
-      }*/
+      }
       
       return numberOfClients; 
    }
