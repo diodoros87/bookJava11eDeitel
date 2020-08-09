@@ -60,17 +60,13 @@ public class TipCalculatorController {
       String totalFieldString = "";
       
       try {
-         BigDecimal amount  = getValueFromUser(amountTextField, "amount");
-         BigDecimal clients = getValueFromUser(numberOfClientsTextField, "clients");
+         BigDecimal amount  = getValueFromUser(this.amountTextField);
+         BigDecimal clients = getValueFromUser(this.numberOfClientsTextField);
          BigDecimal tip     = amount.multiply(tipPercentage);
          BigDecimal total   = calculateTotal(amount, tip, clients);
 
          tipFieldString     = CURRENCY.format(tip);
          totalFieldString   = CURRENCY.format(total);
-      }
-      catch (/* NumberFormatException is subclass of */ IllegalArgumentException exception) {
-         System.err.printf("%n%s%n", exception);
-         exception.printStackTrace();
       }
       finally {
          tipTextField.setText(tipFieldString);
@@ -86,25 +82,75 @@ public class TipCalculatorController {
       return total;
    }
    
-   private BigDecimal getValueFromUser(TextField textField, String valueName) 
-                              throws NumberFormatException, IllegalArgumentException {
-      BigDecimal value;
+   private BigDecimal getValueFromUser(TextField textField) {
+      assert(textField == this.amountTextField || this.numberOfClientsTextField == textField);
+      
+      BigDecimal value = null;
       
       try {
-         String textFieldString = textField.getText();
-         value                  = new BigDecimal(textFieldString);
-         validateValue(value, valueName);
-      } 
-      catch (NumberFormatException exception) {
-         requestToEnterNumber(textField, "Enter amount");
-         throw exception;
+         if      (this.amountTextField == textField) {
+            value = getAmountFromUser();
+         }
+         else if (this.numberOfClientsTextField == textField) {
+            value = getNumberOfClientsFromUser();
+         }
+         else {
+            throw new UnsupportedOperationException(textField + " is unsupported");
+         }
       }
       catch (IllegalArgumentException exception) {
-         requestToEnterNumber(textField, exception.getMessage());
-         throw exception;
+         if (false == exception instanceof NumberFormatException) {
+            requestToEnterNumber(textField, exception.getMessage());
+         }
+         System.err.printf("%n%s%n", exception);
+         exception.printStackTrace();
       }
       
       return value; 
+   }
+   
+   private BigDecimal getAmountFromUser() throws NumberFormatException, IllegalArgumentException {
+      BigDecimal amount;
+      
+      try {
+         String textFieldString = amountTextField.getText();
+         amount                 = new BigDecimal(textFieldString);
+         
+         validateAmount(amount);
+      } 
+      catch (NumberFormatException exception) {
+         requestToEnterNumber(amountTextField, "Enter amount");
+         throw exception;
+      }/*
+      catch (IllegalArgumentException exception) {
+         requestToEnterNumber(amountTextField, exception.getMessage());
+         throw exception;
+      }*/
+      
+      return amount; 
+   }
+   
+   private BigDecimal getNumberOfClientsFromUser() throws NumberFormatException, IllegalArgumentException {
+      BigDecimal numberOfClients;
+      
+      try {
+         String textFieldString = numberOfClientsTextField.getText();
+         
+         int clients            = Integer.parseInt(textFieldString);
+         validateNumberOfClients(clients);
+         
+         numberOfClients        = new BigDecimal(clients);
+      } 
+      catch (NumberFormatException exception) {
+         requestToEnterNumber(numberOfClientsTextField, "Enter integer");
+         throw exception;
+      }/*
+      catch (IllegalArgumentException exception) {
+         requestToEnterNumber(numberOfClientsTextField, exception.getMessage());
+         throw exception;
+      }*/
+      
+      return numberOfClients; 
    }
    
    private void requestToEnterNumber(TextField textField, String message) {
@@ -113,26 +159,15 @@ public class TipCalculatorController {
       textField.requestFocus();
    }
    
-   private void validateValue(BigDecimal value, String valueName) {
-      switch (valueName) {
-         case "amount":
-            if (-1 == value.compareTo(BigDecimal.ZERO)) {
-               String message = String.format("%s must be >= 0", valueName);
-               
-               throw new IllegalArgumentException(message);
-            }
-            
-            break;
-         case "clients":   // intValueExact()
-            if (+1 != value.compareTo(BigDecimal.ZERO)) {
-               String message = String.format("%s must be > 0", valueName);
-               
-               throw new IllegalArgumentException(message);
-            }
-            
-            break;
-         default:
-            throw new IllegalArgumentException("Illegal value name");
+   private void validateAmount(BigDecimal amount) {
+      if (-1 == amount.compareTo(BigDecimal.ZERO)) {
+         throw new IllegalArgumentException("amount must be >= 0");
+      }
+   }
+   
+   private void validateNumberOfClients(int numberOfClients) {
+      if (0 >= numberOfClients) {
+         throw new IllegalArgumentException("clients must be > 0");
       }
    }
 
