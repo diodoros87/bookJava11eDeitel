@@ -27,9 +27,9 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 
 public class TipCalculatorController { 
-   // formatters for currency and percentages
-   private static final NumberFormat currency = NumberFormat.getCurrencyInstance();
-   private static final NumberFormat percent  = NumberFormat.getPercentInstance();
+   // formatters for CURRENCY and percentages
+   private static final NumberFormat CURRENCY      = NumberFormat.getCurrencyInstance();
+   private static final NumberFormat PERCENT       = NumberFormat.getPercentInstance();
    private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
    
    private BigDecimal tipPercentage = new BigDecimal(0.15); // 15% default
@@ -65,10 +65,10 @@ public class TipCalculatorController {
          BigDecimal tip     = amount.multiply(tipPercentage);
          BigDecimal total   = calculateTotal(amount, tip, clients);
 
-         tipFieldString     = currency.format(tip);
-         totalFieldString   = currency.format(total);
+         tipFieldString     = CURRENCY.format(tip);
+         totalFieldString   = CURRENCY.format(total);
       }
-      catch (/*NumberFormatException is subclass of */IllegalArgumentException exception) {
+      catch (/* NumberFormatException is subclass of */ IllegalArgumentException exception) {
          System.err.printf("%n%s%n", exception);
          exception.printStackTrace();
       }
@@ -91,8 +91,8 @@ public class TipCalculatorController {
       BigDecimal value;
       
       try {
-         String valueString = textField.getText();
-         value              = new BigDecimal(valueString);
+         String textFieldString = textField.getText();
+         value                  = new BigDecimal(textFieldString);
          validateValue(value, valueName);
       } 
       catch (NumberFormatException exception) {
@@ -123,7 +123,7 @@ public class TipCalculatorController {
             }
             
             break;
-         case "clients":
+         case "clients":   // intValueExact()
             if (+1 != value.compareTo(BigDecimal.ZERO)) {
                String message = String.format("%s must be > 0", valueName);
                
@@ -139,17 +139,18 @@ public class TipCalculatorController {
    // called by FXMLLoader to initialize the controller
    public void initialize() {
       // 0-4 rounds down, 5-9 rounds up 
-      currency.setRoundingMode(ROUNDING_MODE);
+      CURRENCY.setRoundingMode(ROUNDING_MODE);
       
       // listener for changes to tipPercentageSlider's value
       tipPercentageSlider.valueProperty().addListener(
          new ChangeListener<Number>() {
             @Override
-            public void changed(ObservableValue<? extends Number> ov, 
-               Number oldValue, Number newValue) {
-               tipPercentage = 
-                  BigDecimal.valueOf(newValue.intValue() / 100.0);
-               tipPercentageLabel.setText(percent.format(tipPercentage));
+            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+               int intValue  = newValue.intValue();
+               tipPercentage = BigDecimal.valueOf(intValue / 100.0);
+               
+               String tipPercentageFormatted = PERCENT.format(tipPercentage);
+               tipPercentageLabel.setText(tipPercentageFormatted);
             }
          }
       );
