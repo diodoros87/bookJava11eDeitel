@@ -30,9 +30,9 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 
 public class MortgageCalculatorController { 
-   // formatters for CURRENCY and percentages
    private static final NumberFormat CURRENCY               = NumberFormat.getCurrencyInstance();
    private static final RoundingMode CURRENCY_ROUNDING_MODE = RoundingMode.HALF_EVEN;
+   
    private static final BigDecimal MONTHS_IN_YEAR  = new BigDecimal(12);
    private static final BigDecimal HUNDRED         = new BigDecimal(100);
    private static final BigDecimal MAX_CREDIT_RATE = HUNDRED;
@@ -83,13 +83,12 @@ public class MortgageCalculatorController {
 
       BigDecimal creditAmount         = calculateCreditAmount(apartmentPrice, ownContribution);
       BigDecimal monthlyCreditPayment = calculateMonthlyCreditPayment(creditAmount, creditIntestRate);
-      System.err.printf("%nmonthlyCreditPayment = %s%n", monthlyCreditPayment);
       List<String> creditAmountsList = getCreditAmountsList(creditAmount, monthlyCreditPayment);
       
       return creditAmountsList;
    }
    
-   private ArrayList<String> getCreditAmountsList(BigDecimal creditAmount, BigDecimal monthlyCreditPayment) {
+   private List<String> getCreditAmountsList(BigDecimal creditAmount, BigDecimal monthlyCreditPayment) {
       ArrayList<String> creditAmountsList = new ArrayList<>();
 
       String creditAmountString         = CURRENCY.format(creditAmount);
@@ -102,7 +101,7 @@ public class MortgageCalculatorController {
    }
    
    private BigDecimal calculateCreditAmount(BigDecimal apartmentPrice, BigDecimal ownContribution) {
-      BigDecimal creditAmount = apartmentPrice.subtract(ownContribution);
+      BigDecimal creditAmount = apartmentPrice.subtract(ownContribution, MathContext.DECIMAL128);
       creditAmount            = creditAmount.max(BigDecimal.ZERO);
       
       return creditAmount;
@@ -126,10 +125,7 @@ public class MortgageCalculatorController {
    private BigDecimal calculateMonthlyCreditPayment(BigDecimal creditAmount, BigDecimal creditIntestRate,
                                                    BigDecimal numberOfPayments) {
       BigDecimal monthlyCreditIntestRate = creditIntestRate.divide(MONTHS_IN_YEAR, MathContext.DECIMAL128);
-      //System.err.printf("%n monthlyCreditIntestRate = %s%n", monthlyCreditIntestRate);
-      monthlyCreditIntestRate = monthlyCreditIntestRate.divide(HUNDRED, MathContext.DECIMAL128);
-      
-      //System.err.printf("%n monthlyCreditIntestRate = %s%n", monthlyCreditIntestRate);
+      monthlyCreditIntestRate            = monthlyCreditIntestRate.divide(HUNDRED, MathContext.DECIMAL128);
       
       BigDecimal component = calculateRepeatedFormulaComponent(numberOfPayments, monthlyCreditIntestRate);
       

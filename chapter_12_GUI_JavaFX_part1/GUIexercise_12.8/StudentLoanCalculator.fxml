@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- =====================================================================================
+ *       Filename:  StudentLoanCalculator.fxml
+ *
+ *    Description:  learning Java from book
+                       P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
+                          Polish Edition (chapters from 1 to 28)
+                             GUI Exercise 12.8 - fxml file to display GridPane contains 
+                                slider, 4 labels, 1 button and 3 text fields
+                             
+                             
+ *
+ *        @Author:  diodoros87
+ *
+ *   =====================================================================================
+-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane hgap="8.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="StudentLoanCalculatorController">
+  <columnConstraints>
+    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Label text="Annual interest rate (as percent)" GridPane.rowIndex="1" />
+      <Label text="Years for repayment " GridPane.rowIndex="2" />
+      <Label text="Monthly credit payment" GridPane.rowIndex="3" />
+      <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#calculateButtonPressed" text="Calculate" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <Slider fx:id="repaymentYearsSlider" blockIncrement="5.0" majorTickUnit="5.0" max="30.0" min="5.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="10.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <TextField fx:id="annualIntestRateTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <TextField fx:id="monthlyCreditPaymentTextField" editable="false" focusTraversable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <Label text="Loan amount" />
+      <TextField fx:id="loanAmountTextField" GridPane.columnIndex="1" />
+   </children>
+   <padding>
+      <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+   </padding>
+</GridPane>
