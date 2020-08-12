@@ -50,7 +50,7 @@ public class StudentLoanCalculatorController {
       
       try {
          BigDecimal monthlyCreditPayment = calculateMonthlyCreditPayment();
-         formattedCreditPayment = CreditCalculator.getFormattedCurrency(monthlyCreditPayment);
+         formattedCreditPayment          = CreditCalculator.getFormattedCurrency(monthlyCreditPayment);
       }
       catch (RuntimeException exception) {
          System.err.printf("%n%s%n", exception);

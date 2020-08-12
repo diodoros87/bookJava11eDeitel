@@ -32,7 +32,7 @@ public class CreditCalculator {
    
    private static final BigDecimal MONTHS_IN_YEAR  = BigDecimal.valueOf(12);
    private static final BigDecimal HUNDRED         = BigDecimal.valueOf(100);
-   private static final BigDecimal MAX_CREDIT_RATE = BigDecimal.TEN;
+   private static final BigDecimal MAX_CREDIT_RATE = BigDecimal.valueOf(40);
    private static final BigDecimal MIN_CREDIT_RATE = BigDecimal.ZERO;
    
    private BigDecimal repaymentYears   = BigDecimal.TEN; 
@@ -83,6 +83,17 @@ public class CreditCalculator {
       return loanAmount;
    }
    
+   public void setLoanAmount(BigDecimal ownContribution, BigDecimal price) {
+      Objects.requireNonNull(ownContribution);
+      Objects.requireNonNull(price);
+      
+      validateAmount(ownContribution);
+      validateAmount(price);
+      
+      BigDecimal creditAmount = price.subtract(ownContribution, MATH_CONTEXT);
+      this.loanAmount         = creditAmount.max(BigDecimal.ZERO);
+   }
+   
    public void setLoanAmount(BigDecimal loanAmount) {
       Objects.requireNonNull(loanAmount);
       validateAmount(loanAmount);
@@ -93,10 +104,20 @@ public class CreditCalculator {
       return annualIntestRate;
    }
    
-   public void setAnnualIntestRate(BigDecimal annualIntestRate) {
+   public void setAnnualInterestRate(BigDecimal annualIntestRate) {
       Objects.requireNonNull(annualIntestRate);
       validateAnnualInterestRate(annualIntestRate);
       this.annualIntestRate = annualIntestRate;
+   }
+   
+   public static BigDecimal getRepaymentYears(BigDecimal repaymentMonths) {
+      Objects.requireNonNull(repaymentMonths);
+      
+      return repaymentMonths.divide(MONTHS_IN_YEAR, MATH_CONTEXT);
+   }
+   
+   public BigDecimal getRepaymentMonths() {
+      return repaymentYears.multiply(MONTHS_IN_YEAR, MATH_CONTEXT);
    }
    
    public BigDecimal getRepaymentYears() {
@@ -140,7 +161,7 @@ public class CreditCalculator {
    }
    
    public BigDecimal calculateMonthlyCreditPayment() {
-      BigDecimal numberOfPayments = this.repaymentYears.multiply(MONTHS_IN_YEAR);
+      BigDecimal numberOfPayments = this.repaymentYears.multiply(MONTHS_IN_YEAR, MATH_CONTEXT);
       
       if (0 == loanAmount.compareTo(BigDecimal.ZERO)) {
          return BigDecimal.ZERO;
@@ -186,19 +207,23 @@ public class CreditCalculator {
       return component;
    }
    
-   private static void validateAmount(BigDecimal amount) {
+   public static void validateAmount(BigDecimal amount) {
+      Objects.requireNonNull(amount);
       if (-1 == amount.compareTo(BigDecimal.ZERO)) {
          throw new IllegalArgumentException("amount must be >= 0");
       }
    }
    
-   private static void validateRepaymentYears(BigDecimal years) {
+   public static void validateRepaymentYears(BigDecimal years) {
+      Objects.requireNonNull(years);
       if (+1 != years.compareTo(BigDecimal.ZERO)) {
          throw new IllegalArgumentException("repayment years must be > 0");
       }
    }
    
-   private void validateAnnualInterestRate(BigDecimal ratePercent) {
+   public void validateAnnualInterestRate(BigDecimal ratePercent) {
+      Objects.requireNonNull(ratePercent);
+      
       if (-1 == ratePercent.compareTo(MIN_CREDIT_RATE)) {
          throw new IllegalArgumentException(
                String.format("rate must be >= %d", MIN_CREDIT_RATE.intValue()));
