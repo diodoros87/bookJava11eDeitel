@@ -94,7 +94,7 @@ public class StudentLoanCalculatorController {
          creditCalculator.setLoanAmount(number);
       }
       else if (this.annualIntestRateTextField == textField) {
-         creditCalculator.setAnnualIntestRate(number);
+         creditCalculator.setAnnualInterestRate(number);
       }
       else {
          throw new UnsupportedOperationException(textField + " is unsupported");

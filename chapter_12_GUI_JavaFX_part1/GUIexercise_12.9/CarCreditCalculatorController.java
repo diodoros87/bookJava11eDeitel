@@ -18,7 +18,6 @@ import creditCalculatorPackage.CreditCalculator;
 
 import java.math.BigDecimal;
 import java.util.ArrayDeque;
-import java.util.List;
 import java.util.Collections;
 import java.util.Collection;
 
@@ -87,7 +86,6 @@ public class CarCreditCalculatorController {
          
          Collection<String> creditAmountsList = Collections.nCopies(4, "");
          creditPaymentsDeque = new ArrayDeque<String> (creditAmountsList);
-         //creditPaymentsDeque.addAll(creditAmountsList);
       }
       finally {
          firstMonthsTextField.setText(creditPaymentsDeque.poll());
@@ -100,7 +98,7 @@ public class CarCreditCalculatorController {
    private final BigDecimal[] createRepaymentYearsArray() {
       String[] repaymentMonthsStrings  = getRepaymentMonthsStrings();
       BigDecimal[] repaymentYearsArray = createRepaymentYearsArray(repaymentMonthsStrings);
-      
+
       return repaymentYearsArray;
    }
    
@@ -132,16 +130,16 @@ public class CarCreditCalculatorController {
          thirdMonthsLabel.getText(),
          fourthMonthsLabel.getText()
       }; 
-      
+
       return repaymentYearsStrings;
    }
-   
+
    private ArrayDeque<String> getCreditPayments() {
       BigDecimal carPrice         = getCorrectNumberFromUser(this.carPriceTextField);
       BigDecimal ownContribution  = getCorrectNumberFromUser(this.ownContributionTextField);
       
       try {
-         creditCalculator.setLoanAmount(carPrice, ownContribution);
+         creditCalculator.setLoanAmount(ownContribution, carPrice);
          creditCalculator.setAnnualInterestRate(this.annualInterestRate);
       } 
       catch (IllegalArgumentException exception) {
@@ -163,7 +161,7 @@ public class CarCreditCalculatorController {
       String     formattedCreditPayment;
       
       for (int index = repaymentYearsArray.length - 1; index >= 0 ; index--) {
-         creditPayment = creditCalculator.calculateMonthlyCreditPayment(repaymentYearsArray[index]);
+         creditPayment = calculateMonthlyCreditPayment(repaymentYearsArray[index]);
          formattedCreditPayment = CreditCalculator.getFormattedCurrency(creditPayment);
          creditPaymentsDeque.addFirst(formattedCreditPayment);
       }
@@ -247,9 +245,9 @@ public class CarCreditCalculatorController {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
                double doubleValue = newValue.doubleValue();
-               annualInterestRate = BigDecimal.valueOf(doubleValue / 100);
-               
-               String annualInterestRateFormatted = CreditCalculator.getFormattedPercentage(annualInterestRate);
+               annualInterestRate = BigDecimal.valueOf(doubleValue);
+   
+               String annualInterestRateFormatted = CreditCalculator.getFormattedNumberAsPercent(annualInterestRate);
                annualInterestRateLabel.setText(annualInterestRateFormatted);
             }
          }

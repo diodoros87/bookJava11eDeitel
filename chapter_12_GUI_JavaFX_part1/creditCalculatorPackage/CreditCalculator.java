@@ -35,32 +35,32 @@ public class CreditCalculator {
    private static final BigDecimal MAX_CREDIT_RATE = BigDecimal.valueOf(40);
    private static final BigDecimal MIN_CREDIT_RATE = BigDecimal.ZERO;
    
-   private BigDecimal repaymentYears   = BigDecimal.TEN; 
-   private BigDecimal loanAmount       = BigDecimal.ZERO; 
-   private BigDecimal annualIntestRate = BigDecimal.TEN; 
+   private BigDecimal repaymentYears     = BigDecimal.TEN; 
+   private BigDecimal loanAmount         = BigDecimal.ZERO; 
+   private BigDecimal annualInterestRate = BigDecimal.TEN; 
    
    public CreditCalculator() { }
    
-   public CreditCalculator(BigDecimal loanAmount, BigDecimal annualIntestRate, BigDecimal repaymentYears) {
+   public CreditCalculator(BigDecimal loanAmount, BigDecimal annualInterestRate, BigDecimal repaymentYears) {
       Objects.requireNonNull(loanAmount);
-      Objects.requireNonNull(annualIntestRate);
+      Objects.requireNonNull(annualInterestRate);
       Objects.requireNonNull(repaymentYears);
       
       validateAmount(loanAmount);
-      validateAnnualInterestRate(annualIntestRate);
+      validateAnnualInterestRate(annualInterestRate);
       validateRepaymentYears(repaymentYears);
       
-      setValues(loanAmount, annualIntestRate, repaymentYears);
+      setValues(loanAmount, annualInterestRate, repaymentYears);
    }
    
-   public CreditCalculator(BigDecimal ownContribution, BigDecimal price, BigDecimal annualIntestRate,
+   public CreditCalculator(BigDecimal ownContribution, BigDecimal price, BigDecimal annualInterestRate,
                                  BigDecimal repaymentYears) {
-      Objects.requireNonNull(annualIntestRate);
+      Objects.requireNonNull(annualInterestRate);
       Objects.requireNonNull(repaymentYears);
       Objects.requireNonNull(ownContribution);
       Objects.requireNonNull(price);
       
-      validateAnnualInterestRate(annualIntestRate);
+      validateAnnualInterestRate(annualInterestRate);
       validateRepaymentYears(repaymentYears);
       validateAmount(ownContribution);
       validateAmount(price);
@@ -68,12 +68,12 @@ public class CreditCalculator {
       BigDecimal creditAmount = price.subtract(ownContribution, MATH_CONTEXT);
       creditAmount            = creditAmount.max(BigDecimal.ZERO);
       
-      setValues(creditAmount, annualIntestRate, repaymentYears);
+      setValues(creditAmount, annualInterestRate, repaymentYears);
    }
    
-   private final void setValues(BigDecimal loanAmount, BigDecimal annualIntestRate, BigDecimal repaymentYears) {
+   private final void setValues(BigDecimal loanAmount, BigDecimal annualInterestRate, BigDecimal repaymentYears) {
       this.loanAmount       = loanAmount;
-      this.annualIntestRate = annualIntestRate;
+      this.annualInterestRate = annualInterestRate;
       this.repaymentYears   = repaymentYears;
       
       setRoundingMode();
@@ -100,14 +100,14 @@ public class CreditCalculator {
       this.loanAmount = loanAmount;
    }
    
-   public BigDecimal getAnnualIntestRate() {
-      return annualIntestRate;
+   public BigDecimal getAnnualInterestRate() {
+      return annualInterestRate;
    }
    
-   public void setAnnualInterestRate(BigDecimal annualIntestRate) {
-      Objects.requireNonNull(annualIntestRate);
-      validateAnnualInterestRate(annualIntestRate);
-      this.annualIntestRate = annualIntestRate;
+   public void setAnnualInterestRate(BigDecimal annualInterestRate) {
+      Objects.requireNonNull(annualInterestRate);
+      validateAnnualInterestRate(annualInterestRate);
+      this.annualInterestRate = annualInterestRate;
    }
    
    public static BigDecimal getRepaymentYears(BigDecimal repaymentMonths) {
@@ -160,6 +160,15 @@ public class CreditCalculator {
       return formattedPercentage;
    }
    
+   public static String getFormattedNumberAsPercent(BigDecimal number) 
+                           throws NullPointerException, IllegalArgumentException {
+      Objects.requireNonNull(number);
+      
+      String     formattedPercentage = String.format("%.9f%%", number);
+      
+      return formattedPercentage;
+   }
+   
    public BigDecimal calculateMonthlyCreditPayment() {
       BigDecimal numberOfPayments = this.repaymentYears.multiply(MONTHS_IN_YEAR, MATH_CONTEXT);
       
@@ -167,7 +176,7 @@ public class CreditCalculator {
          return BigDecimal.ZERO;
       }
       
-      if (0 == annualIntestRate.compareTo(BigDecimal.ZERO)) {
+      if (0 == annualInterestRate.compareTo(BigDecimal.ZERO)) {
          return loanAmount.divide(numberOfPayments, MATH_CONTEXT);
       }
       else {
@@ -175,19 +184,17 @@ public class CreditCalculator {
       }
    }
    
-   public BigDecimal calculateMonthlyCreditPayment(BigDecimal numberOfPayments) {
-      Objects.requireNonNull(numberOfPayments);
+   private BigDecimal calculateMonthlyCreditPayment(BigDecimal numberOfPayments) {
+      BigDecimal monthlyInterestRate = annualInterestRate.divide(MONTHS_IN_YEAR, MATH_CONTEXT);
+      monthlyInterestRate            = monthlyInterestRate.divide(HUNDRED, MATH_CONTEXT);
       
-      BigDecimal monthlyIntestRate = annualIntestRate.divide(MONTHS_IN_YEAR, MATH_CONTEXT);
-      monthlyIntestRate            = monthlyIntestRate.divide(HUNDRED, MATH_CONTEXT);
+      BigDecimal component = calculateRepeatedFormulaComponent(numberOfPayments, monthlyInterestRate);
       
-      BigDecimal component = calculateRepeatedFormulaComponent(numberOfPayments, monthlyIntestRate);
-      
-      BigDecimal numerator = loanAmount.multiply(monthlyIntestRate, MATH_CONTEXT);
+      BigDecimal numerator = loanAmount.multiply(monthlyInterestRate, MATH_CONTEXT);
       numerator            = numerator.multiply(component, MATH_CONTEXT);
       
       BigDecimal denominator = component.subtract(BigDecimal.ONE, MATH_CONTEXT);
-      
+
       BigDecimal result = numerator.divide(denominator, MATH_CONTEXT);
       
       return result;
@@ -221,7 +228,7 @@ public class CreditCalculator {
       }
    }
    
-   public void validateAnnualInterestRate(BigDecimal ratePercent) {
+   public static void validateAnnualInterestRate(BigDecimal ratePercent) {
       Objects.requireNonNull(ratePercent);
       
       if (-1 == ratePercent.compareTo(MIN_CREDIT_RATE)) {
