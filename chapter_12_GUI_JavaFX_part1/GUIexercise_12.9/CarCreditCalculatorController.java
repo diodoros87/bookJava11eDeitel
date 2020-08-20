@@ -34,7 +34,7 @@ public class CarCreditCalculatorController {
    
    private BigDecimal[] repaymentYearsArray;
    
-   private BigDecimal annualInterestRate = new BigDecimal(0.15); // 15% default
+   private BigDecimal annualInterestRate = new BigDecimal(15); // 15% default
    
    // GUI controls defined in FXML and used by the controller's code
    @FXML
