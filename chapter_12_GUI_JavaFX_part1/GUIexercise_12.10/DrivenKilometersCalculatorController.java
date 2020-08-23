@@ -5,7 +5,7 @@
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
                              GUI Exercise 12.10 - Controller that handles 
-                                buttons and slider events
+                                button events
                                  
                                                   
  *

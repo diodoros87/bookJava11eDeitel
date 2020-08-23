@@ -4,8 +4,7 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             GUI Exercise 12.10 - Main application class that loads and 
-                                 displays the DrivenKilometersCalculatorIncorrectTest GUI
+                             GUI Exercise 12.10 - test of entering incorrect data
                              
                              
  *
@@ -25,9 +24,10 @@ import javafx.scene.control.Label;
 import javafx.event.ActionEvent;
 
 public class DrivenKilometersCalculatorIncorrectTest extends Application {
+   private FXMLLoader loader = new FXMLLoader();
+   
    @Override
    public void start(Stage stage) throws Exception {
-      FXMLLoader loader = new FXMLLoader();
       loader.setLocation(getClass().getResource("DrivenKilometersCalculator.fxml"));
       Parent root = loader.load();
       DrivenKilometersCalculatorController controller = loader.getController();

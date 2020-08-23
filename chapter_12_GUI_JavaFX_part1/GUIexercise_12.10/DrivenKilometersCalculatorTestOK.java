@@ -25,9 +25,10 @@ import javafx.scene.control.Label;
 import javafx.event.ActionEvent;
 
 public class DrivenKilometersCalculatorTestOK extends Application {
+   FXMLLoader loader = new FXMLLoader();
+   
    @Override
    public void start(Stage stage) throws Exception {
-      FXMLLoader loader = new FXMLLoader();
       loader.setLocation(getClass().getResource("DrivenKilometersCalculator.fxml"));
       Parent root = loader.load();
       DrivenKilometersCalculatorController controller = loader.getController();
