@@ -40,7 +40,8 @@ public class TipCalculatorController {
    
    private BigDecimal tipPercentage = new BigDecimal(0.15); // 15% default
    
-   private Input input = new Input();
+   private Input       input       = new Input();
+   private Calculation calculation = new Calculation();
    
    // GUI controls defined in FXML and used by the controller's code
    @FXML 
@@ -60,43 +61,59 @@ public class TipCalculatorController {
 
    @FXML
    private TextField totalTextField;
-
-   // calculates and displays the tip and total amounts
-   private void calculate() {
-      String tipFieldString   = "";
-      String totalFieldString = "";
-      
-      try {
-         BigDecimal amount  = input.getValueFromUser(this.amountTextField);
-         BigDecimal clients = input.getValueFromUser(this.numberOfClientsTextField);
-         BigDecimal tip     = amount.multiply(tipPercentage, MATH_CONTEXT);
-         BigDecimal total   = calculateTotal(amount, tip, clients);
-
-         tipFieldString     = CURRENCY.format(tip);
-         totalFieldString   = CURRENCY.format(total);
-      }
-      catch (/* NumberFormatException is subclass of */ IllegalArgumentException exception) {
-         System.err.printf("%n%s%n", exception);
-         exception.printStackTrace();
-      }
-      finally {
-         tipTextField.setText(tipFieldString);
-         totalTextField.setText(totalFieldString);
-      }
-   }
    
-   private BigDecimal calculateTotal(BigDecimal amount, BigDecimal tip, BigDecimal clients) {
-      BigDecimal total = amount.add(tip, MATH_CONTEXT);
-      total            = total.divide(clients, MATH_CONTEXT);
+   private class Calculation {
+      private static final String INCORRECT_AMOUNT_ERROR  = "amount must be >= 0";
+      private static final String INCORRECT_CLIENTS_ERROR = "clients must be > 0";
+      // calculates and displays the tip and total amounts
+      private void calculate() {
+         String tipFieldString   = "";
+         String totalFieldString = "";
       
-      return total;
+         try {
+            BigDecimal amount  = input.getValueFromUser(TipCalculatorController.this.amountTextField);
+            BigDecimal clients = input.getValueFromUser(TipCalculatorController.this.numberOfClientsTextField);
+            BigDecimal tip     = amount.multiply(tipPercentage, MATH_CONTEXT);
+            BigDecimal total   = calculateTotal(amount, tip, clients);
+
+            tipFieldString     = CURRENCY.format(tip);
+            totalFieldString   = CURRENCY.format(total);
+         }
+         catch (/* NumberFormatException is subclass of */ IllegalArgumentException exception) {
+            System.err.printf("%n%s%n", exception);
+            exception.printStackTrace();
+         }
+         finally {
+            TipCalculatorController.this.tipTextField.setText(tipFieldString);
+            TipCalculatorController.this.totalTextField.setText(totalFieldString);
+         }
+      }
+      
+      private BigDecimal calculateTotal(BigDecimal amount, BigDecimal tip, BigDecimal clients) {
+         BigDecimal total = amount.add(tip, MATH_CONTEXT);
+         total            = total.divide(clients, MATH_CONTEXT);
+         
+         return total;
+      }
+      
+      private void validateAmount(BigDecimal amount) {
+         if (-1 == amount.compareTo(BigDecimal.ZERO)) {
+            throw new IllegalArgumentException(INCORRECT_AMOUNT_ERROR);
+         }
+      }
+   
+      private void validateNumberOfClients(int numberOfClients) {
+         if (0 >= numberOfClients) {
+            throw new IllegalArgumentException(INCORRECT_CLIENTS_ERROR);
+         }
+      }
    }
    
    private class Input {
-      BigDecimal getValueFromUser(TextField textField)
+      private BigDecimal getValueFromUser(TextField textField)
                                         throws NumberFormatException, IllegalArgumentException {
          assert(textField == TipCalculatorController.this.amountTextField 
-         || TipCalculatorController.this.numberOfClientsTextField == textField);
+             || textField == TipCalculatorController.this.numberOfClientsTextField);
          
          BigDecimal value = null;
          
@@ -122,14 +139,14 @@ public class TipCalculatorController {
          return value; 
       }
       
-      BigDecimal getAmountFromUser() throws NumberFormatException, IllegalArgumentException {
+      private BigDecimal getAmountFromUser() throws NumberFormatException, IllegalArgumentException {
          BigDecimal amount;
          
          try {
             String textFieldString = amountTextField.getText();
             amount                 = new BigDecimal(textFieldString);
             
-            validateAmount(amount);
+            calculation.validateAmount(amount);
          } 
          catch (NumberFormatException exception) {
             requestToEnterNumber(amountTextField, "Enter amount");
@@ -139,14 +156,14 @@ public class TipCalculatorController {
          return amount; 
       }
       
-      BigDecimal getNumberOfClientsFromUser() throws NumberFormatException, IllegalArgumentException {
+      private BigDecimal getNumberOfClientsFromUser() throws NumberFormatException, IllegalArgumentException {
          BigDecimal numberOfClients;
          
          try {
             String textFieldString = numberOfClientsTextField.getText();
             
             int clients            = Integer.parseInt(textFieldString);
-            validateNumberOfClients(clients);
+            calculation.validateNumberOfClients(clients);
             
             numberOfClients        = new BigDecimal(clients);
          } 
@@ -164,18 +181,6 @@ public class TipCalculatorController {
       textField.selectAll();
       textField.requestFocus();
    }
-   
-   private void validateAmount(BigDecimal amount) {
-      if (-1 == amount.compareTo(BigDecimal.ZERO)) {
-         throw new IllegalArgumentException("amount must be >= 0");
-      }
-   }
-   
-   private void validateNumberOfClients(int numberOfClients) {
-      if (0 >= numberOfClients) {
-         throw new IllegalArgumentException("clients must be > 0");
-      }
-   }
 
    // called by FXMLLoader to initialize the controller
    public void initialize() {
@@ -185,11 +190,9 @@ public class TipCalculatorController {
       DoubleProperty sliderValue = tipPercentageSlider.valueProperty();
       initializeDoublePropertyListener(sliderValue);
       
-      StringProperty textFieldProperty = amountTextField.textProperty();
-      initializeStringPropertyListener(textFieldProperty);
+      initializeStringPropertyListener(amountTextField);
       
-      textFieldProperty = numberOfClientsTextField.textProperty();
-      initializeStringPropertyListener(textFieldProperty);
+      initializeStringPropertyListener(numberOfClientsTextField);
    }
    
    private void initializeDoublePropertyListener(DoubleProperty property) {
@@ -197,18 +200,23 @@ public class TipCalculatorController {
          new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-               calculate();
+               calculation.calculate();
             }
          }
       );
    }
    
-   private void initializeStringPropertyListener(StringProperty property) {
+   private void initializeStringPropertyListener(final TextField TEXT_FIELD) {
+      StringProperty property = TEXT_FIELD.textProperty();
       property.addListener(
          new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
-               calculate();
+               // to cancel perform calculate on errors strings
+               if (  (false == newValue.equals(Calculation.INCORRECT_AMOUNT_ERROR)  && TEXT_FIELD == amountTextField) 
+                  || (false == newValue.equals(Calculation.INCORRECT_CLIENTS_ERROR) && TEXT_FIELD == numberOfClientsTextField) ) {
+                  calculation.calculate();
+               }
             }
          }
       );
