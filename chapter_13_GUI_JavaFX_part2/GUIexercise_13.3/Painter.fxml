@@ -70,10 +70,10 @@
                   <Label text="green" GridPane.rowIndex="1" />
                   <Label text="blue" GridPane.rowIndex="2" />
                   <Label text="alpha" GridPane.rowIndex="3" />
-                  <Slider fx:id="redSlider" max="255.0" GridPane.columnIndex="1" />
-                  <Slider fx:id="greenSlider" max="255.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Slider fx:id="blueSlider" max="255.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <Slider fx:id="alphaSlider" max="1.0" value="1.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Slider fx:id="redSlider" blockIncrement="1.0" max="255.0" GridPane.columnIndex="1" />
+                  <Slider fx:id="greenSlider" blockIncrement="1.0" max="255.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Slider fx:id="blueSlider" blockIncrement="1.0" max="255.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Slider fx:id="alphaSlider" blockIncrement="0.01" max="1.0" value="1.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                   <TextField fx:id="redTextField" editable="false" focusTraversable="false" prefWidth="50.0" GridPane.columnIndex="2" />
                   <TextField fx:id="greenTextField" editable="false" focusTraversable="false" prefWidth="50.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                   <TextField fx:id="blueTextField" editable="false" focusTraversable="false" prefWidth="50.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
