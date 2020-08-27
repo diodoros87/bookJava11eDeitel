@@ -25,9 +25,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import java.text.NumberFormat;
-import java.text.Format;
-
 public class ColorChooserController {
    // instance variables for interacting with GUI components
    @FXML private Slider redSlider;
@@ -46,9 +43,6 @@ public class ColorChooserController {
    private int blue     = 0;
    private double alpha = 1.0;
    
-   private static final NumberFormat numberFormat  = NumberFormat.getNumberInstance();
-   private static final NumberFormat integerFormat = NumberFormat.getIntegerInstance();
-   
    public void initialize() {
       initializeColorValuesBinding();
       initializeSlidersAboutColors();
@@ -62,18 +56,134 @@ public class ColorChooserController {
    }
    
    private void initializeColorValuesBinding() {
-      // bind TextField values to corresponding Slider values
-      initializeColorValuesBinding(redTextField, redSlider, integerFormat);
-      initializeColorValuesBinding(greenTextField, greenSlider, integerFormat);
-      initializeColorValuesBinding(blueTextField, blueSlider, integerFormat);
-      initializeColorValuesBinding(alphaTextField, alphaSlider, numberFormat);
+      bindSlidersToTextFields();
+      bindTextFieldsToSliders();
    }
    
-   private void initializeColorValuesBinding(TextField textField, Slider slider, Format format) {
-      DoubleProperty sliderValue = slider.valueProperty();
+   private void bindSlidersToTextFields() {
+      bindSliderToTextField(redTextField, redSlider, "%.0f");
+      bindSliderToTextField(greenTextField, greenSlider, "%.0f");
+      bindSliderToTextField(blueTextField, blueSlider, "%.0f");
+      bindSliderToTextField(alphaTextField, alphaSlider, "%.2f");
+   }
+   
+   private void bindTextFieldsToSliders() {
+      bindTextFieldToSlider(redTextField, redSlider);
+      bindTextFieldToSlider(greenTextField, greenSlider);
+      bindTextFieldToSlider(blueTextField, blueSlider);
+      bindTextFieldToSlider(alphaTextField, alphaSlider);
+   }
+   
+   private void bindSliderToTextField(final TextField TEXT_FIELD, final Slider SLIDER, String format) {
+      DoubleProperty property = SLIDER.valueProperty();
+      property.addListener(
+         new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+               double number = SLIDER.getValue();
+               String numberString = String.format(format, number);
+               TEXT_FIELD.setText(numberString);
+            }
+         }
+      );
+   }
+   
+   private void bindTextFieldToSlider(final TextField TEXT_FIELD, final Slider SLIDER) {  // START OF BODY OF FUNCTION 
+      StringProperty property = TEXT_FIELD.textProperty();
       
-      StringProperty stringValue = textField.textProperty();
-      stringValue.bindBidirectional(sliderValue, format);
+      property.addListener(  // START OF CALL OF FUNCTION 
+      
+         new ChangeListener<String>() {    // START OF ANONYMOUS INNER CLASS
+            private final double MIN  = SLIDER.getMin();
+            private final double MAX  = SLIDER.getMax();
+            
+            @Override
+            public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
+               if (false == isErrorString(newValue)) {
+                  double number;
+                  
+                  if (TEXT_FIELD == alphaTextField) {
+                     number = getBindingDoubleValue(TEXT_FIELD, newValue);
+                  }
+                  else {
+                     number = getBindingIntegerValue(TEXT_FIELD);
+                  }
+                  
+                  setCorrectSliderValue(number);
+               }
+            }
+            
+            private double getBindingDoubleValue(final TextField TEXT_FIELD, String newValue) {
+               double number;
+               
+               try {
+                  number = Double.parseDouble(newValue);
+               } 
+               catch (NumberFormatException exception) {
+                  requestToEnterNumber(TEXT_FIELD, "Enter number");
+                  
+                  throw exception;
+               }
+               
+               return number;
+            }
+            
+            private void setCorrectSliderValue(double number) {
+               try {
+                  validateBindingDoubleValue(number);
+               }
+               catch (IllegalArgumentException exception) {
+                  requestToEnterNumber(TEXT_FIELD, exception.getMessage());
+                  
+                  throw exception;
+               }
+               
+               SLIDER.setValue(number);
+            }
+                     
+            private boolean isErrorString(String string) {
+               String minString = "number must be >= " + MIN;
+               String maxString = "number must be <= " + MAX;
+               
+               if (string.equals(minString) || string.equals(maxString)) {
+                  return true;
+               }
+               
+               return false;
+            }
+            
+            private void validateBindingDoubleValue(double number) {
+               if (number < MIN) {
+                  throw new IllegalArgumentException("number must be >= " + MIN);
+               }
+               else if (number > MAX) {
+                  throw new IllegalArgumentException("number must be <= " + MAX);
+               }
+            }
+            
+            private int getBindingIntegerValue(final TextField TEXT_FIELD) {
+               String text = TEXT_FIELD.getText();
+               int number;
+               
+               try {
+                  number = Integer.parseInt(text);
+               } 
+               catch (NumberFormatException exception) {
+                  requestToEnterNumber(TEXT_FIELD, "Enter integer");
+                  
+                  throw exception;
+               }
+               
+               return number;
+            }
+         }  // END OF ANONYMOUS INNER CLASS
+      ); // END OF CALL OF FUNCTION 
+   } // END OF BODY OF ANOTHER FUNCTION 
+   
+   private void requestToEnterNumber(TextField textField, String message) {
+      textField.setText(message);
+      textField.selectAll();
+      textField.requestFocus();
    }
    
    private void initializeSlidersAboutColors() {
