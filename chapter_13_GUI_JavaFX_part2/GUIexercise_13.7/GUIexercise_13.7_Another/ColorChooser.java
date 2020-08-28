@@ -23,10 +23,11 @@ import javafx.stage.Stage;
 public class ColorChooser extends Application {
    @Override
    public void start(Stage stage) throws Exception {
+      ColorChooserView     sceneCreator = new ColorChooserView();
+      ColorChooserController controller = new ColorChooserController(sceneCreator);
+      controller.initialize();
       
-      SceneCreator sceneCreator = new SceneCreator();
-      
-      Scene scene = sceneCreator.getScene();
+      Scene scene = sceneCreator.createScene();
       stage.setTitle("Color Chooser");
       stage.setScene(scene);
       stage.show();

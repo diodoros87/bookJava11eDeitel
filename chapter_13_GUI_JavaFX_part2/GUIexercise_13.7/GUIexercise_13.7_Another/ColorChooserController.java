@@ -28,17 +28,19 @@ import javafx.scene.shape.Rectangle;
 import java.text.NumberFormat;
 import java.text.Format;
 
+import java.util.Objects;
+
 public class ColorChooserController {
    // instance variables for interacting with GUI components
-   @FXML private Slider redSlider;
-   @FXML private Slider greenSlider;
-   @FXML private Slider blueSlider;
-   @FXML private Slider alphaSlider;
-   @FXML private TextField redTextField;  
-   @FXML private TextField greenTextField;
-   @FXML private TextField blueTextField; 
-   @FXML private TextField alphaTextField;
-   @FXML private Rectangle colorRectangle;
+   private Slider redSlider;
+   private Slider greenSlider;
+   private Slider blueSlider;
+   private Slider alphaSlider;
+   private TextField redTextField;  
+   private TextField greenTextField;
+   private TextField blueTextField; 
+   private TextField alphaTextField;
+   private Rectangle colorRectangle;
 
    // instance variables for managing 
    private int red      = 12;
@@ -48,6 +50,20 @@ public class ColorChooserController {
    
    private static final NumberFormat numberFormat  = NumberFormat.getNumberInstance();
    private static final NumberFormat integerFormat = NumberFormat.getIntegerInstance();
+   
+   public ColorChooserController(ColorChooserView sceneCreator) {
+      Objects.requireNonNull(sceneCreator);
+      
+      redSlider   = sceneCreator.getRedSlider();
+      greenSlider = sceneCreator.getGreenSlider();
+      blueSlider  = sceneCreator.getBlueSlider();
+      alphaSlider = sceneCreator.getAlphaSlider();
+      redTextField = sceneCreator.getRedTextField();  
+      greenTextField = sceneCreator.getGreenTextField(); 
+      blueTextField = sceneCreator.getBlueTextField();
+      alphaTextField = sceneCreator.getAlphaTextField();
+      colorRectangle = sceneCreator.getColorRectangle();
+   }
    
    public void initialize() {
       initializeColorValuesBinding();
