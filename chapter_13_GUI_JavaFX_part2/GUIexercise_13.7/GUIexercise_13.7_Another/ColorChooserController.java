@@ -19,7 +19,6 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.fxml.FXML;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
@@ -41,6 +40,8 @@ public class ColorChooserController {
    private TextField blueTextField; 
    private TextField alphaTextField;
    private Rectangle colorRectangle;
+   
+   private ColorChooserView sceneCreator = null;
 
    // instance variables for managing 
    private int red      = 12;
@@ -51,8 +52,8 @@ public class ColorChooserController {
    private static final NumberFormat numberFormat  = NumberFormat.getNumberInstance();
    private static final NumberFormat integerFormat = NumberFormat.getIntegerInstance();
    
-   public ColorChooserController(ColorChooserView sceneCreator) {
-      Objects.requireNonNull(sceneCreator);
+   ColorChooserController(ColorChooserView sceneCreator) {
+      this.sceneCreator = Objects.requireNonNull(sceneCreator);
       
       redSlider   = sceneCreator.getRedSlider();
       greenSlider = sceneCreator.getGreenSlider();
@@ -65,7 +66,7 @@ public class ColorChooserController {
       colorRectangle = sceneCreator.getColorRectangle();
    }
    
-   public void initialize() {
+   void initialize() {
       initializeColorValuesBinding();
       initializeSlidersAboutColors();
       
@@ -102,6 +103,7 @@ public class ColorChooserController {
             @Override                                                     
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {                        
                red            = newValue.intValue();
+               sceneCreator.setRedValue(red);
                setNewColor();
             }
          }
@@ -111,6 +113,7 @@ public class ColorChooserController {
             @Override                                                     
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {                        
                green = newValue.intValue();
+               sceneCreator.setGreenValue(green);
                setNewColor();
             }
          }
@@ -120,6 +123,7 @@ public class ColorChooserController {
             @Override                                                     
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {                        
                blue = newValue.intValue();
+               sceneCreator.setBlueValue(blue);
                setNewColor();
             }
          }
@@ -129,6 +133,7 @@ public class ColorChooserController {
             @Override                                                     
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {                        
                alpha = newValue.doubleValue();
+               sceneCreator.setAlphaValue(alpha);
                setNewColor();
             }
          }

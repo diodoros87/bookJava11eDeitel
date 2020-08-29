@@ -37,7 +37,6 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 
 import javafx.scene.Group;
-//import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.Node;
 import javafx.geometry.HPos;
@@ -46,8 +45,9 @@ import javafx.scene.layout.Priority;
 import java.util.Iterator;
 
 public class ColorChooserView {
-   GridPane gridPane         = new GridPane();
-   SceneCreator sceneCreator = new SceneCreator(gridPane);
+   private final ColorChooserModel MODEL = new ColorChooserModel();
+   private GridPane gridPane         = new GridPane();
+   private SceneCreator sceneCreator = new SceneCreator(gridPane);
    
    public Scene createScene() {
       sceneCreator.customizeGridPane();
@@ -107,6 +107,38 @@ public class ColorChooserView {
       return sceneCreator.colorRectangle;
    }
    
+   void setRedValue(int value) {
+      MODEL.setRedValue(value);
+   }
+   
+   void setGreenValue(int value) {
+      MODEL.setGreenValue(value);
+   }
+   
+   void setBlueValue(int value) {
+      MODEL.setBlueValue(value);
+   }
+   
+   void setAlphaValue(double value) {
+      MODEL.setAlphaValue(value);
+   }
+   
+   int getRedValue() {
+      return MODEL.getRedValue();
+   }
+   
+   int getGreenValue() {
+      return MODEL.getGreenValue();
+   }
+   
+   int getBlueValue() {
+      return MODEL.getBlueValue();
+   }
+   
+   double getAlphaValue() {
+      return MODEL.getAlphaValue();
+   }
+   
    private class SceneCreator {
       GridPane gridPane        = null;
       
@@ -120,10 +152,10 @@ public class ColorChooserView {
       private TextField blueTextField  = new TextField(); 
       private TextField alphaTextField = new TextField();
       
-      private Label redLabel    = new Label("Red");  
-      private Label greenLabel  = new Label("Green");
-      private Label blueLabel   = new Label("Blue");
-      private Label alphaLabel  = new Label("Alpha");
+      private Label redLabel    = new Label(MODEL.getRedName());  
+      private Label greenLabel  = new Label(MODEL.getGreenName());
+      private Label blueLabel   = new Label(MODEL.getBlueName());
+      private Label alphaLabel  = new Label(ColorChooserModel.getAlphaComponentName());
       
       Rectangle         colorRectangle = new Rectangle();
       private Circle    circle         = new Circle();
@@ -169,7 +201,7 @@ public class ColorChooserView {
       private void customizeGridPaneRows() {
          ObservableList<RowConstraints> rows = gridPane.getRowConstraints();
          Iterator<RowConstraints> iterator   = rows.iterator();
-         System.err.printf("rows.size() = %d%n", rows.size());
+         
          while (true == iterator.hasNext()) {
             RowConstraints row = iterator.next();
             row.setPrefHeight(Region.USE_COMPUTED_SIZE);
@@ -180,7 +212,6 @@ public class ColorChooserView {
       
       private void customizeGridPaneColumns() {
          ObservableList<ColumnConstraints> columns = gridPane.getColumnConstraints();
-         System.err.printf("columns.size() = %d%n", columns.size());
          
          for (int counter = 0; counter < columns.size(); counter++) {
             ColumnConstraints column = columns.get(counter);
@@ -202,23 +233,25 @@ public class ColorChooserView {
       }
       
       private void customizeColorSliders() {
+         redSlider.setValue(MODEL.getRedValue());
+         greenSlider.setValue(MODEL.getGreenValue());
+         blueSlider.setValue(MODEL.getBlueValue());
          customizeColorSlider(redSlider);
          customizeColorSlider(greenSlider);
          customizeColorSlider(blueSlider);
       }
       
       private void customizeColorSlider(Slider slider) {
-         slider.setValue(0);
-         slider.setMin(0);
-         slider.setMax(255);
-         slider.setBlockIncrement(1);
+         slider.setMin(ColorChooserModel.getColorComponentMin());
+         slider.setMax(ColorChooserModel.getColorComponentMax());
+         slider.setBlockIncrement(ColorChooserModel.getColorComponentIncrement());
       }
       
       private void customizeAlphaSlider() {
-         alphaSlider.setValue(1.0);
-         alphaSlider.setMin(0.0);
-         alphaSlider.setMax(1.0);
-         alphaSlider.setBlockIncrement(0.01);
+         alphaSlider.setValue(MODEL.getAlphaValue());
+         alphaSlider.setMin(ColorChooserModel.getAlphaComponentMin());
+         alphaSlider.setMax(ColorChooserModel.getAlphaComponentMax());
+         alphaSlider.setBlockIncrement(ColorChooserModel.getAlphaComponentIncrement());
       }
       
       private void customizeTextFields() {
