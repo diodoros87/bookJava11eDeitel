@@ -4,7 +4,7 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             GUI Exercise 13.3 - Main application class that loads and 
+                             GUI Exercise 13.4 - Main application class that loads and 
                                  displays the ContactsViewer GUI
                              
                              

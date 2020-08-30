@@ -1,10 +1,10 @@
 /* =====================================================================================
- *       Filename:  PenSize.java
+ *       Filename:  Contact.java
  *
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 13.3 - Declaring an enum type describing
+                             Exercise 13.4 - Declaring an enum type describing
                                 various pen size
                            
                              
@@ -19,27 +19,44 @@ import java.util.Objects;
 public class Contact {
    public  static final String WRONG_TELEPHONE_ERROR = "Telephone must be >= 0";
    
-   private final String FIRST_NAME;
-   private final String LAST_NAME;
-   private       String email;
-   private       long   telephone;
+   private static final String WRONG_NAME_ERROR = "must contains only alphabetical ASCII characters "
+                                                   + "and require only one upper letter as first character";               
+   public  static final String WRONG_FIRST_NAME_ERROR = "First name must be empty string or "
+                                                         + WRONG_NAME_ERROR;
+   public  static final String WRONG_LAST_NAME_ERROR = "Last name " + WRONG_NAME_ERROR;
    
-   public Contact(String FIRST_NAME, String LAST_NAME, String email, long telephone) {
-      this.FIRST_NAME = Objects.requireNonNull(FIRST_NAME);
-      this.LAST_NAME  = Objects.requireNonNull(LAST_NAME);
-      
-      generateEmail(email);
-      
+   private String firstName;
+   private String lastName;
+   private String email;
+   private long   telephone;
+   
+   public Contact(String firstName, String lastName, String email, long telephone) {
+      validateFirstName(firstName);
+      validateLastName(lastName);
       validateTelephone(telephone);
+      
+      this.firstName = firstName;
+      this.lastName  = lastName;
+      generateEmail(email);
       this.telephone  = telephone;
    }
    
    public String getFirstName() {
-      return FIRST_NAME;
+      return firstName;
    }
    
    public String getLastName() {
-      return LAST_NAME;
+      return lastName;
+   }
+   
+   public void setFirstName(String firstName) {
+      validateFirstName(firstName);
+      this.firstName = firstName;
+   }
+   
+   public void setLastName(String lastName) {
+      validateLastName(firstName);
+      this.lastName = lastName;
    }
    
    public String getEmail() {
@@ -50,14 +67,31 @@ public class Contact {
       generateEmail(email);
    }
    
+   public static void validateFirstName(String firstName) {
+      Objects.requireNonNull(firstName);
+      if (false == firstName.matches("^\\p{Upper}?$|^\\p{Upper}\\p{Lower}+$")) {
+         throw new IllegalArgumentException(WRONG_FIRST_NAME_ERROR);
+      }
+   }
+   
+   public static void validateLastName(String lastName) {
+      Objects.requireNonNull(lastName);
+      if (false == lastName.matches("^\\p{Upper}\\p{Lower}*$")) {
+         throw new IllegalArgumentException(WRONG_LAST_NAME_ERROR);
+      }
+   }
+   
    private final void generateEmail(String email) {
       Objects.requireNonNull(email);
+      
+      email = email.trim​();
+      email = email.replaceAll​("\\p{Space}", "_");
       int firstIndexAt = email.indexOf("@");
       
       if (email.isEmpty() || -1 == firstIndexAt || isMoreThanOneCharacters(email, '@') 
          || email.startsWith("@") || email.endsWith("@")) {
-            
-         this.email = FIRST_NAME.concat(LAST_NAME).toLowerCase() + "@gmail.com";
+         
+         this.email = firstName.concat(lastName).toLowerCase() + "@gmail.com";
       }
       else {
          this.email = email;

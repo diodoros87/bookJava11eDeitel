@@ -16,8 +16,10 @@
 -->
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -26,10 +28,18 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ContactsViewerController">
    <left>
-      <ListView fx:id="contactsListView" maxHeight="1.7976931348623157E308" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <ListView fx:id="contactsListView" editable="true" maxHeight="1.7976931348623157E308" prefWidth="200.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets right="8.0" />
          </BorderPane.margin>
+         <contextMenu>
+            <ContextMenu>
+              <items>
+                <MenuItem fx:id="contextMenu" mnemonicParsing="false" onAction="#contextMenuAdd" text="add contact" />
+                  <MenuItem mnemonicParsing="false" onAction="#contextMenuDelete" text="delete contact" />
+              </items>
+            </ContextMenu>
+         </contextMenu>
       </ListView>
    </left>
    <center>
@@ -52,8 +62,8 @@
             <Label text="Last name" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
             <Label text="E-mail" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
             <Label text="Telephone" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
-            <TextField fx:id="firstNameTextField" editable="false" focusTraversable="false" GridPane.columnIndex="1" />
-            <TextField fx:id="lastNameTextField" editable="false" focusTraversable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="firstNameTextField" GridPane.columnIndex="1" />
+            <TextField fx:id="lastNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="emailTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="telephoneTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
