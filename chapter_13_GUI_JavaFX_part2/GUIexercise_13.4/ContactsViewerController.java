@@ -4,7 +4,7 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             GUI Exercise 13.4 - Drawing circles with various colors
+                             GUI Exercise 13.4 - managing of contacts list
                                  
                                                   
  *
@@ -14,7 +14,7 @@
  */
 
 import java.util.Vector;
-import java.util.Scanner;
+import java.util.Objects;
 
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
@@ -53,10 +53,14 @@ public class ContactsViewerController {
    public void initialize() {
       initializeListOfContacts();
       initializeSelectionListChanges();
+      initializeTextFieldEdition();
+   }
+   
+   private void initializeTextFieldEdition() {
       editTextField(emailTextField); 
       editTextField(telephoneTextField);     
       editTextField(firstNameTextField); 
-      editTextField(lastNameTextField);    
+      editTextField(lastNameTextField);  
    }
    
    private void initializeSelectionListChanges() {
@@ -125,7 +129,7 @@ public class ContactsViewerController {
       Vector<Contact> contactsVector = getContacts();
       
       CONTACTS_LIST.setAll(contactsVector);
-      contactsListView.setItems(CONTACTS_LIST); // bind booksListView to books
+      contactsListView.setItems(CONTACTS_LIST);
       setContactDataOfList(0, false);
       setSelectionMode(SelectionMode.MULTIPLE);
    }
@@ -143,7 +147,7 @@ public class ContactsViewerController {
       int capacityIncrement = initialCapacity;
       Vector<Contact> contactsVector = new Vector<Contact>(initialCapacity, capacityIncrement);
       
-      contactsVector.insertElementAt​(new Contact("Seneca", "Lucius", "", 15), 0);
+      contactsVector.insertElementAt​(new Contact("Lucius", "Seneca", "", 15), 0);
       contactsVector.insertElementAt​(new Contact("Marcus", "Aurelius", "", 24), 1);
       contactsVector.insertElementAt​(new Contact("Marcus", "Cicero", "", 22), 2);
       contactsVector.addElement​(new Contact("Francois", "Voltaire", "", 1707));
@@ -160,28 +164,52 @@ public class ContactsViewerController {
          
          @Override
          public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
+            if (true == isErrorString(newValue)) {
+               
+               return;
+            }
+            
             this.selectedContact = getCurrentlySelectedContact();
             
-            if (TEXT_FIELD == telephoneTextField && false == isErrorString(newValue)) {
+            if (     TEXT_FIELD == ContactsViewerController.this.telephoneTextField) {
                setTelephone(newValue);
             }
-            else if (TEXT_FIELD == emailTextField) {
+            else if (TEXT_FIELD == ContactsViewerController.this.emailTextField) {
                selectedContact.setEmail(newValue);
             }
-            else if (TEXT_FIELD == firstNameTextField) {
-               selectedContact.setFirstName(newValue);
-            }
-            else if (TEXT_FIELD == lastNameTextField) {
-               selectedContact.setLastName(newValue);
+            else {
+               setName(newValue);
             }
          }
                   
          private boolean isErrorString(String string) {
-            if (string.equals(Contact.WRONG_TELEPHONE_ERROR)) {
-               return true;
+            if (     ContactsViewerController.this.telephoneTextField == TEXT_FIELD) {
+               return StringComparator.areEquals(string, Contact.WRONG_TELEPHONE_ERROR);
+            }
+            else if (ContactsViewerController.this.firstNameTextField == TEXT_FIELD) {
+               return StringComparator.areEquals(string, Contact.WRONG_FIRST_NAME_ERROR);
+            }
+            else if (ContactsViewerController.this.lastNameTextField  == TEXT_FIELD) {
+               return StringComparator.areEquals(string, Contact.WRONG_LAST_NAME_ERROR);
             }
             
             return false;
+         }
+         
+         private void setName(String string) {
+            try {
+               if (     TEXT_FIELD == ContactsViewerController.this.firstNameTextField) {
+                  selectedContact.setFirstName(string);
+               }
+               else if (TEXT_FIELD == ContactsViewerController.this.lastNameTextField) {
+                  selectedContact.setLastName(string);
+               }
+            } 
+            catch (IllegalArgumentException exception) {
+               requestToEnterNumber(exception.getMessage());
+               
+               throw exception;
+            }
          }
          
          private void setTelephone(String string) {
@@ -191,7 +219,7 @@ public class ContactsViewerController {
                selectedContact.setTelephone(integer);
             } 
             catch (IllegalArgumentException exception) {
-               requestToEnterNumber(TEXT_FIELD, exception.getMessage());
+               requestToEnterNumber(exception.getMessage());
                
                throw exception;
             }
@@ -204,12 +232,18 @@ public class ContactsViewerController {
                integer = Long​.parseLong​(string);
             } 
             catch (NumberFormatException exception) {
-               requestToEnterNumber(TEXT_FIELD, "Enter integer");
+               requestToEnterNumber(Contact.WRONG_TELEPHONE_ERROR);
                
                throw exception;
             }
             
             return integer;
+         }
+         
+         private void requestToEnterNumber(String message) {
+            TEXT_FIELD.setText(message);
+            TEXT_FIELD.selectAll();
+            TEXT_FIELD.requestFocus();
          }
       }  // END OF LOCAL INNER CLASS
 
@@ -219,28 +253,11 @@ public class ContactsViewerController {
          
    } // END OF BODY OF FUNCTION  
    
-   private void requestToEnterNumber(TextField textField, String message) {
-      textField.setText(message);
-      textField.selectAll();
-      textField.requestFocus();
-   }
-   
-   private void editTextFieldOnce(TextField textField, String message) {
-      textField.setEditable(true);
-      requestToEnterNumber(textField, message);
-      Scanner scanner = new Scanner(System.in);
-      String string = scanner.nextLine();
-      textField.setText(string);
-      //textField.setEditable(false);
-   }
-   
    @FXML
    void contextMenuAdd(ActionEvent event) {
       boolean clearingOtherSelections = true;
       CONTACTS_LIST.add(new Contact("", "Newcontactoedit", "", 0));
       setContactDataOfList(CONTACTS_LIST.size() - 1, clearingOtherSelections);
-      //editTextFieldOnce(firstNameTextField, "Enter first name");
-      //editTextFieldOnce(lastNameTextField, "Enter last name");
    }
 
    @FXML
@@ -249,3 +266,17 @@ public class ContactsViewerController {
       CONTACTS_LIST.removeAll(selectedContacts);
    }
 }
+
+class StringComparator {
+   public static boolean areEquals(final String FIRST, final String SECOND) {
+      Objects.requireNonNull(FIRST);
+      Objects.requireNonNull(SECOND);
+      
+      if (FIRST.equals(SECOND)) {
+         return true;
+      }
+      
+      return false;
+   }
+}
+

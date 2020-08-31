@@ -4,8 +4,7 @@
  *    Description:  learning Java from book
                        P. Deitel H. Deitel "Java How to Program, 11/e (Early Objects)"
                           Polish Edition (chapters from 1 to 28)
-                             Exercise 13.4 - Declaring an enum type describing
-                                various pen size
+                             Exercise 13.4 -class describing contact's data
                            
                              
  *
@@ -17,7 +16,7 @@
 import java.util.Objects;
 
 public class Contact {
-   public  static final String WRONG_TELEPHONE_ERROR = "Telephone must be >= 0";
+   public  static final String WRONG_TELEPHONE_ERROR = "Telephone must be integer >= 0 and <= " + Long.MAX_VALUE;
    
    private static final String WRONG_NAME_ERROR = "must contains only alphabetical ASCII characters "
                                                    + "and require only one upper letter as first character";               
@@ -55,7 +54,7 @@ public class Contact {
    }
    
    public void setLastName(String lastName) {
-      validateLastName(firstName);
+      validateLastName(lastName);
       this.lastName = lastName;
    }
    

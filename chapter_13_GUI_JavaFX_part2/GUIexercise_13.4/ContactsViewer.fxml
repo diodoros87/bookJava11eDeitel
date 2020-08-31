@@ -45,8 +45,8 @@
    <center>
       <GridPane BorderPane.alignment="CENTER">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" />
-          <ColumnConstraints hgrow="SOMETIMES" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="84.0" prefWidth="84.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="244.0" prefWidth="292.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints vgrow="SOMETIMES" />
@@ -63,7 +63,7 @@
             <Label text="E-mail" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
             <Label text="Telephone" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
             <TextField fx:id="firstNameTextField" GridPane.columnIndex="1" />
-            <TextField fx:id="lastNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="lastNameTextField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="emailTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="telephoneTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
