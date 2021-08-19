@@ -96,6 +96,9 @@ public class Player {
       if (null == receivedCards) {
          throw new NullPointerException("received cards can not be null");
       }
+      if (null == indexes) {
+         throw new NullPointerException("indexes of cards can not be null");
+      }
       if (CardsConfiguration.POKER_CARDS < receivedCards.length) {
          throw new IllegalArgumentException("maximum number of cards less than number of received cards");
       }

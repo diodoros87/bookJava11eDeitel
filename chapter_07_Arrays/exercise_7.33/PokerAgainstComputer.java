@@ -174,13 +174,13 @@ public class PokerAgainstComputer {
          return false;
       }
       
-      for (int counter = 0; counter < cardsIndexes.length; counter++) {
+      //for (int counter = 0; counter < cardsIndexes.length; counter++) {
          
          if (1 < getFrequency(cardsIndexes, index)) {
             printStream.printf("!!! index of %d was entered previously. Try again%n%n", index);
             return false;
          }
-      } 
+      //} 
       
       return true;
    }
