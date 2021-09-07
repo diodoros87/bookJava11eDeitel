@@ -95,7 +95,7 @@ public class TicTacToeView {
       printStream.println(boardString);
    } 
    
-   private String generateBoardString(TicTacToe ticTacToe, boolean numbersAppending) {
+   private static String generateBoardString(TicTacToe ticTacToe, boolean numbersAppending) {
       final CellValue[][] BOARD = ticTacToe.getBoard();
       String boardString = "";
       

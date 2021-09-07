@@ -64,7 +64,7 @@ public class TicTacToeController {
       return TicTacToe.getSQUARE_SIZE();
    }
    
-   public static void throwWrongRowOrColumnException(byte number, String rowOrColumn) {
+   public static void throwWrongRowOrColumnException(String rowOrColumn) {
       final byte SQUARE_SIZE = getSQUARE_SIZE();
       String rowColumnRequirement = String.format("Requirement: %s > %d and %s <= %d",
                            rowOrColumn, 0, rowOrColumn, SQUARE_SIZE);
@@ -74,7 +74,7 @@ public class TicTacToeController {
    
    public static void validateRowOrColumn(byte number, String rowOrColumn) {
       if (false == TicTacToe.validateRowOrColumn(number)) {
-         throwWrongRowOrColumnException(number, rowOrColumn);
+         throwWrongRowOrColumnException(rowOrColumn);
       }
    }
    
@@ -93,10 +93,10 @@ public class TicTacToeController {
             view.printGameOver();
             break;
          case OUT_OF_BOARD_ROW:
-            throwWrongRowOrColumnException(row, "row");
+            throwWrongRowOrColumnException("row");
             break;
          case OUT_OF_BOARD_COLUMN:
-            throwWrongRowOrColumnException(column, "column");
+            throwWrongRowOrColumnException("column");
             break;
          case OCCUPIED_POSITION:
             view.printOccupiedPositionInfo(row, column);

@@ -178,7 +178,7 @@ public class GettingDataFromStandardInput {
             return value;
          }
          else if (true == input.hasNextShort()) {
-            errorPrintStream.printf("%nValue of %d entered by User is type double. ", input.nextShort());
+            errorPrintStream.printf("%nValue of %d entered by User is type short. ", input.nextShort());
             errorPrintStream.printf("This is incorrect. %s%n", RANGE);
          }
          else if (true == input.hasNextInt()) {
