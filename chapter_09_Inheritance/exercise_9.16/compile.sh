@@ -1,4 +1,4 @@
 #!/bin/bash
  
- javac -cp .:.. -Xlint -Werror *.java
+ javac -cp .:.. -Xlint *.java
  
