@@ -78,10 +78,13 @@ public class DrawShapesController {
    }
    
    public int getShapesNumberProxy(String parameter, DrawShapes.CommandLineParameter commandLineParameter) {
+      Objects.requireNonNull(commandLineParameter, "commandLineParameter must not be null");
       int shapesNumber = DEFAULT_SHAPES_NUMBER;
       
       try {
-         shapesNumber = getShapesNumber(parameter, commandLineParameter);   
+         shapesNumber = getShapesNumber(parameter, commandLineParameter); 
+         if (0 == shapesNumber)
+            shapesNumber = DEFAULT_SHAPES_NUMBER;
       }
       catch( NumberFormatException exception) {
          System.err.println("Exception: " + exception.getMessage());
@@ -96,6 +99,7 @@ public class DrawShapesController {
    }
    
    public int getShapesNumber(String parameter, DrawShapes.CommandLineParameter commandLineParameter) {
+      Objects.requireNonNull(commandLineParameter, "commandLineParameter must not be null");
       Objects.requireNonNull(parameter, "parameter must not be null");   
       
       String shapesNumberString = null;

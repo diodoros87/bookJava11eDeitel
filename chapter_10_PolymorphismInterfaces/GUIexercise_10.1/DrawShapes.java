@@ -60,6 +60,7 @@ public class DrawShapes extends Application {
    }
    
    public List<String> getParametersList(CommandLineParameter commandLineParameter) {
+      Objects.requireNonNull(commandLineParameter, "commandLineParameter must not be null");
       switch (commandLineParameter) {
          case RAW:
             return rawParametersList;
@@ -92,6 +93,7 @@ public class DrawShapes extends Application {
    }
    
    public String getParameter(int parameterNumber, CommandLineParameter commandLineParameters) {
+      Objects.requireNonNull(commandLineParameters, "commandLineParameter must not be null");
       if (0 > parameterNumber) {
          throw new ArrayIndexOutOfBoundsException(String.format("0 > parameterNumber(%d)", parameterNumber));
       }

@@ -78,13 +78,21 @@ public class MyShapesFactory {
       return -1;
    }
    
+   public static int getRandomNonZero(final short RANGE) {
+      int result = RANDOM_NUMBERS.nextInt(RANGE);
+      while (result == 0) {
+         result = RANDOM_NUMBERS.nextInt(RANGE);
+      }
+      return result;
+   }
+   
    public void setRandomCoordinations() {
       for (int index = 0; index < COORDINATIONS.length; index++) {
          if (index % 2 == 0) {
-            COORDINATIONS[index] = RANDOM_NUMBERS.nextInt(WIDTH_RANGE);
+            COORDINATIONS[index] = getRandomNonZero(WIDTH_RANGE);
          }
          else {
-            COORDINATIONS[index] = RANDOM_NUMBERS.nextInt(HEIGTH_RANGE);
+            COORDINATIONS[index] = getRandomNonZero(HEIGTH_RANGE);
          }
       }
    }
@@ -129,6 +137,9 @@ public class MyShapesFactory {
       switch (number) {
          case 0:
             int lineWidth = RANDOM_NUMBERS.nextInt(LINE_WIDTH_RANGE);
+            while (lineWidth == 0) {
+               lineWidth = RANDOM_NUMBERS.nextInt(LINE_WIDTH_RANGE);
+            }
             MyShape line = new MyLine(COORDINATIONS[0], COORDINATIONS[1], COORDINATIONS[2], COORDINATIONS[3],
                            strokeColor, lineWidth);
             return line;
