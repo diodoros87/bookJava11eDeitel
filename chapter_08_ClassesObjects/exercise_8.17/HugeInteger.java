@@ -567,18 +567,16 @@ public class HugeInteger {
          return new HugeInteger();   // default constructor initialized by zero
       }
       else {
-         byte[] resultArray = calculateDividing(DIVIDEND_ARRAY, currentDividendIndex, DIVISOR, DIVISOR_ARRAY, 
-                                                   DIVISOR_OTHER_THAN_ZERO_VALUE_INDEX);
+         byte[] resultArray = calculateDividing(DIVIDEND_ARRAY, currentDividendIndex, DIVISOR);
          return new HugeInteger(resultArray);
       }
    }
    
    private static byte[] calculateDividing(final byte[] DIVIDEND_ARRAY, int currentDividendIndex, 
-                  final HugeInteger DIVISOR, final byte[] DIVISOR_ARRAY, final int DIVISOR_OTHER_THAN_ZERO_VALUE_INDEX)
-                                                         throws Exception {
+                  final HugeInteger DIVISOR) throws Exception {
       byte[] resultArray            = new byte[MAX_ARRAY_LENGTH];
       
-      final int DIVISOR_DIGITS_LENGTH = DIVISOR_ARRAY.length - DIVISOR_OTHER_THAN_ZERO_VALUE_INDEX;
+      //final int DIVISOR_DIGITS_LENGTH = DIVISOR_ARRAY.length - DIVISOR_OTHER_THAN_ZERO_VALUE_INDEX;
       
       byte[] temporaryDividendArray = {};
       HugeInteger temporaryDividend = new HugeInteger();
