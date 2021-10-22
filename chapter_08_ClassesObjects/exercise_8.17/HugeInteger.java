@@ -17,6 +17,7 @@ import java.util.Arrays;
 
 public class HugeInteger {
    public static final byte MAX_ARRAY_LENGTH = 40;
+   public static final String ERROR_LENGTH = String.format("Requirement: array.length <= %d", MAX_ARRAY_LENGTH);
 
    private byte[] integerArray;
    private byte   signum;   // less than 0 for integers < 0, more than 0 for integers > 0, 0 for 0
@@ -38,7 +39,7 @@ public class HugeInteger {
          throw new NullPointerException("Requirement: reference to array can not be null");
       }
       if (MAX_ARRAY_LENGTH < integerArray.length) {
-         throw new IllegalArgumentException(String.format("Requirement: array.length <= %d", MAX_ARRAY_LENGTH));
+         throw new IllegalArgumentException(ERROR_LENGTH);
       }
 
       byte number;
@@ -77,7 +78,7 @@ public class HugeInteger {
          throw new NullPointerException("Requirement: reference to array can not be null");
       }
       if (MAX_ARRAY_LENGTH < integerArray.length) {
-         throw new IllegalArgumentException(String.format("Requirement: array.length <= %d", MAX_ARRAY_LENGTH));
+         throw new IllegalArgumentException(ERROR_LENGTH);
       }
 
       byte number;
@@ -122,7 +123,7 @@ public class HugeInteger {
          throw new NullPointerException("Requirement: reference to array can not be null");
       }
       if (MAX_ARRAY_LENGTH < integerArray.length) {
-         throw new IllegalArgumentException(String.format("Requirement: array.length <= %d", MAX_ARRAY_LENGTH));
+         throw new IllegalArgumentException(ERROR_LENGTH);
       }
 
       Arrays.fill(this.integerArray, (byte)0);  // not call resetNumberToZero() due to change signum (in setIntegerArray() save previous signum)
@@ -312,10 +313,8 @@ public class HugeInteger {
       else if (+1 == comparingSignumResult) {
          return true;
       }
-      // after calling HugeInteger.compareSignum recognize both integers with identical nonzero signum
 
       assert(first.signum == second.signum);
-      assert(first.signum != 0);
       byte identicalIntegersSignum = first.signum;
 
       if (identicalIntegersSignum > 0) {
@@ -324,9 +323,11 @@ public class HugeInteger {
       else if (identicalIntegersSignum < 0) {
          return isAbsoluteValueLessThan(first, second);
       }
-      else {  // identicalIntegersSignum == 0
-         throw new Exception("signum of integer = 0");
+      else if (first.isZero() && second.isZero()) {  // identicalIntegersSignum == 0
+         return false;
       }
+      
+      throw new Exception("signum of integer = 0");
    }
 
    public static boolean isAbsoluteValueGreaterThan(HugeInteger first, HugeInteger second) {
@@ -387,10 +388,8 @@ public class HugeInteger {
       else if (+1 == comparingSignumResult) {
          return false;
       }
-      // after calling HugeInteger.compareSignum recognize both integers with identical nonzero signum
 
       assert(first.signum == second.signum);
-      assert(first.signum != 0);
       byte identicalIntegersSignum = first.signum;
 
       if (identicalIntegersSignum < 0) {
@@ -399,9 +398,11 @@ public class HugeInteger {
       else if (identicalIntegersSignum > 0) {
          return isAbsoluteValueLessThan(first, second);
       }
-      else {  // identicalIntegersSignum == 0
-         throw new Exception("signum of integer = 0");
+      else if (first.isZero() && second.isZero()) {  // identicalIntegersSignum == 0
+         return false;
       }
+      
+      throw new Exception("signum of integer = 0");
    }
 
    public boolean isGreaterThanOrEqualTo(HugeInteger hugeInteger) throws Exception {
