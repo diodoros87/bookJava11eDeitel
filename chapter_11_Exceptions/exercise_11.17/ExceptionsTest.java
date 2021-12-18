@@ -38,8 +38,8 @@ public class ExceptionsTest {
       if (null == exceptionsList) {
          throw new NullPointerException();
       }
-      
-      printMethodName("catchSubclassExceptionsBySuperclass");
+      assert(Thread.currentThread().getStackTrace()[1].getMethodName().equals("catchSubclassExceptionsBySuperclass"));
+      printMethodName(Thread.currentThread().getStackTrace()[1].getMethodName());
       int index = 0;
       for (Exception e : exceptionsList) {
          try {
@@ -53,7 +53,8 @@ public class ExceptionsTest {
    }
    
    public static void catchSubclassExceptionsBySuperclass() {
-      printMethodName("catchSubclassExceptionsBySuperclass");
+      assert(Thread.currentThread().getStackTrace()[1].getMethodName().equals("catchSubclassExceptionsBySuperclass"));
+      printMethodName(Thread.currentThread().getStackTrace()[1].getMethodName());
          
       try {
          throw new IOException(); 
@@ -130,6 +131,7 @@ public class ExceptionsTest {
        try {
           Method method = ExceptionsTest.class.getMethod(string);
           methodName = method.getName();
+          assert(methodName.equals(string));
        } 
        catch (NoSuchMethodException | NullPointerException e) {
           System.err.println(e);
@@ -138,7 +140,7 @@ public class ExceptionsTest {
           System.exit(1);
        }
        finally {
-          System.out.println("Finally");
+          System.out.println("Finally in method: " + Thread.currentThread().getStackTrace()[1].getMethodName());
        }  
        
        return methodName;

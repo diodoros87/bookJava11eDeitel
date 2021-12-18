@@ -53,18 +53,26 @@ public class ExceptionsTest {
             throw e; 
          } 
          catch (FileNotFoundException exception) { 
-            System.err.printf("%2d. %s handled by FileNotFoundException object %n", index++, exception);
-            exception.printStackTrace();
+            PrintException.printException(e, exception);
          }
          catch (IOException exception) { 
-            System.err.printf("%2d. %s handled by IOException object %n", index++, exception);
-            exception.printStackTrace();
+            PrintException.printException(e, exception);
          }
          catch (Exception exception) { 
-            System.err.printf("%2d. %s handled by Exception object %n", index++, exception);
-            exception.printStackTrace();
+            PrintException.printException(e, exception);
          } 
       }
    }
-   
+
+}
+
+class PrintException {
+   private static int index = 0;
+   static void printException(Exception throwed, Exception handledBy) {
+      if (null ==  throwed || null ==  handledBy) {
+         throw new NullPointerException();
+      }
+      System.err.printf("%2d. %s handled by %s %n", index++, throwed, handledBy);
+      handledBy.printStackTrace();
+   }
 } 
