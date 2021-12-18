@@ -24,6 +24,8 @@ public class ExceptionsTest {
    }
    
    public static void functionCaller(int index) {
+      String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+      assert(methodName.equals("functionCaller"));
       try {
          throwExceptionToFunctionCaller(index);
       } 
@@ -31,11 +33,15 @@ public class ExceptionsTest {
          System.err.println("In functionCaller() was handled " + exception);
          exception.printStackTrace();
       }
+      finally {
+         System.out.println("\nFinally in method: " + methodName);
+      }
    }
    
    public static void throwExceptionToFunctionCaller(int index) {
       int array[] = { 4, 6, 7 };
-      
+      String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+      assert(methodName.equals("throwExceptionToFunctionCaller"));
       try {
          System.out.printf("%nIn index %d is %d%n", index, array[index]);
          System.out.printf("%nIn index %f is %d%n", index, array[index]);
@@ -44,6 +50,9 @@ public class ExceptionsTest {
          System.err.println("In throwExceptionToFunctionCaller() was handled " + exception);
          exception.printStackTrace();
       }
+      finally {
+         System.out.println("\n1 Finally in method: " + methodName);
+      }
       
       try {
          System.out.printf("%nIn index %f is %d%n", index, array[index]);
@@ -51,6 +60,9 @@ public class ExceptionsTest {
       catch (ArrayIndexOutOfBoundsException exception) { 
          System.err.println("In throwExceptionToFunctionCaller() was handled " + exception);
          exception.printStackTrace();
+      }
+      finally {
+         System.out.println("\n2 Finally in method: " + methodName);
       }
       
    }

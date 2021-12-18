@@ -77,7 +77,7 @@ class OtherClass {
          this.number = number;
       }
       
-      System.out.println(this.number + " is legal argument");
+      System.out.printf("%n%+d is legal argument%n", this.number);
    }
    
 }
