@@ -31,7 +31,7 @@ public class TipCalculatorController {
    private static final NumberFormat CURRENCY      = NumberFormat.getCurrencyInstance();
    private static final NumberFormat PERCENT       = NumberFormat.getPercentInstance();
    private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
-   private static final int SCALE                  = 3;
+   private static final int SCALE                  = 2;
    
    private BigDecimal tipPercentage = new BigDecimal(0.15); // 15% default
    
