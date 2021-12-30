@@ -16,8 +16,8 @@
  
 import java.text.DecimalFormat;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+//import java.net.URL;
+//import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,13 +28,13 @@ public class CalculatorController {
    private double firstNumber;
    private double secondNumber;
 
-
+/*
    @FXML // ResourceBundle that was given to the FXMLLoader
    private ResourceBundle resources;
 
    @FXML // URL location of the FXML file that was given to the FXMLLoader
    private URL location;
-
+*/
    @FXML // fx:id="firstNumberTextField"
    private TextField firstNumberTextField; // Value injected by FXMLLoader
 
