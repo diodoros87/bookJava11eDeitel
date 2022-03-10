@@ -233,12 +233,12 @@ public class ColorChooserView {
       }
       
       private void customizeColorSliders() {
-         redSlider.setValue(MODEL.getRedValue());
-         greenSlider.setValue(MODEL.getGreenValue());
-         blueSlider.setValue(MODEL.getBlueValue());
          customizeColorSlider(redSlider);
          customizeColorSlider(greenSlider);
          customizeColorSlider(blueSlider);
+         redSlider.setValue(MODEL.getRedValue());
+         greenSlider.setValue(MODEL.getGreenValue());
+         blueSlider.setValue(MODEL.getBlueValue());
       }
       
       private void customizeColorSlider(Slider slider) {

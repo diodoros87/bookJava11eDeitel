@@ -19,7 +19,7 @@ import java.util.Objects;
 public class ColorChooserModel {
    ColorComponent red   = new ColorComponent(55, "red");
    ColorComponent green = new ColorComponent(7, "green");
-   ColorComponent blue  = new ColorComponent(255, "blue");
+   ColorComponent blue  = new ColorComponent(220, "blue");
    AlphaComponent alpha = new AlphaComponent(0.40);
    
    static int getColorComponentMin() {
