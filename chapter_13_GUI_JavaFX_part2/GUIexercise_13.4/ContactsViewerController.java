@@ -130,13 +130,15 @@ public class ContactsViewerController {
       
       CONTACTS_LIST.setAll(contactsVector);
       contactsListView.setItems(CONTACTS_LIST);
-      setContactDataOfList(0, false);
+      setContactDataOfList(1, false, false);
+      setCurrentlySelectedContact(1, false);
       setSelectionMode(SelectionMode.MULTIPLE);
    }
    
-   public void setContactDataOfList(int index, boolean clearingOtherSelections) {
+   public void setContactDataOfList(int index, boolean clearingOtherSelections, boolean setCurrentlySelected) {
       if (index >= 0 && index < CONTACTS_LIST.size()) {
-         setCurrentlySelectedContact(index, clearingOtherSelections);
+         if (setCurrentlySelected)
+            setCurrentlySelectedContact(index, clearingOtherSelections);
          Contact contact = CONTACTS_LIST.get(index);
          setContactData(contact);
       }
@@ -176,6 +178,7 @@ public class ContactsViewerController {
             }
             else if (TEXT_FIELD == ContactsViewerController.this.emailTextField) {
                selectedContact.setEmail(newValue);
+               TEXT_FIELD.setText(selectedContact.getEmail());
             }
             else {
                setName(newValue);
@@ -257,7 +260,7 @@ public class ContactsViewerController {
    void contextMenuAdd(ActionEvent event) {
       boolean clearingOtherSelections = true;
       CONTACTS_LIST.add(new Contact("", "Newcontactoedit", "", 0));
-      setContactDataOfList(CONTACTS_LIST.size() - 1, clearingOtherSelections);
+      setContactDataOfList(CONTACTS_LIST.size() - 1, clearingOtherSelections, true);
    }
 
    @FXML
