@@ -15,6 +15,16 @@
 
 import java.util.Stack;
 import java.util.Objects;
+import javafx.util.Callback;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import javafx.stage.FileChooser;
+import javafx.scene.layout.BorderPane;
 
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
@@ -36,7 +46,9 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
 
 public class ContactsViewerController {
-   // instance variables for interacting with GUI
+   @FXML 
+   private BorderPane borderPane;
+   
    @FXML
    private ListView<Contact> contactsListView;
 
@@ -65,6 +77,19 @@ public class ContactsViewerController {
       //updateListWhenChangeContactOnList();
       updateContactDataViewWhenChangeContactOnList();
       initializeTextFieldEdition();
+      setCellFactory(contactsListView); 
+   }
+   
+   void setCellFactory(final ListView<Contact> list) {
+      Objects.requireNonNull(list);
+      list.setCellFactory(
+         new Callback<ListView<Contact>, ListCell<Contact>>() {
+            @Override
+            public ListCell<Contact> call(ListView<Contact> listView) {
+               return new ImageTextCell();
+            }
+         }
+      );  
    }
    
    private void initializeTextFieldEdition() {
@@ -357,8 +382,69 @@ public class ContactsViewerController {
    }
    
    @FXML
-   void chooseFileButtonPressed(ActionEvent event) {
-      //FileChooser fileChooser = new FileChooser();
-      //File selectedFile = fileChooser.showOpenDialog(primaryStage);
-   }
+   private void chooseFileButtonPressed(ActionEvent e) {
+      FileChooser fileChooser = new FileChooser();               
+      fileChooser.setTitle("Select File");
+      fileChooser.setInitialDirectory(new File(".")); 
+
+      File file = fileChooser.showOpenDialog(borderPane.getScene().getWindow());       
+      if (file == null)
+         
+
+      if (file != null) {
+         analyzePath(file.toPath());            
+      }
+      else {
+         //textArea.setText("Select file or directory");
+      }
+   } 
+   
+   // display information about file or directory user specifies
+   public void analyzePath(Path path) {
+      Objects.requireNonNull(path);
+      if (false == Files.exists(path))
+         throw IllegalArgumentException("Path " + path.toAbsolutePath() + " does not exist");
+         
+      try {
+         // if the file or directory exists, display its info
+         if (false == Files.exists(path)) {
+            // gather file (or directory) information
+            StringBuilder builder = new StringBuilder();
+            builder.append(String.format("%s:%n", path.getFileName()));
+            builder.append(String.format("%s a directory%n", 
+               Files.isDirectory(path) ? "Is" : "Is not"));
+            builder.append(String.format("%s an absolute path%n", 
+               path.isAbsolute() ? "Is" : "Is not"));
+            builder.append(String.format("Last modified: %s%n", 
+               Files.getLastModifiedTime(path)));
+            builder.append(String.format("Size: %s%n", Files.size(path)));
+            builder.append(String.format("Path: %s%n", path));
+            builder.append(String.format("Absolute path: %s%n", 
+               path.toAbsolutePath()));
+
+            if (Files.isDirectory(path)) { // output directory listing
+               builder.append(String.format("%nDirectory contents:%n"));
+               
+               // object for iterating through a directory's contents
+               DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
+      
+               for (Path p : directoryStream) {
+                  builder.append(String.format("%s%n", p));
+               }
+            }
+            
+            Contact selectedContact = getCurrentlySelectedContact();
+            selectedContact.setImageFilePath(path);
+
+            // display file or directory info
+            //textArea.setText(builder.toString()); 
+         } 
+         else { // Path does not exist
+            //textArea.setText("Path does not exist");
+         }   
+      }
+      catch (IOException ioException) {
+         //textArea.setText(ioException.toString());
+      }
+   } 
 }

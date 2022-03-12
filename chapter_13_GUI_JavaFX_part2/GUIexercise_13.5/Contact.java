@@ -68,6 +68,20 @@ public class Contact implements Comparable<Contact> {
       generateEmail(email);
    }
    
+   public String getImageFilePath() {
+      return imageFilePath;
+   }
+   
+   public void setImageFilePath(File file) {
+      generateEmail(email);
+   }
+   
+   public static void validateImageFilePath(File file) {
+      Objects.requireNonNull(file);
+      if (false == Files.exists(path))
+         throw IllegalArgumentException("Path " + path.toAbsolutePath() + " does not exist");
+   }
+   
    public static void validateFirstName(String firstName) {
       Objects.requireNonNull(firstName);
       if (false == firstName.matches("^\\p{Upper}?$|^\\p{Upper}\\p{Lower}+$")) {
