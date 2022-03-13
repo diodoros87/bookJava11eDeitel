@@ -73,7 +73,7 @@
             <VBox GridPane.columnIndex="1" GridPane.rowIndex="4">
                <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" text="Path to image file" />
-                  <Label text="Label" />
+                  <Label fx:id="imagePathFileLabel" text="Label" />
                </children>
             </VBox>
          </children>

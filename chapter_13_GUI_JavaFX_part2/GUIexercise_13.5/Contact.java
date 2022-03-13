@@ -16,6 +16,12 @@
 import java.util.Objects;
 import java.util.Comparator;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.InvalidPathException;
+
 public class Contact implements Comparable<Contact> {
    public  static final String WRONG_TELEPHONE_ERROR = "Telephone must be integer >= 0 and <= " + Long.MAX_VALUE;
    
@@ -73,13 +79,17 @@ public class Contact implements Comparable<Contact> {
    }
    
    public void setImageFilePath(File file) {
-      generateEmail(email);
+      validateImageFilePath(file);
+      imageFilePath = file.getAbsolutePath();
    }
    
-   public static void validateImageFilePath(File file) {
+   public static void validateImageFilePath(File file) throws InvalidPathException {
       Objects.requireNonNull(file);
+      Path path = file.toPath();
       if (false == Files.exists(path))
-         throw IllegalArgumentException("Path " + path.toAbsolutePath() + " does not exist");
+         throw new IllegalArgumentException("Path " + path.toAbsolutePath() + " does not exist");
+      if (true == Files.isDirectory(path))
+         throw new IllegalArgumentException("Path " + path.toAbsolutePath() + " is directory, but regular file is required");
    }
    
    public static void validateFirstName(String firstName) {

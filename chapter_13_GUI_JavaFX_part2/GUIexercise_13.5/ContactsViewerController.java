@@ -19,9 +19,11 @@ import javafx.util.Callback;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
+//import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import java.nio.file.InvalidPathException;
 
 import javafx.stage.FileChooser;
 import javafx.scene.layout.BorderPane;
@@ -39,6 +41,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.Label;
+import javafx.stage.Window;
 
 import javafx.collections.transformation.SortedList;
 
@@ -46,8 +50,8 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
 
 public class ContactsViewerController {
-   @FXML 
-   private BorderPane borderPane;
+   //@FXML 
+   //private BorderPane borderPane;
    
    @FXML
    private ListView<Contact> contactsListView;
@@ -64,6 +68,8 @@ public class ContactsViewerController {
    @FXML
    private TextField telephoneTextField;
    
+   @FXML
+   private Label imagePathFileLabel;
    // stores the list of Contact Objects
    private final ObservableList<Contact> CONTACTS_LIST = FXCollections.observableArrayList();
    //private ObservableList<Contact> CONTACTS_LIST      = null;
@@ -191,12 +197,15 @@ public class ContactsViewerController {
       String firstName = contact.getFirstName();
       String lastName  = contact.getLastName();
       String email     = contact.getEmail(); 
-      String telephone = String.format("%d", contact.getTelephone());                      
+      String telephone = String.format("%d", contact.getTelephone());
+      String imageFilePath = contact.getImageFilePath();
       
       firstNameTextField.setText(firstName);
       lastNameTextField.setText(lastName);
       emailTextField.setText(email);
       telephoneTextField.setText(telephone);
+      if (imageFilePath != null)
+         this.imagePathFileLabel.setText(imageFilePath);
    }
    
    private void setEmptyTextFields() {
@@ -386,19 +395,19 @@ public class ContactsViewerController {
       FileChooser fileChooser = new FileChooser();               
       fileChooser.setTitle("Select File");
       fileChooser.setInitialDirectory(new File(".")); 
-
-      File file = fileChooser.showOpenDialog(borderPane.getScene().getWindow());       
-      if (file == null)
-         
-
-      if (file != null) {
-         analyzePath(file.toPath());            
-      }
-      else {
-         //textArea.setText("Select file or directory");
+      Window window = contactsListView.getScene().getWindow();
+      File file = fileChooser.showOpenDialog(window); 
+      Contact selectedContact = getCurrentlySelectedContact();
+      try {
+         selectedContact.setImageFilePath(file);
+         this.imagePathFileLabel.setText(selectedContact.getImageFilePath());
+      } catch (SecurityException | InvalidPathException exception) {
+         this.imagePathFileLabel.setText(exception.toString());
+      } catch (IllegalArgumentException | NullPointerException exception) {
+         this.imagePathFileLabel.setText(exception.toString());
       }
    } 
-   
+   /*
    // display information about file or directory user specifies
    public void analyzePath(Path path) {
       Objects.requireNonNull(path);
@@ -447,4 +456,5 @@ public class ContactsViewerController {
          //textArea.setText(ioException.toString());
       }
    } 
+   */
 }
