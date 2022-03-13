@@ -84,6 +84,14 @@ public class ContactsViewerController {
       updateContactDataViewWhenChangeContactOnList();
       initializeTextFieldEdition();
       setCellFactory(contactsListView); 
+/*      contactsListView.setCellFactory(
+         new Callback<ListView<Contact>, ListCell<Contact>>() {
+            @Override
+            public ListCell<Contact> call(ListView<Contact> listView) {
+               return new ImageTextCell();
+            }
+         }
+      ); */    
    }
    
    void setCellFactory(final ListView<Contact> list) {
@@ -204,7 +212,9 @@ public class ContactsViewerController {
       lastNameTextField.setText(lastName);
       emailTextField.setText(email);
       telephoneTextField.setText(telephone);
-      if (imageFilePath != null)
+      if (imageFilePath == null)
+         this.imagePathFileLabel.setText("absence of image file path");
+      else
          this.imagePathFileLabel.setText(imageFilePath);
    }
    
@@ -253,12 +263,12 @@ public class ContactsViewerController {
       Stack<Contact> contactsStack = new Stack<Contact>();
       contactsStack.ensureCapacity(10);
       
-      contactsStack.push​(new Contact("Lucius", "Seneca", "", 15, ""));
-      contactsStack.push​(new Contact("Marcus", "Aurelius", "", 24, ""));
-      contactsStack.push​(new Contact("Marcus", "Cicero", "", 22, ""));
-      contactsStack.push​(new Contact("Francois", "Voltaire", "", 1707, ""));
-      contactsStack.push​(new Contact("", "Plato", "", 395, ""));
-      contactsStack.push(new Contact("", "Aristotle", "", 335, ""));
+      contactsStack.push​(new Contact("Lucius", "Seneca", "", 15));
+      contactsStack.push​(new Contact("Marcus", "Aurelius", "", 24, "chtp.jpg"));
+      contactsStack.push​(new Contact("Marcus", "Cicero", "", 22));
+      contactsStack.push​(new Contact("Francois", "Voltaire", "", 1707, "jhtp.jpg"));
+      contactsStack.push​(new Contact("", "Plato", "", 395));
+      contactsStack.push(new Contact("", "Aristotle", "", 335));
       
       return contactsStack;
    }
@@ -366,7 +376,7 @@ public class ContactsViewerController {
    @FXML
    void contextMenuAdd(ActionEvent event) {
       boolean clearingOtherSelections = true;
-      Contact newContact = new Contact("", "Newcontactoedit", "", 0, "");
+      Contact newContact = new Contact("", "Newcontactoedit", "", 0);
       CONTACTS_LIST.add(newContact);
       int index = CONTACTS_LIST.indexOf(newContact);
       /////sortedContactsList.add(new Contact("", "Newcontactoedit", "", 0, ""));
@@ -401,9 +411,9 @@ public class ContactsViewerController {
       try {
          selectedContact.setImageFilePath(file);
          this.imagePathFileLabel.setText(selectedContact.getImageFilePath());
-      } catch (SecurityException | InvalidPathException exception) {
+      } catch (InvalidPathException exception) {
          this.imagePathFileLabel.setText(exception.toString());
-      } catch (IllegalArgumentException | NullPointerException exception) {
+      } catch (SecurityException | IllegalArgumentException  | NullPointerException exception) {
          this.imagePathFileLabel.setText(exception.toString());
       }
    } 

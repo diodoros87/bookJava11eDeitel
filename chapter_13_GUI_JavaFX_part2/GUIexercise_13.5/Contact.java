@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.InvalidPathException;
+import java.nio.file.LinkOption;
 
 public class Contact implements Comparable<Contact> {
    public  static final String WRONG_TELEPHONE_ERROR = "Telephone must be integer >= 0 and <= " + Long.MAX_VALUE;
@@ -35,9 +36,17 @@ public class Contact implements Comparable<Contact> {
    private String lastName;
    private String email;
    private long   telephone;
-   private String imageFilePath;
+   private String imageFilePath = null;
    
-   public Contact(String firstName, String lastName, String email, long telephone, String imageFilePath) {
+   public Contact(String firstName, String lastName, String email, long telephone, String filePath) {
+      this(firstName, lastName, email, telephone);
+      Objects.requireNonNull(filePath);
+      File file = new File(filePath);
+      validateImageFilePath(file);
+      imageFilePath = file.getAbsolutePath();
+   }
+   
+   public Contact(String firstName, String lastName, String email, long telephone) {
       validateFirstName(firstName);
       validateLastName(lastName);
       validateTelephone(telephone);
@@ -81,15 +90,25 @@ public class Contact implements Comparable<Contact> {
    public void setImageFilePath(File file) {
       validateImageFilePath(file);
       imageFilePath = file.getAbsolutePath();
+      imageFilePath = file.getPath();
+      imageFilePath = file.toString();
    }
    
-   public static void validateImageFilePath(File file) throws InvalidPathException {
+   public void setImageFilePath(String filePath) {
+      Objects.requireNonNull(filePath);
+      File file = new File(filePath);
+      setImageFilePath(file);
+   }
+   
+   public static void validateImageFilePath(File file) throws InvalidPathException, SecurityException {
       Objects.requireNonNull(file);
       Path path = file.toPath();
-      if (false == Files.exists(path))
-         throw new IllegalArgumentException("Path " + path.toAbsolutePath() + " does not exist");
+      if (false == file.exists())
+         throw new IllegalArgumentException(path.toAbsolutePath().toString() + " does not exist");
+      if (false == Files.isRegularFile​(path, LinkOption.NOFOLLOW_LINKS))
+         throw new IllegalArgumentException(path.toAbsolutePath().toString() + " is not regular file");
       if (true == Files.isDirectory(path))
-         throw new IllegalArgumentException("Path " + path.toAbsolutePath() + " is directory, but regular file is required");
+         throw new IllegalArgumentException(path.toAbsolutePath().toString() + " is directory, but regular file is required");
    }
    
    public static void validateFirstName(String firstName) {

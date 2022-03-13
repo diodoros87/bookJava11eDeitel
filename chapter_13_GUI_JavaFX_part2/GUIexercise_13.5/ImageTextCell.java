@@ -44,11 +44,16 @@ public class ImageTextCell extends ListCell<Contact> {
          else {
             System.err.println(" updateItem: " + path);
             try {
-               thumbImageView.setImage(new Image(path));
+               //thumbImageView.setImage(new Image(path));
+               Image image = new Image(path);
+               thumbImageView.setImage(image);
+               String url =  image.getUrl​();
+               System.err.println(" url: " + url);
                label.setText(item.getLastName()); // configure Label's text
                setGraphic(vbox); // attach custom layout to ListView cell
             } catch (IllegalArgumentException | NullPointerException exception) {
-               label.setText(item.getLastName());
+               label.setText(exception.toString());
+               //label.setText(item.getLastName());
                setGraphic(label);
             }
          }
