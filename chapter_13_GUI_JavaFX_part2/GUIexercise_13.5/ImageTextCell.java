@@ -6,6 +6,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.File;
+
 public class ImageTextCell extends ListCell<Contact> {
    private VBox vbox = new VBox(8.0); // 8 points of gap between controls
    private ImageView thumbImageView = new ImageView(); // initially empty
@@ -16,6 +20,7 @@ public class ImageTextCell extends ListCell<Contact> {
       vbox.setAlignment(Pos.CENTER); // center VBox contents horizontally
 
       thumbImageView.setPreserveRatio(true);
+      thumbImageView.setFitWidth(100.0);
       thumbImageView.setFitHeight(100.0); // thumbnail 100 points tall
       vbox.getChildren().add(thumbImageView); // attach to Vbox
 
@@ -42,18 +47,20 @@ public class ImageTextCell extends ListCell<Contact> {
             setGraphic(label);
          }
          else {
-            System.err.println(" updateItem: " + path);
+            System.err.println(" path: " + path);
             try {
-               //thumbImageView.setImage(new Image(path));
                Image image = new Image(path);
+               System.err.println(" image.isError(): " + image.isError());
                thumbImageView.setImage(image);
+               //thumbImageView.setCache(true);
                String url =  image.getUrl​();
                System.err.println(" url: " + url);
                label.setText(item.getLastName()); // configure Label's text
                setGraphic(vbox); // attach custom layout to ListView cell
             } catch (IllegalArgumentException | NullPointerException exception) {
-               label.setText(exception.toString());
-               //label.setText(item.getLastName());
+               System.err.print(" Exception: ");
+               System.err.println(exception.toString());
+               label.setText(item.getLastName());
                setGraphic(label);
             }
          }

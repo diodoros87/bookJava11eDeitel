@@ -83,18 +83,18 @@ public class ContactsViewerController {
       //updateListWhenChangeContactOnList();
       updateContactDataViewWhenChangeContactOnList();
       initializeTextFieldEdition();
-      setCellFactory(contactsListView); 
-/*      contactsListView.setCellFactory(
+      //setCellFactory(contactsListView); 
+      contactsListView.setCellFactory(
          new Callback<ListView<Contact>, ListCell<Contact>>() {
             @Override
             public ListCell<Contact> call(ListView<Contact> listView) {
                return new ImageTextCell();
             }
          }
-      ); */    
+      );     
    }
    
-   void setCellFactory(final ListView<Contact> list) {
+   void setCellFactory(ListView<Contact> list) {
       Objects.requireNonNull(list);
       list.setCellFactory(
          new Callback<ListView<Contact>, ListCell<Contact>>() {
@@ -223,18 +223,21 @@ public class ContactsViewerController {
       lastNameTextField.setText("");
       emailTextField.setText("");
       telephoneTextField.setText("");
+      imagePathFileLabel.setText("");
    }
    
    private void initializeListOfContacts() {
       Stack<Contact> contactsStack = getContacts();
       
       //CONTACTS_LIST = FXCollections.observableList(contactsStack);
+      //addContacts();
       CONTACTS_LIST.setAll(contactsStack);
       contactsListView.setItems(CONTACTS_LIST);
       //sortedContactsList = new SortedList<Contact>(CONTACTS_LIST, new Contact.ContactComparator());
       //contactsListView.setItems(sortedContactsList);
       setContactDataOfList(0, false);
-      setSelectionMode(SelectionMode.MULTIPLE);
+      //setSelectionMode(SelectionMode.MULTIPLE);
+      setSelectionMode(SelectionMode.SINGLE);
       sortList();
    }
    
@@ -263,16 +266,25 @@ public class ContactsViewerController {
       Stack<Contact> contactsStack = new Stack<Contact>();
       contactsStack.ensureCapacity(10);
       
-      contactsStack.push​(new Contact("Lucius", "Seneca", "", 15));
-      contactsStack.push​(new Contact("Marcus", "Aurelius", "", 24, "chtp.jpg"));
-      contactsStack.push​(new Contact("Marcus", "Cicero", "", 22));
-      contactsStack.push​(new Contact("Francois", "Voltaire", "", 1707, "jhtp.jpg"));
-      contactsStack.push​(new Contact("", "Plato", "", 395));
-      contactsStack.push(new Contact("", "Aristotle", "", 335));
+      contactsStack.push​(new Contact("Lucius", "Seneca", "", 15, "images/chtp.jpg"));
+      contactsStack.push​(new Contact("Marcus", "Aurelius", "", 24, "images/cpphtp.jpg"));
+      contactsStack.push​(new Contact("Marcus", "Cicero", "", 22, "images/iw3htp.jpg"));
+      contactsStack.push​(new Contact("Francois", "Voltaire", "", 1707, "images/jhtp.jpg"));
+      contactsStack.push​(new Contact("", "Plato", "", 395, "images/vbhtp.jpg"));
+      contactsStack.push(new Contact("", "Aristotle", "", 335, "images/vcshtp.jpg"));
       
       return contactsStack;
    }
-   
+   /*
+   private void addContacts() {
+      CONTACTS_LIST.add(new Contact("Lucius", "Seneca", "", 15, "images/chtp.jpg"));
+      CONTACTS_LIST.add(new Contact("Marcus", "Aurelius", "", 24, "images/cpphtp.jpg"));
+      CONTACTS_LIST.add(new Contact("Marcus", "Cicero", "", 22, "images/iw3htp.jpg"));
+      CONTACTS_LIST.add(new Contact("Francois", "Voltaire", "", 1707, "images/jhtp.jpg"));
+      CONTACTS_LIST.add(new Contact("", "Plato", "", 395, "images/vbhtp.jpg"));
+      CONTACTS_LIST.add(new Contact("", "Aristotle", "", 335, "images/vcshtp.jpg"));
+   }
+   */
    private void editTextField(final TextField TEXT_FIELD) {  // START OF BODY OF FUNCTION 
 
       class TextFieldChangeListener implements ChangeListener<String> {  // START OF LOCAL INNER CLASS
@@ -380,7 +392,7 @@ public class ContactsViewerController {
       CONTACTS_LIST.add(newContact);
       int index = CONTACTS_LIST.indexOf(newContact);
       /////sortedContactsList.add(new Contact("", "Newcontactoedit", "", 0, ""));
-      //setContactDataOfList(index, clearingOtherSelections);
+      setContactDataOfList(index, clearingOtherSelections);
       sortList();
       
       
@@ -396,7 +408,7 @@ public class ContactsViewerController {
       if (0 == CONTACTS_LIST.size()) {
          setEmptyTextFields();
       }
-      //sortList();
+      sortList();
       //sortedContactsList.removeAll(selectedContacts);
    }
    
@@ -416,6 +428,7 @@ public class ContactsViewerController {
       } catch (SecurityException | IllegalArgumentException  | NullPointerException exception) {
          this.imagePathFileLabel.setText(exception.toString());
       }
+      sortList();
    } 
    /*
    // display information about file or directory user specifies

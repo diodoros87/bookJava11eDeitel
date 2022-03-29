@@ -43,7 +43,9 @@ public class Contact implements Comparable<Contact> {
       Objects.requireNonNull(filePath);
       File file = new File(filePath);
       validateImageFilePath(file);
-      imageFilePath = file.getAbsolutePath();
+      imageFilePath = file.getPath();
+      //imageFilePath = filePath;
+      //imageFilePath = file.toURI().toString();
    }
    
    public Contact(String firstName, String lastName, String email, long telephone) {
@@ -89,9 +91,10 @@ public class Contact implements Comparable<Contact> {
    
    public void setImageFilePath(File file) {
       validateImageFilePath(file);
-      imageFilePath = file.getAbsolutePath();
-      imageFilePath = file.getPath();
-      imageFilePath = file.toString();
+      //imageFilePath = file.getAbsolutePath();
+      //imageFilePath = file.getPath();
+      imageFilePath = file.toURI().toString();
+      //imageFilePath = file.toString();
    }
    
    public void setImageFilePath(String filePath) {
