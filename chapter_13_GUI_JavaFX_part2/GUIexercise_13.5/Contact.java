@@ -205,6 +205,11 @@ public class Contact implements Comparable<Contact> {
       String stringRepresentation = toString();
       String otherStringRepresentation = other.toString();
       int result = stringRepresentation.compareTo​(otherStringRepresentation);
+      if (0 == result) {
+         stringRepresentation = getFirstName();
+         otherStringRepresentation = other.getFirstName();
+         result = stringRepresentation.compareTo​(otherStringRepresentation);
+      }
       
       return result;
    }

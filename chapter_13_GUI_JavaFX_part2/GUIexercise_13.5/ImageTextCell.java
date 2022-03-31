@@ -6,10 +6,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.File;
-
 public class ImageTextCell extends ListCell<Contact> {
    private VBox vbox = new VBox(8.0); // 8 points of gap between controls
    private ImageView thumbImageView = new ImageView(); // initially empty
@@ -49,10 +45,12 @@ public class ImageTextCell extends ListCell<Contact> {
          else {
             System.err.println(" path: " + path);
             try {
+               if (null == path)
+                  System.err.println(" path is null");
                Image image = new Image(path);
                System.err.println(" image.isError(): " + image.isError());
                thumbImageView.setImage(image);
-               //thumbImageView.setCache(true);
+               thumbImageView.setCache(true);
                String url =  image.getUrl​();
                System.err.println(" url: " + url);
                label.setText(item.getLastName()); // configure Label's text

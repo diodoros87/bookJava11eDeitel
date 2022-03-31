@@ -75,6 +75,8 @@ public class ContactsViewerController {
    //private ObservableList<Contact> CONTACTS_LIST      = null;
    //private SortedList<Contact>     sortedContactsList = null;
    
+   public static final Contact.ContactComparator contactComparator = new Contact.ContactComparator();
+   
    //SortedList
 
    // initialize controller
@@ -83,18 +85,10 @@ public class ContactsViewerController {
       //updateListWhenChangeContactOnList();
       updateContactDataViewWhenChangeContactOnList();
       initializeTextFieldEdition();
-      //setCellFactory(contactsListView); 
-      contactsListView.setCellFactory(
-         new Callback<ListView<Contact>, ListCell<Contact>>() {
-            @Override
-            public ListCell<Contact> call(ListView<Contact> listView) {
-               return new ImageTextCell();
-            }
-         }
-      );     
+      setCellFactory(contactsListView);     
    }
    
-   void setCellFactory(ListView<Contact> list) {
+   void setCellFactory(final ListView<Contact> list) {
       Objects.requireNonNull(list);
       list.setCellFactory(
          new Callback<ListView<Contact>, ListCell<Contact>>() {
@@ -152,17 +146,18 @@ public class ContactsViewerController {
          @Override  
          public void onChanged(ListChangeListener.Change<? extends Contact> contact) {
             //Callback<ListView<Contact>, ListCell<Contact>> contactsListView.getCellFactory();
-            
+            FXCollections.sort(CONTACTS_LIST);
             while (contact.next()) {
                if (contact.wasUpdated() || contact.wasPermutated()) {
                   int index = contactsListView.getEditingIndex();
                   contactsListView.edit(index);
                   //updateItem();
-                  FXCollections.sort(CONTACTS_LIST);
                   
-                  break;
+                  
+                  //break;
                }
             }
+            
          }
       });
 
@@ -229,15 +224,13 @@ public class ContactsViewerController {
    private void initializeListOfContacts() {
       Stack<Contact> contactsStack = getContacts();
       
-      //CONTACTS_LIST = FXCollections.observableList(contactsStack);
-      //addContacts();
       CONTACTS_LIST.setAll(contactsStack);
       contactsListView.setItems(CONTACTS_LIST);
       //sortedContactsList = new SortedList<Contact>(CONTACTS_LIST, new Contact.ContactComparator());
       //contactsListView.setItems(sortedContactsList);
       setContactDataOfList(0, false);
-      //setSelectionMode(SelectionMode.MULTIPLE);
-      setSelectionMode(SelectionMode.SINGLE);
+      setSelectionMode(SelectionMode.MULTIPLE);
+      //setSelectionMode(SelectionMode.SINGLE);
       sortList();
    }
    
@@ -266,12 +259,12 @@ public class ContactsViewerController {
       Stack<Contact> contactsStack = new Stack<Contact>();
       contactsStack.ensureCapacity(10);
       
-      contactsStack.push​(new Contact("Lucius", "Seneca", "", 15, "images/chtp.jpg"));
-      contactsStack.push​(new Contact("Marcus", "Aurelius", "", 24, "images/cpphtp.jpg"));
-      contactsStack.push​(new Contact("Marcus", "Cicero", "", 22, "images/iw3htp.jpg"));
-      contactsStack.push​(new Contact("Francois", "Voltaire", "", 1707, "images/jhtp.jpg"));
-      contactsStack.push​(new Contact("", "Plato", "", 395, "images/vbhtp.jpg"));
-      contactsStack.push(new Contact("", "Aristotle", "", 335, "images/vcshtp.jpg"));
+      contactsStack.push​(new Contact("Lucius", "Seneca", "", 15, "images/Seneca.jpg"));
+      contactsStack.push​(new Contact("Marcus", "Aurelius", "", 24, "images/Marcus_Aurelius.jpg"));
+      contactsStack.push​(new Contact("Marcus", "Cicero", "", 22, "images/Cicero.jpg"));
+      contactsStack.push​(new Contact("Francois", "Voltaire", "", 1707, "images/Voltaire.jpg"));
+      contactsStack.push​(new Contact("", "Plato", "", 395, "images/Platon.jpg"));
+      contactsStack.push(new Contact("", "Aristotle", "", 335, "images/aristotle.jpg"));
       
       return contactsStack;
    }
@@ -327,15 +320,26 @@ public class ContactsViewerController {
          private void setName(String string) {
             try {
                if (     TEXT_FIELD == ContactsViewerController.this.firstNameTextField) {
+                  String firstName = selectedContact.getFirstName();
+                  if (firstName.equals(string))
+                     return;
+                     
                   selectedContact.setFirstName(string);
                }
                else if (TEXT_FIELD == ContactsViewerController.this.lastNameTextField) {
+                  String lastName = selectedContact.getLastName();
+                  if (lastName.equals(string))
+                     return;
+                     
                   selectedContact.setLastName(string);
                   ///int index = contactsListView.getEditingIndex();
                   ///contactsListView.edit(index);
-                  //updateItem();
-                  FXCollections.sort(CONTACTS_LIST);
                }
+               
+               int index = CONTACTS_LIST.indexOf(selectedContact);
+               /////sortedContactsList.add(new Contact("", "Newcontactoedit", "", 0, ""));
+               //setContactDataOfList(index, true);
+               FXCollections.sort(CONTACTS_LIST, contactComparator);
             } 
             catch (IllegalArgumentException exception) {
                requestToEnterNumber(exception.getMessage());
@@ -388,14 +392,13 @@ public class ContactsViewerController {
    @FXML
    void contextMenuAdd(ActionEvent event) {
       boolean clearingOtherSelections = true;
-      Contact newContact = new Contact("", "Newcontactoedit", "", 0);
+      //Contact newContact = new Contact("", "Newcontactoedit", "", 0, "images/chtp.jpg");
+      Contact newContact = new Contact("Julius", "Caesar", "", 0, "images/Cesar.jpg");
       CONTACTS_LIST.add(newContact);
+      FXCollections.sort(CONTACTS_LIST);
       int index = CONTACTS_LIST.indexOf(newContact);
       /////sortedContactsList.add(new Contact("", "Newcontactoedit", "", 0, ""));
       setContactDataOfList(index, clearingOtherSelections);
-      sortList();
-      
-      
       
       //FXCollections.sort(CONTACTS_LIST);
       //setContactDataOfList(sortedContactsList.size() - 1, clearingOtherSelections);
@@ -408,7 +411,7 @@ public class ContactsViewerController {
       if (0 == CONTACTS_LIST.size()) {
          setEmptyTextFields();
       }
-      sortList();
+      //sortList();
       //sortedContactsList.removeAll(selectedContacts);
    }
    
@@ -428,56 +431,10 @@ public class ContactsViewerController {
       } catch (SecurityException | IllegalArgumentException  | NullPointerException exception) {
          this.imagePathFileLabel.setText(exception.toString());
       }
-      sortList();
-   } 
-   /*
-   // display information about file or directory user specifies
-   public void analyzePath(Path path) {
-      Objects.requireNonNull(path);
-      if (false == Files.exists(path))
-         throw IllegalArgumentException("Path " + path.toAbsolutePath() + " does not exist");
-         
-      try {
-         // if the file or directory exists, display its info
-         if (false == Files.exists(path)) {
-            // gather file (or directory) information
-            StringBuilder builder = new StringBuilder();
-            builder.append(String.format("%s:%n", path.getFileName()));
-            builder.append(String.format("%s a directory%n", 
-               Files.isDirectory(path) ? "Is" : "Is not"));
-            builder.append(String.format("%s an absolute path%n", 
-               path.isAbsolute() ? "Is" : "Is not"));
-            builder.append(String.format("Last modified: %s%n", 
-               Files.getLastModifiedTime(path)));
-            builder.append(String.format("Size: %s%n", Files.size(path)));
-            builder.append(String.format("Path: %s%n", path));
-            builder.append(String.format("Absolute path: %s%n", 
-               path.toAbsolutePath()));
-
-            if (Files.isDirectory(path)) { // output directory listing
-               builder.append(String.format("%nDirectory contents:%n"));
-               
-               // object for iterating through a directory's contents
-               DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
       
-               for (Path p : directoryStream) {
-                  builder.append(String.format("%s%n", p));
-               }
-            }
-            
-            Contact selectedContact = getCurrentlySelectedContact();
-            selectedContact.setImageFilePath(path);
-
-            // display file or directory info
-            //textArea.setText(builder.toString()); 
-         } 
-         else { // Path does not exist
-            //textArea.setText("Path does not exist");
-         }   
-      }
-      catch (IOException ioException) {
-         //textArea.setText(ioException.toString());
-      }
+      //int index = CONTACTS_LIST.indexOf(selectedContact);
+      //boolean clearingOtherSelections = true;
+      //setContactDataOfList(index, clearingOtherSelections);
+      FXCollections.sort(CONTACTS_LIST);
    } 
-   */
 }
